@@ -51,6 +51,11 @@ class SystemSFXEngine {
     }
   }
 
+  // Alias for playHover
+  public playChirp() {
+    this.playHover();
+  }
+
   // Sci-fi click for selecting tabs, cards, or quests
   public playClick() {
     if (this.isMuted) return;
@@ -105,6 +110,11 @@ class SystemSFXEngine {
     } catch {
       // Graceful fallback
     }
+  }
+
+  // Alias for rank ascent
+  public playRankUp() {
+    this.playRankAscent();
   }
 }
 
