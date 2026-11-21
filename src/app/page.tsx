@@ -7,10 +7,18 @@ import { ColorGradeManager } from "@/components/ColorGradeManager";
 import { AudioProvider } from "@/components/AudioPlayer";
 import { SystemNoticeModal } from "@/components/SystemNoticeModal";
 import { SystemHeader } from "@/components/SystemHeader";
+import { ThreeManaCanvas } from "@/components/ThreeManaCanvas";
+import { CinematicReticle } from "@/components/CinematicReticle";
 import { Chapter1 } from "@/components/chapters/Chapter1";
 import { Chapter2 } from "@/components/chapters/Chapter2";
 import { Chapter3 } from "@/components/chapters/Chapter3";
-import { ShieldAlert } from "lucide-react";
+import { Chapter4 } from "@/components/chapters/Chapter4";
+import { Chapter5 } from "@/components/chapters/Chapter5";
+import { Chapter6 } from "@/components/chapters/Chapter6";
+import { Chapter7 } from "@/components/chapters/Chapter7";
+import { Chapter8 } from "@/components/chapters/Chapter8";
+import { SkinsSection } from "@/components/chapters/SkinsSection";
+import { Chapter9 } from "@/components/chapters/Chapter9";
 
 export default function Home() {
   const [awakened, setAwakened] = useState(false);
@@ -18,40 +26,53 @@ export default function Home() {
   return (
     <AudioProvider>
       <SmoothScroll>
+        {/* Background 3D WebGL Mana Particle Field */}
+        <ThreeManaCanvas />
+
+        {/* Desktop Interactive HUD Reticle */}
+        <CinematicReticle />
+
+        {/* Preloader & Story Color Atmosphere */}
         <Preloader />
         <ColorGradeManager />
+
+        {/* System Notice Awakening Intro Modal */}
         <SystemNoticeModal onAwaken={() => setAwakened(true)} />
+
+        {/* Top Floating Glass HUD Header with Music & Soundwave */}
         <SystemHeader />
 
+        {/* Main 9-Chapter Narrative Journey */}
         <main className="relative z-10 w-full min-h-screen">
-          {/* Phase 1 Narrative Journey */}
+          {/* Ch1: "THIS IS YOU. RANK E." */}
           <Chapter1 />
+
+          {/* Ch2: "THE SYSTEM CHOSE YOU" + S-Rank Anatomy Flip Card */}
           <Chapter2 />
+
+          {/* Ch3: "THE GYM IS YOUR DUNGEON" (Floors 01 to 04 Clearance) */}
           <Chapter3 />
 
-          {/* Phase 1 Completion Terminal Banner */}
-          <section className="relative w-full py-16 px-4 sm:px-8 border-t border-system-accent/20 bg-[#07060D] text-center overflow-hidden">
-            <div className="absolute inset-0 bg-radial-gradient from-system-accent/10 to-transparent pointer-events-none" />
-            <div className="relative z-10 max-w-2xl mx-auto system-window corner-brackets p-6 sm:p-8 rounded space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-system-accent/20 border border-system-accent/40 rounded text-xs font-mono text-system-accent uppercase">
-                <ShieldAlert className="w-3.5 h-3.5" />
-                <span>PHASE 01 TRIAL COMPLETED</span>
-              </div>
-              <h3 className="font-cinzel text-xl sm:text-2xl font-bold uppercase tracking-wider text-system-text">
-                DUNGEON RECONNAISSANCE LOCKED.
-              </h3>
-              <p className="font-inter text-xs sm:text-sm text-system-muted max-w-lg mx-auto">
-                You have witnessed the initial awakening, the system assignment, and the gym floor clearance. Next trials (Ch4 Discipline, Ch5 Food Weapon, Ch6 Enemies, Ch7 Rank Evolution) will unlock in Phase 2.
-              </p>
-              <div className="pt-2 flex flex-wrap justify-center gap-4 text-xs font-mono text-system-muted">
-                <span>LATENCY: 60 FPS</span>
-                <span>•</span>
-                <span>GRADE: COLD BLUE → VIOLET</span>
-                <span>•</span>
-                <span>AUDIO: DARK ARIA LV2</span>
-              </div>
-            </div>
-          </section>
+          {/* Ch4: "DISCIPLINE BEATS MOTIVATION" (Desktop Horizontal Pinned Scroll) */}
+          <Chapter4 />
+
+          {/* Ch5: "FOOD IS YOUR WEAPON" (Indian Nutrition Grimoire & Macros) */}
+          <Chapter5 />
+
+          {/* Ch6: "THE ENEMIES" (Distraction Chains, Recovery Tank, Rage Mindset) */}
+          <Chapter6 />
+
+          {/* Ch7: "RANK UP" (Signature E -> S Evolution Matrix & Stat Gauges) */}
+          <Chapter7 />
+
+          {/* Ch8: "YOUR AI COACH" (Illustrative Chat HUD & 4 Feature Pillars) */}
+          <Chapter8 />
+
+          {/* Unlockable System Armory Skins (Obsidian, Solar, Jade) */}
+          <SkinsSection />
+
+          {/* Ch9: "ARISE." (The Sovereign Awakening & Final Waitlist CTA) */}
+          <Chapter9 />
         </main>
       </SmoothScroll>
     </AudioProvider>

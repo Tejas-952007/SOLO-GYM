@@ -4,7 +4,7 @@ import path from "path";
 const ARTIFACT_DIR = "/home/tejas/.gemini/antigravity/brain/94e7849a-2d30-4808-af39-96e000b7ae63";
 
 async function run() {
-  console.log("Launching browser...");
+  console.log("Launching browser for mobile capture...");
   const browser = await puppeteer.launch({
     executablePath: "/usr/bin/google-chrome",
     headless: "new",
@@ -12,99 +12,42 @@ async function run() {
   });
 
   try {
-    // 1. Desktop System Notice (1440x900)
-    console.log("Capturing Desktop System Notice...");
-    const pageDesktopNotice = await browser.newPage();
-    await pageDesktopNotice.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 });
-    await pageDesktopNotice.goto("http://localhost:3001", { waitUntil: "networkidle2" });
-    await new Promise((r) => setTimeout(r, 1200));
-    await pageDesktopNotice.screenshot({
-      path: path.join(ARTIFACT_DIR, "desktop-system-notice.png"),
-    });
+    const chapters = [
+      { id: "chapter-1", name: "ch1-rank-e" },
+      { id: "chapter-2", name: "ch2-system-chose-you" },
+      { id: "chapter-3", name: "ch3-dungeon" },
+      { id: "chapter-4", name: "ch4-discipline" },
+      { id: "chapter-5", name: "ch5-nutrition-grimoire" },
+      { id: "chapter-6", name: "ch6-enemies-rage" },
+      { id: "chapter-7", name: "ch7-rank-evolution" },
+      { id: "chapter-8", name: "ch8-ai-coach" },
+      { id: "skins-armory", name: "ch8-skins-armory" },
+      { id: "chapter-9", name: "ch9-arise-final" },
+    ];
 
-    // 2. Mobile System Notice (390x844)
-    console.log("Capturing Mobile System Notice...");
-    const pageMobileNotice = await browser.newPage();
-    await pageMobileNotice.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true });
-    await pageMobileNotice.goto("http://localhost:3001", { waitUntil: "networkidle2" });
-    await new Promise((r) => setTimeout(r, 1200));
-    await pageMobileNotice.screenshot({
-      path: path.join(ARTIFACT_DIR, "mobile-system-notice.png"),
-    });
-
-    // 3. Desktop Awakened: Ch1, Ch2, Ch3
-    console.log("Opening fresh Desktop Awakened page...");
-    const pageDesktopAwakened = await browser.newPage();
-    await pageDesktopAwakened.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 });
-    await pageDesktopAwakened.evaluateOnNewDocument(() => {
+    // Mobile Capture
+    console.log("Setting up Mobile session (390x844)...");
+    const pageMobile = await browser.newPage();
+    await pageMobile.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true });
+    await pageMobile.evaluateOnNewDocument(() => {
       sessionStorage.setItem("level_up_system_accepted", "true");
     });
-    await pageDesktopAwakened.goto("http://localhost:3001", { waitUntil: "networkidle2" });
-    await new Promise((r) => setTimeout(r, 1500));
+    await pageMobile.goto("http://localhost:3001", { waitUntil: "domcontentloaded", timeout: 15000 });
+    await new Promise((r) => setTimeout(r, 2000));
 
-    // Capture Ch1 Desktop
-    console.log("Capturing Desktop Ch1...");
-    await pageDesktopAwakened.screenshot({
-      path: path.join(ARTIFACT_DIR, "desktop-ch1-rank-e.png"),
-    });
+    for (const ch of chapters) {
+      console.log(`Capturing Mobile: ${ch.name}...`);
+      await pageMobile.evaluate((targetId) => {
+        const el = document.querySelector(`#${targetId}`);
+        if (el) el.scrollIntoView({ behavior: "instant" });
+      }, ch.id);
+      await new Promise((r) => setTimeout(r, 800));
+      await pageMobile.screenshot({
+        path: path.join(ARTIFACT_DIR, `mobile-${ch.name}.png`),
+      });
+    }
 
-    // Scroll to Ch2 Desktop
-    console.log("Capturing Desktop Ch2...");
-    await pageDesktopAwakened.evaluate(() => {
-      document.querySelector("#chapter-2")?.scrollIntoView({ behavior: "instant" });
-    });
-    await new Promise((r) => setTimeout(r, 1500));
-    await pageDesktopAwakened.screenshot({
-      path: path.join(ARTIFACT_DIR, "desktop-ch2-system-chose-you.png"),
-    });
-
-    // Scroll to Ch3 Desktop
-    console.log("Capturing Desktop Ch3...");
-    await pageDesktopAwakened.evaluate(() => {
-      document.querySelector("#chapter-3")?.scrollIntoView({ behavior: "instant" });
-    });
-    await new Promise((r) => setTimeout(r, 1500));
-    await pageDesktopAwakened.screenshot({
-      path: path.join(ARTIFACT_DIR, "desktop-ch3-dungeon.png"),
-    });
-
-    // 4. Mobile Awakened: Ch1, Ch2, Ch3
-    console.log("Opening fresh Mobile Awakened page...");
-    const pageMobileAwakened = await browser.newPage();
-    await pageMobileAwakened.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true });
-    await pageMobileAwakened.evaluateOnNewDocument(() => {
-      sessionStorage.setItem("level_up_system_accepted", "true");
-    });
-    await pageMobileAwakened.goto("http://localhost:3001", { waitUntil: "networkidle2" });
-    await new Promise((r) => setTimeout(r, 1500));
-
-    // Capture Ch1 Mobile
-    console.log("Capturing Mobile Ch1...");
-    await pageMobileAwakened.screenshot({
-      path: path.join(ARTIFACT_DIR, "mobile-ch1-rank-e.png"),
-    });
-
-    // Scroll to Ch2 Mobile
-    console.log("Capturing Mobile Ch2...");
-    await pageMobileAwakened.evaluate(() => {
-      document.querySelector("#chapter-2")?.scrollIntoView({ behavior: "instant" });
-    });
-    await new Promise((r) => setTimeout(r, 1200));
-    await pageMobileAwakened.screenshot({
-      path: path.join(ARTIFACT_DIR, "mobile-ch2-system-chose-you.png"),
-    });
-
-    // Scroll to Ch3 Mobile
-    console.log("Capturing Mobile Ch3...");
-    await pageMobileAwakened.evaluate(() => {
-      document.querySelector("#chapter-3")?.scrollIntoView({ behavior: "instant" });
-    });
-    await new Promise((r) => setTimeout(r, 1200));
-    await pageMobileAwakened.screenshot({
-      path: path.join(ARTIFACT_DIR, "mobile-ch3-dungeon.png"),
-    });
-
-    console.log("All screenshots captured successfully!");
+    console.log("All mobile screenshots captured successfully!");
   } finally {
     await browser.close();
   }
