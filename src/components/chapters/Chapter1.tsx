@@ -6,6 +6,8 @@ import { gsap } from "@/lib/gsap";
 import { Shield, ChevronDown, CheckCircle2, Circle, Flame, Sparkles, Award } from "lucide-react";
 import { DecodeText } from "@/components/ui/DecodeText";
 import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
+import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter1() {
@@ -166,14 +168,15 @@ export function Chapter1() {
             />
           </div>
 
-          {/* Main Hero Glitch Title */}
+          {/* Main Hero Kinetic Blade Slice Title */}
           <div className="space-y-2">
-            <GlitchHeading as="h1" className="font-cinzel text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-system-text leading-none">
-              THIS IS YOU. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-system-cyan via-white to-purple-400 drop-shadow-[0_0_35px_rgba(56,189,248,0.7)]">
-                RANK E.
-              </span>
-            </GlitchHeading>
+            <BladeSliceHeading
+              as="h1"
+              accentText="RANK E."
+              className="font-cinzel text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-system-text leading-none"
+            >
+              THIS IS YOU.
+            </BladeSliceHeading>
             <p className="font-inter text-sm sm:text-base md:text-lg text-system-muted max-w-xl leading-relaxed pt-2">
               The weakest hunter of mankind. Bruised physique, skipped meals, zero discipline. The gym felt like an impossible dungeon. But today, the System chooses you.
             </p>
@@ -324,46 +327,52 @@ export function Chapter1() {
           </div>
         </div>
 
-        {/* Right Column: Hero Hunter Character with Crystal-Clear Visage & Glowing Eye */}
+        {/* Right Column: Hero Hunter Character with 3D Anime Tilt & Glowing Eye */}
         <div className="lg:col-span-5 flex justify-center items-center relative">
-          <div
-            ref={hunterRef}
-            className="relative w-[310px] h-[480px] sm:w-[380px] sm:h-[580px] lg:w-[440px] lg:h-[680px] will-change-transform select-none"
+          <AnimeTiltCard
+            maxTilt={12}
+            glowColor="rgba(56, 189, 248, 0.4)"
+            className="w-full flex justify-center"
           >
-            {/* Pulsing Void Neon Aura Behind Hunter */}
-            <div className="absolute inset-x-4 top-10 bottom-10 bg-gradient-to-b from-system-cyan/35 via-system-accent/25 to-blue-900/40 rounded-full blur-[80px] pointer-events-none -z-10 animate-pulse" />
+            <div
+              ref={hunterRef}
+              className="relative w-[310px] h-[480px] sm:w-[380px] sm:h-[580px] lg:w-[440px] lg:h-[680px] will-change-transform select-none"
+            >
+              {/* Pulsing Void Neon Aura Behind Hunter */}
+              <div className="absolute inset-x-4 top-10 bottom-10 bg-gradient-to-b from-system-cyan/35 via-system-accent/25 to-blue-900/40 rounded-full blur-[80px] pointer-events-none -z-10 animate-pulse" />
 
-            {/* Glowing Hunter Eye Flare (Positioned precisely at Jin-Woo archetype eye at 27% from top) */}
-            <div className="absolute top-[28%] left-[49%] -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
-              <span className="block w-2.5 h-2.5 rounded-full bg-cyan-200 shadow-[0_0_20px_rgba(56,189,248,1)] animate-ping" />
-              <span className="block w-1.5 h-1.5 rounded-full bg-white absolute top-0.5 left-0.5 shadow-[0_0_12px_rgba(255,255,255,1)]" />
-            </div>
-
-            {/* Character Image (object-[center_25%] ensures the face and fierce eyes are fully centered) */}
-            <div className="relative w-full h-full rounded-2xl overflow-hidden border border-system-cyan/30 shadow-[0_15px_50px_rgba(0,0,0,0.9)]">
-              <Image
-                src="/assets/01-weak/weak-hunter.webp"
-                alt="Rank E Hunter Awakening Visage"
-                fill
-                priority
-                sizes="(max-width: 768px) 380px, 480px"
-                className="object-cover object-[center_25%] filter brightness-110 contrast-125"
-              />
-
-              {/* Floating Holographic Hunter Stats Tag */}
-              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-md border border-system-cyan/50 px-3 py-1.5 rounded font-mono text-[10px] text-system-cyan shadow-[0_0_15px_rgba(56,189,248,0.3)]">
-                <div>HP: 120 / 120</div>
-                <div className="text-yellow-400">FATIGUE: 84%</div>
+              {/* Glowing Hunter Eye Flare (Positioned precisely at Jin-Woo archetype eye at 27% from top) */}
+              <div className="absolute top-[28%] left-[49%] -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+                <span className="block w-2.5 h-2.5 rounded-full bg-cyan-200 shadow-[0_0_20px_rgba(56,189,248,1)] animate-ping" />
+                <span className="block w-1.5 h-1.5 rounded-full bg-white absolute top-0.5 left-0.5 shadow-[0_0_12px_rgba(255,255,255,1)]" />
               </div>
 
-              {/* Bottom Vignette melting into dungeon floor */}
-              <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none" />
-            </div>
+              {/* Character Image (object-[center_25%] ensures the face and fierce eyes are fully centered) */}
+              <div className="relative w-full h-full rounded-2xl overflow-hidden border border-system-cyan/30 shadow-[0_15px_50px_rgba(0,0,0,0.9)]">
+                <Image
+                  src="/assets/01-weak/weak-hunter.webp"
+                  alt="Rank E Hunter Awakening Visage"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 380px, 480px"
+                  className="object-cover object-[center_25%] filter brightness-110 contrast-125"
+                />
 
-            {/* Tech Corner Brackets */}
-            <div className="absolute -top-2 -left-2 w-6 h-6 border-t-2 border-l-2 border-system-cyan pointer-events-none" />
-            <div className="absolute -bottom-2 -right-2 w-6 h-6 border-b-2 border-r-2 border-system-cyan pointer-events-none" />
-          </div>
+                {/* Floating Holographic Hunter Stats Tag */}
+                <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-md border border-system-cyan/50 px-3 py-1.5 rounded font-mono text-[10px] text-system-cyan shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                  <div>HP: 120 / 120</div>
+                  <div className="text-yellow-400">FATIGUE: 84%</div>
+                </div>
+
+                {/* Bottom Vignette melting into dungeon floor */}
+                <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none" />
+              </div>
+
+              {/* Tech Corner Brackets */}
+              <div className="absolute -top-2 -left-2 w-6 h-6 border-t-2 border-l-2 border-system-cyan pointer-events-none" />
+              <div className="absolute -bottom-2 -right-2 w-6 h-6 border-b-2 border-r-2 border-system-cyan pointer-events-none" />
+            </div>
+          </AnimeTiltCard>
         </div>
 
       </div>
