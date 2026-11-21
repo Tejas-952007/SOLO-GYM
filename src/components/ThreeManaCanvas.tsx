@@ -135,10 +135,15 @@ export function ThreeManaCanvas({
     let targetY = 0;
     let scrollSpeed = 0;
     let lastScrollY = window.scrollY;
+    let shockwaveIntensity = 0;
 
     const onMouseMove = (e: MouseEvent) => {
       mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
       mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    };
+
+    const onClick = () => {
+      shockwaveIntensity = 1.0;
     };
 
     const onScroll = () => {
@@ -148,6 +153,7 @@ export function ThreeManaCanvas({
     };
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("click", onClick, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
 
     // Animation loop
@@ -163,19 +169,29 @@ export function ThreeManaCanvas({
       targetX += (mouseX - targetX) * 0.04;
       targetY += (mouseY - targetY) * 0.04;
 
-      // Rotate whole mana vortex with scroll acceleration
-      const boost = 1 + Math.min(scrollSpeed * 0.05, 4);
+      // Rotate whole mana vortex with scroll acceleration and shockwave pulse
+      const boost = 1 + Math.min(scrollSpeed * 0.05, 4) + shockwaveIntensity * 3;
       particles.rotation.y = elapsedTime * 0.08 * boost + targetX * 0.4;
       particles.rotation.x = targetY * 0.3;
 
       riftRing1.rotation.z += 0.003 * boost;
       riftRing2.rotation.z -= 0.002 * boost;
 
-      // Particle vertical flow
+      if (shockwaveIntensity > 0) {
+        riftRing1.scale.setScalar(1 + shockwaveIntensity * 0.4);
+        riftRing2.scale.setScalar(1 + shockwaveIntensity * 0.3);
+      }
+
+      // Particle vertical flow and shockwave radial push
       const pos = geometry.attributes.position.array as Float32Array;
       for (let i = 0; i < count; i++) {
         const i3 = i * 3;
         pos[i3 + 1] += velocities[i3 + 1] * boost;
+
+        if (shockwaveIntensity > 0.05) {
+          pos[i3] += (Math.random() - 0.5) * shockwaveIntensity * 1.5;
+          pos[i3 + 2] += (Math.random() - 0.5) * shockwaveIntensity * 1.5;
+        }
 
         // Reset if passed top
         if (pos[i3 + 1] > 80) {
@@ -184,8 +200,9 @@ export function ThreeManaCanvas({
       }
       geometry.attributes.position.needsUpdate = true;
 
-      // Decay scroll boost
+      // Decay scroll boost and shockwave
       scrollSpeed *= 0.94;
+      shockwaveIntensity *= 0.92;
 
       renderer.render(scene, camera);
     };
@@ -202,6 +219,7 @@ export function ThreeManaCanvas({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("click", onClick);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", handleResize);
       if (container.contains(renderer.domElement)) {
