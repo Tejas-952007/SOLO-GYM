@@ -124,11 +124,36 @@ const CITY_GYMS: GymSpot[] = [
   },
 ];
 
+const QUICK_MACROS = [
+  { label: "200g Paneer Bhurji", p: "36g", c: "8g", f: "38g", leucine: "3.2g", verdict: "Excellent casein & leucine base. Add 1 roti or salad." },
+  { label: "100g Soya Chunks", p: "52g", c: "33g", f: "0.5g", leucine: "3.8g", verdict: "Highest plant protein density in India. Perfect anabolic spike." },
+  { label: "6 Boiled Eggs (3 whole + 3 whites)", p: "28g", c: "2g", f: "15g", leucine: "2.6g", verdict: "Gold-standard BV 100 amino acid bioavailability." },
+  { label: "1 Scoop Whey in Water", p: "25g", c: "1.5g", f: "1g", leucine: "2.9g", verdict: "Rapid 30-min absorption window. Ideal post-workout." },
+  { label: "50g Sattu + 300ml Buttermilk", p: "18g", c: "42g", f: "4g", leucine: "1.5g", verdict: "Traditional desi hydration. Recommend adding 2 egg whites." },
+  { label: "3 Rotis + 1 Katori Moong Dal", p: "14g", c: "64g", f: "5g", leucine: "1.1g", verdict: "High carb, sub-optimal leucine. Add paneer/eggs to hit 30g." },
+];
+
 export function Chapter8() {
   const [activeScenario, setActiveScenario] = useState<ChatScenario>(CHAT_SCENARIOS[0]);
   const [selectedCity, setSelectedCity] = useState<string>("Mumbai");
+  const [customQuery, setCustomQuery] = useState("");
+  const [activeQuickMeal, setActiveQuickMeal] = useState<(typeof QUICK_MACROS)[0] | null>(null);
 
   const currentGym = CITY_GYMS.find((g) => g.city === selectedCity) || CITY_GYMS[0];
+
+  const handleQuickMeal = (meal: (typeof QUICK_MACROS)[0]) => {
+    setActiveQuickMeal(meal);
+    sfx.playStatPointAlloc();
+    spawnCombatNumber(`+${meal.p} PROTEIN VERIFIED!`, undefined, undefined, "xp");
+  };
+
+  const handleCustomSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customQuery.trim()) return;
+    sfx.playClick();
+    spawnCombatNumber(`CALCULATING: "${customQuery.slice(0, 15)}..."`, undefined, undefined, "mana");
+    setCustomQuery("");
+  };
 
   return (
     <section
@@ -191,11 +216,12 @@ export function Chapter8() {
                   onClick={() => {
                     sfx.playClick();
                     setActiveScenario(sc);
+                    setActiveQuickMeal(null);
                     spawnCombatNumber(`${sc.protein} PROTOCOL ANALYZED`, undefined, undefined, "mana");
                   }}
                   onMouseEnter={() => sfx.playHover()}
                   className={`px-3 py-1.5 rounded text-xs font-mono transition-colors border ${
-                    activeScenario.id === sc.id
+                    activeScenario.id === sc.id && !activeQuickMeal
                       ? "bg-system-accent text-white border-system-glow shadow-[0_0_12px_rgba(139,92,246,0.5)]"
                       : "bg-system-panel/60 border-system-accent/20 text-system-muted hover:text-system-text"
                   }`}
@@ -205,6 +231,75 @@ export function Chapter8() {
               ))}
             </div>
           </div>
+
+          {/* Instant Desi Food Macro Chips */}
+          <div className="space-y-2 pt-1 border-t border-white/5">
+            <span className="font-mono text-[10px] text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3" />
+              INSTANT DESI MACRO CALCULATOR:
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {QUICK_MACROS.map((m, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleQuickMeal(m)}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-2.5 py-1 rounded text-[11px] font-mono border transition-all cursor-pointer ${
+                    activeQuickMeal?.label === m.label
+                      ? "bg-emerald-500/25 border-emerald-400 text-emerald-300 shadow-[0_0_12px_rgba(52,211,153,0.4)]"
+                      : "bg-black/50 border-white/10 text-system-muted hover:text-white hover:border-emerald-500/40"
+                  }`}
+                >
+                  {m.label} ({m.p})
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Meal Live Analysis Widget if selected */}
+          {activeQuickMeal && (
+            <div className="p-4 bg-emerald-950/30 border border-emerald-500/40 rounded-lg space-y-2 font-mono text-xs animate-fade-in shadow-lg">
+              <div className="flex items-center justify-between text-emerald-400 text-[11px]">
+                <span className="font-bold">[ MEAL SCAN: {activeQuickMeal.label} ]</span>
+                <span>LEUCINE: {activeQuickMeal.leucine}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center p-2 bg-black/60 rounded border border-emerald-500/20">
+                <div>
+                  <div className="text-[10px] text-system-muted">PROTEIN</div>
+                  <div className="text-sm font-bold text-emerald-400">{activeQuickMeal.p}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-system-muted">CARBS</div>
+                  <div className="text-sm font-bold text-blue-300">{activeQuickMeal.c}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-system-muted">FATS</div>
+                  <div className="text-sm font-bold text-amber-300">{activeQuickMeal.f}</div>
+                </div>
+              </div>
+              <div className="text-[11px] text-system-text font-inter">
+                <span className="text-emerald-400 font-mono font-bold">BIOAVAILABILITY RATING: </span>
+                {activeQuickMeal.verdict}
+              </div>
+            </div>
+          )}
+
+          {/* Interactive Custom Meal Terminal Prompt */}
+          <form onSubmit={handleCustomSubmit} className="flex gap-2 pt-1">
+            <input
+              type="text"
+              value={customQuery}
+              onChange={(e) => setCustomQuery(e.target.value)}
+              placeholder="Ask AI Coach: e.g. '250g curd + 20g almonds pre-bed'..."
+              className="flex-1 bg-black/70 border border-white/15 focus:border-system-cyan/70 rounded px-3 py-2 text-xs font-mono text-system-text placeholder:text-system-muted/40 outline-none transition-colors"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-system-cyan/20 hover:bg-system-cyan hover:text-black border border-system-cyan/50 text-system-cyan rounded text-xs font-mono font-bold tracking-wider transition-all cursor-pointer"
+            >
+              [ QUERY ]
+            </button>
+          </form>
 
           <div className="space-y-4 pt-2">
             {/* User Message */}
