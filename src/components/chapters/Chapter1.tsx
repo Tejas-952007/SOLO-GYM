@@ -2,8 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap";
 import { ChevronDown, Shield } from "lucide-react";
+import { DecodeText } from "@/components/ui/DecodeText";
+import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter1() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -106,12 +109,15 @@ export function Chapter1() {
       {/* Top Chapter Status HUD */}
       <div className="relative z-10 w-full max-w-6xl flex justify-between items-center text-xs font-mono tracking-widest text-system-muted">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-system-cyan" />
+          <span className="w-2 h-2 rounded-full bg-system-cyan animate-pulse" />
           <span className="font-orbitron text-system-cyan uppercase font-semibold">
-            PHASE 01 // ORIGIN
+            <DecodeText text="PHASE 01 // COLD REALITY" />
           </span>
         </div>
-        <div className="flex items-center gap-2 border border-system-cyan/30 px-3 py-1 rounded bg-black/40">
+        <div
+          onMouseEnter={() => sfx.playHover()}
+          className="flex items-center gap-2 border border-system-cyan/30 px-3 py-1 rounded bg-black/40 cursor-default"
+        >
           <Shield className="w-3.5 h-3.5 text-system-cyan" />
           <span>STATUS: RANK E</span>
         </div>
@@ -124,12 +130,12 @@ export function Chapter1() {
           <div className="inline-block px-3 py-1 bg-system-blue/60 border border-system-cyan/30 rounded text-[11px] sm:text-xs font-mono tracking-wideSystem text-system-cyan uppercase">
             [ ARCHIVE LOG: DAY ZERO ]
           </div>
-          <h1 className="font-cinzel text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-wide text-system-text leading-tight sm:leading-none">
+          <GlitchHeading as="h1" className="font-cinzel text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-wide text-system-text leading-tight sm:leading-none">
             THIS IS YOU. <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-system-cyan via-blue-200 to-indigo-300">
               RANK E.
             </span>
-          </h1>
+          </GlitchHeading>
           <p className="font-inter text-sm sm:text-base md:text-lg text-system-muted max-w-xl mx-auto leading-relaxed">
             Unawakened. Carrying the weight of skipped meals, low protein, and the belief that genetics decided your ceiling.
           </p>
@@ -156,8 +162,14 @@ export function Chapter1() {
         </div>
       </div>
 
+      {/* Atmospheric Transition Fog into Ch2 */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#07060D] to-transparent pointer-events-none z-10" />
+
       {/* Bottom Scroll Indicator */}
-      <div className="relative z-10 flex flex-col items-center gap-2 text-system-muted/70 font-mono text-xs tracking-wideSystem">
+      <div
+        onMouseEnter={() => sfx.playHover()}
+        className="relative z-10 flex flex-col items-center gap-2 text-system-muted/70 font-mono text-xs tracking-wideSystem cursor-pointer"
+      >
         <span className="uppercase">[ SCROLL TO AWAKEN ]</span>
         <ChevronDown className="w-4 h-4 animate-bounce text-system-cyan" />
       </div>
