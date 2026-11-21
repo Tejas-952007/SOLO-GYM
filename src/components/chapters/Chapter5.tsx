@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Utensils, Sparkles, Check, Flame } from "lucide-react";
+import { Utensils, Sparkles, Check, Flame, Calculator, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { DecodeText } from "@/components/ui/DecodeText";
+import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { sfx } from "@/lib/audio-sfx";
 
 interface FoodItem {
   id: string;
@@ -55,6 +58,11 @@ const INDIAN_STAPLES = [
 
 export function Chapter5() {
   const [activeFood, setActiveFood] = useState<string>("chicken-plate");
+  const [weightKg, setWeightKg] = useState<number>(68);
+  const [goal, setGoal] = useState<"bulk" | "cut">("bulk");
+
+  const multiplier = goal === "bulk" ? 2.0 : 1.6;
+  const targetProtein = Math.round(weightKg * multiplier);
 
   return (
     <section
@@ -66,11 +74,11 @@ export function Chapter5() {
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-system-blue/40 border border-system-accent/30 rounded text-xs font-mono tracking-wideSystem text-system-accent uppercase">
             <Utensils className="w-3.5 h-3.5" />
-            <span>PHASE 05 // NUTRITION GRIMOIRE</span>
+            <span><DecodeText text="PHASE 05 // NUTRITION GRIMOIRE" /></span>
           </div>
-          <h2 className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
+          <GlitchHeading as="h2" className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
             FOOD IS YOUR WEAPON.
-          </h2>
+          </GlitchHeading>
           <p className="font-inter text-sm sm:text-base text-system-muted max-w-xl mx-auto">
             You cannot out-train a 40-gram protein deficit. Calibrate your Indian diet with mathematical precision.
           </p>
@@ -116,6 +124,7 @@ export function Chapter5() {
               <div className="flex items-center gap-4 pt-2">
                 <motion.div
                   whileHover={{ rotate: 8, scale: 1.08 }}
+                  onMouseEnter={() => sfx.playHover()}
                   className="relative w-20 h-20 rounded-lg overflow-hidden border border-system-gold/40 shadow-gold-glow cursor-pointer bg-black/60 p-1"
                 >
                   <Image
@@ -128,6 +137,7 @@ export function Chapter5() {
 
                 <motion.div
                   whileHover={{ rotate: -8, scale: 1.08 }}
+                  onMouseEnter={() => sfx.playHover()}
                   className="relative w-20 h-20 rounded-lg overflow-hidden border border-system-cyan/40 shadow-cyan-glow cursor-pointer bg-black/60 p-1"
                 >
                   <Image
@@ -147,6 +157,91 @@ export function Chapter5() {
           </div>
         </div>
 
+        {/* Interactive Desi Protein Calculator Widget */}
+        <div className="system-window corner-brackets p-6 sm:p-8 rounded-lg border border-system-accent/30 space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-system-accent/15 pb-4">
+            <div className="flex items-center gap-2">
+              <Calculator className="w-4 h-4 text-system-gold" />
+              <h3 className="font-cinzel text-lg sm:text-xl font-bold uppercase text-system-text">
+                DESI MACRO CALIBRATOR
+              </h3>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setGoal("bulk");
+                }}
+                className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
+                  goal === "bulk"
+                    ? "bg-system-accent text-white"
+                    : "bg-system-panel border border-white/10 text-system-muted"
+                }`}
+              >
+                BULK (2.0g/kg)
+              </button>
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setGoal("cut");
+                }}
+                className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
+                  goal === "cut"
+                    ? "bg-system-gold text-black"
+                    : "bg-system-panel border border-white/10 text-system-muted"
+                }`}
+              >
+                CUT (1.6g/kg)
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            {/* Slider Control */}
+            <div className="md:col-span-6 space-y-4">
+              <div className="flex justify-between font-mono text-xs">
+                <span className="text-system-muted">YOUR CURRENT BODYWEIGHT:</span>
+                <span className="text-system-text font-bold text-sm">{weightKg} KG</span>
+              </div>
+              <input
+                type="range"
+                min="50"
+                max="105"
+                step="1"
+                value={weightKg}
+                onChange={(e) => {
+                  sfx.playHover();
+                  setWeightKg(Number(e.target.value));
+                }}
+                className="w-full accent-system-accent cursor-pointer"
+              />
+              <div className="flex justify-between font-mono text-[10px] text-system-muted">
+                <span>50 KG</span>
+                <span>75 KG</span>
+                <span>105 KG</span>
+              </div>
+            </div>
+
+            {/* Live Target Card */}
+            <div className="md:col-span-6 bg-black/60 border border-system-accent/30 p-4 rounded-lg flex items-center justify-between">
+              <div>
+                <span className="font-mono text-[10px] text-system-muted uppercase">
+                  RECOMMENDED DAILY PROTOCOL
+                </span>
+                <div className="font-cinzel text-2xl sm:text-3xl font-black text-system-gold">
+                  {targetProtein}g PROTEIN
+                </div>
+                <div className="font-inter text-xs text-system-muted">
+                  Approx. 150g Paneer + 100g Soya + 1 scoop Whey
+                </div>
+              </div>
+              <div className="w-12 h-12 rounded-full bg-system-gold/10 border border-system-gold/30 flex items-center justify-center font-cinzel font-bold text-system-gold">
+                S-TIER
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* 4 Interactive Food Weapon Cards */}
         <div className="space-y-4">
           <div className="flex justify-between items-center text-xs font-mono text-system-muted">
@@ -158,40 +253,39 @@ export function Chapter5() {
             {NUTRITION_ITEMS.map((item) => (
               <motion.div
                 key={item.id}
-                whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                onClick={() => setActiveFood(item.id)}
-                className={`system-window corner-brackets rounded-lg overflow-hidden border transition-all duration-300 cursor-pointer ${
+                whileHover={{ y: -4 }}
+                onClick={() => {
+                  sfx.playClick();
+                  setActiveFood(item.id);
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`system-window corner-brackets p-4 rounded-lg cursor-pointer border transition-all duration-300 ${
                   activeFood === item.id
                     ? "border-system-accent shadow-system-glow scale-[1.02]"
-                    : "border-system-accent/25 hover:border-system-accent/60"
+                    : "border-system-accent/20 hover:border-system-accent/50"
                 }`}
               >
-                {/* Image Frame with crop filter */}
-                <div className="relative w-full h-44 overflow-hidden bg-black">
+                <div className="relative h-44 w-full rounded overflow-hidden mb-3 bg-black/80">
                   <Image
                     src={item.image}
                     alt={item.name}
                     fill
-                    sizes="(max-width: 640px) 100vw, 300px"
-                    className={`object-cover ${
-                      item.cropCorner ? "object-bottom scale-105" : "object-center"
-                    }`}
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                    className="object-cover object-center filter brightness-95 contrast-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#120F24] via-transparent to-transparent pointer-events-none" />
-
-                  {/* Glowing Macro Tag */}
-                  <div className="absolute top-2.5 right-2.5 bg-black/85 border border-system-gold/50 px-2 py-0.5 rounded text-[10px] font-mono font-bold text-system-gold shadow-gold-glow">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/85 border border-system-gold/40 text-system-gold font-mono text-[10px] font-bold">
                     {item.protein}
                   </div>
                 </div>
 
-                <div className="p-4 space-y-1">
-                  <div className="font-orbitron text-xs sm:text-sm font-bold text-system-text truncate">
+                <div className="space-y-1">
+                  <div className="text-xs font-cinzel font-bold text-system-text uppercase truncate">
                     {item.name}
                   </div>
-                  <div className="font-mono text-[11px] text-system-muted flex justify-between">
+                  <div className="text-[11px] font-mono text-system-muted flex justify-between">
                     <span>{item.calories}</span>
-                    <span className="text-system-cyan">VERIFIED // 100%</span>
+                    <span className="text-system-accent font-semibold">VERIFIED</span>
                   </div>
                 </div>
               </motion.div>
@@ -199,25 +293,25 @@ export function Chapter5() {
           </div>
         </div>
 
-        {/* Indian Staples Quick Grid */}
-        <div className="p-6 bg-black/40 border border-system-accent/20 rounded-lg">
-          <div className="font-mono text-xs text-system-muted uppercase tracking-wider mb-4">
-            [ DESI HIGH-PROTEIN RATIOS (CALIBRATED BY AI COACH) ]
+        {/* Indian Staples Quick Ratio Matrix */}
+        <div className="system-window corner-brackets p-6 rounded-lg space-y-4">
+          <div className="font-mono text-xs uppercase tracking-wide text-system-accent flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>DESI STAPLE PROTEIN EFFICIENCY INDEX</span>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {INDIAN_STAPLES.map((staple) => (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+            {INDIAN_STAPLES.map((staple, i) => (
               <div
-                key={staple.name}
-                className="p-3 bg-[#120F24]/50 border border-white/5 rounded space-y-1"
+                key={i}
+                onMouseEnter={() => sfx.playHover()}
+                className="p-3 bg-black/40 border border-system-accent/20 rounded hover:border-system-accent/40 transition-colors"
               >
-                <div className="text-[10px] font-mono text-system-cyan">
-                  {staple.badge}
-                </div>
-                <div className="font-orbitron text-xs font-bold text-system-text">
-                  {staple.name}
-                </div>
-                <div className="font-mono text-xs text-system-gold font-semibold">
+                <div className="text-xs font-mono text-system-muted">{staple.name}</div>
+                <div className="text-base font-cinzel font-bold text-system-gold my-1">
                   {staple.protein}
+                </div>
+                <div className="text-[9px] font-mono px-2 py-0.5 bg-system-accent/15 border border-system-accent/30 text-system-accent rounded inline-block">
+                  {staple.badge}
                 </div>
               </div>
             ))}
