@@ -6,11 +6,13 @@ import { Zap, CheckCircle2, ArrowRight, ShieldCheck, Github } from "lucide-react
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { ShadowExtractionRitual } from "@/components/effects/ShadowExtractionRitual";
 import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter9() {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [ritualOpen, setRitualOpen] = useState(false);
   const [ticketId] = useState(() => Math.floor(Math.random() * 8999 + 1000));
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -71,6 +73,21 @@ export function Chapter9() {
           <p className="font-inter text-xs sm:text-sm text-system-muted max-w-lg mx-auto leading-relaxed">
             Stop guessing your macros. Stop skipping workouts. Transform your body like an S-Rank Hunter. Join the exclusive Batch 01 Indian lifters.
           </p>
+        </div>
+
+        {/* Cinematic Sovereign Shadow Extraction CTA Button */}
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={() => {
+              sfx.playSubBassBoom();
+              setRitualOpen(true);
+            }}
+            onMouseEnter={() => sfx.playHover()}
+            className="px-8 py-4 sm:px-10 sm:py-5 rounded-2xl bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 text-black font-cinzel font-black text-sm sm:text-lg uppercase tracking-widest shadow-[0_0_40px_rgba(245,197,66,0.7)] hover:shadow-[0_0_65px_rgba(245,197,66,1)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-3 cursor-pointer"
+          >
+            <Zap className="w-5 h-5 sm:w-6 sm:h-6 fill-black" />
+            <span>[ INITIATE SHADOW EXTRACTION: &quot;ARISE&quot; ]</span>
+          </button>
         </div>
 
         {/* Interactive Waitlist Box Wrapped in 3D AnimeTiltCard */}
@@ -168,6 +185,12 @@ export function Chapter9() {
           <span>BUILT FOR INDIAN LIFTERS</span>
         </div>
       </footer>
+
+      {/* Fullscreen Interactive Shadow Extraction Cutscene */}
+      <ShadowExtractionRitual
+        isOpen={ritualOpen}
+        onClose={() => setRitualOpen(false)}
+      />
     </section>
   );
 }

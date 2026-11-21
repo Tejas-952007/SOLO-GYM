@@ -9,6 +9,8 @@ import { SystemNoticeModal } from "@/components/SystemNoticeModal";
 import { SystemHeader } from "@/components/SystemHeader";
 import { ThreeManaCanvas } from "@/components/ThreeManaCanvas";
 import { CinematicReticle } from "@/components/CinematicReticle";
+import { ManaTrailCursor } from "@/components/effects/ManaTrailCursor";
+import { FloatingDamageNumbers } from "@/components/effects/FloatingDamageNumbers";
 import { CinematicOverlay } from "@/components/CinematicOverlay";
 import { StoryTimelineHUD } from "@/components/StoryTimelineHUD";
 import { Chapter1 } from "@/components/chapters/Chapter1";
@@ -39,6 +41,12 @@ export default function Home() {
 
         {/* Desktop Interactive HUD Reticle */}
         <CinematicReticle />
+
+        {/* Dynamic Mana Embers Cursor Trail */}
+        <ManaTrailCursor />
+
+        {/* Global RPG Floating Combat & XP Damage Numbers */}
+        <FloatingDamageNumbers />
 
         {/* Preloader & Story Color Atmosphere */}
         <Preloader />

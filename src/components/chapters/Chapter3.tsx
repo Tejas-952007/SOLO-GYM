@@ -6,6 +6,7 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { Dumbbell, ShieldCheck, Swords, Flame, Sparkles } from "lucide-react";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
 interface DungeonStage {
@@ -72,13 +73,18 @@ export function Chapter3() {
       setBossHp(nextHp);
       setShakeCrit(true);
       setTimeout(() => setShakeCrit(false), 200);
+      spawnCombatNumber(`-${dmg} CRIT DMG!`, undefined, undefined, "damage");
       setCombatLog((prev) => [
         `[CRIT STRIKE] 100kg Heavy Compound Barbell blow dealt -${dmg} DMG to Titan!`,
         ...prev.slice(0, 3),
       ]);
-      if (nextHp === 0) sfx.playRankUp();
+      if (nextHp === 0) {
+        sfx.playRankUp();
+        spawnCombatNumber("BOSS SLAIN! +5,000 XP", undefined, undefined, "xp");
+      }
     } else if (type === "protein") {
       sfx.playStatPointAlloc();
+      spawnCombatNumber("+160g PROTEIN BUFF!", undefined, undefined, "stat");
       setCombatLog((prev) => [
         `[PROTEIN INFUSION] 160g Whey & Soya absorbed! Fatigue wiped! Hunter ATK Buffed!`,
         ...prev.slice(0, 3),
@@ -90,11 +96,15 @@ export function Chapter3() {
       setBossHp(nextHp);
       setShakeCrit(true);
       setTimeout(() => setShakeCrit(false), 300);
+      spawnCombatNumber("-1,500 FATAL SHADOW CRIT!", undefined, undefined, "damage");
       setCombatLog((prev) => [
         `[SHADOW DOMAIN] Sovereign Violet Mana exploded! -${dmg} FATAL DAMAGE!`,
         ...prev.slice(0, 3),
       ]);
-      if (nextHp === 0) sfx.playRankUp();
+      if (nextHp === 0) {
+        sfx.playRankUp();
+        spawnCombatNumber("BOSS SLAIN! +5,000 XP", undefined, undefined, "xp");
+      }
     }
   };
 

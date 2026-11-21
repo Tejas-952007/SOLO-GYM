@@ -8,6 +8,7 @@ import { DecodeText } from "@/components/ui/DecodeText";
 import { GlitchHeading } from "@/components/ui/GlitchHeading";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter1() {
@@ -38,12 +39,14 @@ export function Chapter1() {
     sfx.playStatPointAlloc();
     setAvailableAP((prev) => prev - 1);
     setStats((prev) => ({ ...prev, [stat]: prev[stat] + 1 }));
+    spawnCombatNumber(`+1 ${stat.toUpperCase()} ALLOCATED!`, undefined, undefined, "stat");
   };
 
   const resetStats = () => {
     sfx.playClick();
     setAvailableAP(5);
     setStats({ str: 10, agi: 10, vit: 10, discipline: 10 });
+    spawnCombatNumber("STATS RESET // 5 AP READY", undefined, undefined, "mana");
   };
 
   const toggleQuest = (id: number, xpValue: number) => {
@@ -52,6 +55,7 @@ export function Chapter1() {
       if (!prev[id]) {
         sfx.playChirp();
         setBonusXP((xp) => xp + xpValue);
+        spawnCombatNumber(`+${xpValue} QUEST XP!`, undefined, undefined, "xp");
       } else {
         sfx.playClick();
         setBonusXP((xp) => Math.max(0, xp - xpValue));
