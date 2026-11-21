@@ -2,15 +2,20 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Zap, Sparkles, CheckCircle2, ArrowRight, ShieldCheck, Github } from "lucide-react";
+import { Zap, CheckCircle2, ArrowRight, ShieldCheck, Github } from "lucide-react";
+import { DecodeText } from "@/components/ui/DecodeText";
+import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter9() {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [ticketId] = useState(() => Math.floor(Math.random() * 8999 + 1000));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
+      sfx.playRankAscent();
       setIsSubmitted(true);
     }
   };
@@ -38,14 +43,14 @@ export function Chapter9() {
         {/* Phase Pill */}
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-system-gold/20 border border-system-gold/40 rounded text-xs font-mono tracking-wideSystem text-system-gold uppercase">
           <Zap className="w-3.5 h-3.5" />
-          <span>FINAL PHASE // THE SOVEREIGN AWAKENING</span>
+          <span><DecodeText text="FINAL PHASE // THE SOVEREIGN AWAKENING" /></span>
         </div>
 
         {/* Monumental Headline */}
         <div className="space-y-4">
-          <h2 className="font-cinzel text-6xl sm:text-8xl md:text-9xl font-black uppercase tracking-wider text-system-gold drop-shadow-[0_0_35px_rgba(245,197,66,0.6)]">
+          <GlitchHeading as="h2" className="font-cinzel text-6xl sm:text-8xl md:text-9xl font-black uppercase tracking-wider text-system-gold drop-shadow-[0_0_35px_rgba(245,197,66,0.6)]">
             ARISE.
-          </h2>
+          </GlitchHeading>
           <p className="font-cinzel text-xl sm:text-2xl uppercase tracking-widest text-system-text font-bold">
             THE GATE HAS OPENED. CLAIM YOUR SYSTEM.
           </p>
@@ -68,7 +73,7 @@ export function Chapter9() {
                 Your credentials have been added to the Sovereign Registry. You will receive your activation code before the app launches publicly.
               </p>
               <div className="text-[10px] text-system-accent">
-                REGISTRY TICKET: #LVL-{(Math.random() * 8999 + 1000).toFixed(0)}
+                REGISTRY TICKET: #LVL-{ticketId}
               </div>
             </div>
           ) : (
@@ -89,6 +94,7 @@ export function Chapter9() {
 
               <button
                 type="submit"
+                onMouseEnter={() => sfx.playHover()}
                 className="w-full py-3.5 px-6 rounded font-cinzel text-sm font-bold uppercase tracking-wider bg-system-gold text-black hover:bg-yellow-400 transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(245,197,66,0.5)] group"
               >
                 <span>BECOME A HUNTER [CLAIM INVITE]</span>
@@ -108,7 +114,10 @@ export function Chapter9() {
 
         {/* Store Badges Preview */}
         <div className="pt-4 flex flex-wrap justify-center items-center gap-4 text-xs font-mono text-system-muted">
-          <div className="px-4 py-2 rounded bg-system-panel/60 border border-system-accent/20 flex items-center gap-2">
+          <div
+            onMouseEnter={() => sfx.playHover()}
+            className="px-4 py-2 rounded bg-system-panel/60 border border-system-accent/20 flex items-center gap-2 cursor-pointer hover:border-system-accent/50 transition-colors"
+          >
             <span className="w-2 h-2 rounded-full bg-system-accent" />
             <span>AVAILABLE ON IOS & ANDROID AT LAUNCH</span>
           </div>
@@ -129,6 +138,7 @@ export function Chapter9() {
             href="https://github.com/Tejas-952007/SOLO-GYM.git"
             target="_blank"
             rel="noopener noreferrer"
+            onMouseEnter={() => sfx.playHover()}
             className="flex items-center gap-1 hover:text-system-text transition-colors"
           >
             <Github className="w-3.5 h-3.5" />
