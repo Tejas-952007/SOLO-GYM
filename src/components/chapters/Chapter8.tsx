@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Bot, Utensils, Flame, CheckCircle2, MapPin, Sparkles, MessageSquare, ChevronRight } from "lucide-react";
 import { DecodeText } from "@/components/ui/DecodeText";
-import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
+import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { sfx } from "@/lib/audio-sfx";
 
 interface ChatScenario {
@@ -131,8 +132,11 @@ export function Chapter8() {
   return (
     <section
       id="chapter-8"
-      className="relative w-full bg-[#07060D] border-t border-system-accent/15 py-20 px-4 sm:px-8 overflow-hidden"
+      className="relative w-full bg-[#07060D] py-20 px-4 sm:px-8 overflow-hidden"
     >
+      {/* Seamless Volumetric Fog Portal Transition from Chapter 7 */}
+      <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
+
       {/* Background Subtle Gradient */}
       <div className="absolute inset-0 bg-radial-gradient from-system-accent/5 via-transparent to-transparent pointer-events-none" />
 
@@ -144,16 +148,25 @@ export function Chapter8() {
             <Bot className="w-3.5 h-3.5" />
             <span><DecodeText text="PHASE 08 // AI HUNTER SYSTEM" /></span>
           </div>
-          <GlitchHeading as="h2" className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
+          <BladeSliceHeading
+            as="h2"
+            accentText="NUMERIC ADVICE ONLY."
+            className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
+          >
             YOUR AI COACH.
-          </GlitchHeading>
+          </BladeSliceHeading>
           <p className="font-inter text-xs sm:text-sm text-system-muted">
             The Level Up AI analyzes your Indian diet in real time. Numeric calculations, zero fluff, and instant corrective quests.
           </p>
         </div>
 
-        {/* Dynamic Simulated AI Chat Window with Scenario Selectors */}
-        <div className="max-w-3xl mx-auto system-window corner-brackets p-6 sm:p-8 rounded relative space-y-6">
+        {/* Dynamic Simulated AI Chat Window with Scenario Selectors Wrapped in 3D AnimeTiltCard */}
+        <AnimeTiltCard
+          maxTilt={6}
+          glowColor="rgba(139, 92, 246, 0.35)"
+          className="max-w-3xl mx-auto w-full"
+        >
+          <div className="w-full system-window corner-brackets p-6 sm:p-8 rounded relative space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-system-accent/20 pb-3">
             <div className="flex items-center gap-2 font-mono text-xs text-system-text">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -250,9 +263,15 @@ export function Chapter8() {
             </div>
           </div>
         </div>
+        </AnimeTiltCard>
 
-        {/* Interactive Dungeon & Supp Radar for Indian Cities */}
-        <div className="system-window corner-brackets p-6 sm:p-8 rounded-lg space-y-6">
+        {/* Interactive Dungeon & Supp Radar for Indian Cities Wrapped in 3D AnimeTiltCard */}
+        <AnimeTiltCard
+          maxTilt={6}
+          glowColor="rgba(245, 197, 66, 0.25)"
+          className="w-full"
+        >
+          <div className="system-window corner-brackets p-6 sm:p-8 rounded-lg space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-system-accent/15 pb-4">
             <div>
               <div className="font-mono text-xs text-system-accent uppercase flex items-center gap-1.5">
@@ -319,6 +338,7 @@ export function Chapter8() {
             </div>
           </div>
         </div>
+        </AnimeTiltCard>
 
       </div>
     </section>

@@ -4,7 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { Zap, CheckCircle2, ArrowRight, ShieldCheck, Github } from "lucide-react";
 import { DecodeText } from "@/components/ui/DecodeText";
-import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
+import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter9() {
@@ -23,8 +24,11 @@ export function Chapter9() {
   return (
     <section
       id="chapter-9"
-      className="relative w-full min-h-[100svh] bg-[#07060D] border-t border-system-accent/20 py-24 px-4 sm:px-8 flex flex-col justify-between overflow-hidden"
+      className="relative w-full min-h-[100svh] bg-[#07060D] py-24 px-4 sm:px-8 flex flex-col justify-between overflow-hidden"
     >
+      {/* Seamless Volumetric Fog Portal Transition from Chapter 8 */}
+      <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
+
       {/* Background Visual: S-Rank Sovereign Hunter - Face & Gold Lightning Clearly Visible */}
       <div className="absolute inset-0 pointer-events-none opacity-75">
         <Image
@@ -54,9 +58,13 @@ export function Chapter9() {
 
         {/* Monumental Headline */}
         <div className="space-y-4">
-          <GlitchHeading as="h2" className="font-cinzel text-6xl sm:text-8xl md:text-9xl font-black uppercase tracking-wider text-system-gold drop-shadow-[0_0_35px_rgba(245,197,66,0.6)]">
+          <BladeSliceHeading
+            as="h2"
+            accentText="ARISE."
+            className="font-cinzel text-6xl sm:text-8xl md:text-9xl font-black uppercase tracking-wider text-system-gold drop-shadow-[0_0_35px_rgba(245,197,66,0.6)]"
+          >
             ARISE.
-          </GlitchHeading>
+          </BladeSliceHeading>
           <p className="font-cinzel text-xl sm:text-2xl uppercase tracking-widest text-system-text font-bold">
             THE GATE HAS OPENED. CLAIM YOUR SYSTEM.
           </p>
@@ -65,8 +73,13 @@ export function Chapter9() {
           </p>
         </div>
 
-        {/* Interactive Waitlist Box */}
-        <div className="max-w-md mx-auto system-window corner-brackets p-6 rounded relative">
+        {/* Interactive Waitlist Box Wrapped in 3D AnimeTiltCard */}
+        <AnimeTiltCard
+          maxTilt={8}
+          glowColor="rgba(245, 197, 66, 0.45)"
+          className="max-w-md mx-auto w-full"
+        >
+          <div className="w-full system-window corner-brackets p-6 rounded relative">
           {isSubmitted ? (
             <div className="py-4 space-y-3 font-mono text-center">
               <div className="w-12 h-12 rounded-full bg-system-gold/20 border border-system-gold/40 mx-auto flex items-center justify-center text-system-gold">
@@ -117,6 +130,7 @@ export function Chapter9() {
             </form>
           )}
         </div>
+        </AnimeTiltCard>
 
         {/* Store Badges Preview */}
         <div className="pt-4 flex flex-wrap justify-center items-center gap-4 text-xs font-mono text-system-muted">
