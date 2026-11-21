@@ -4,7 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { Award, Zap, ChevronRight, Shield, Flame, Sparkles } from "lucide-react";
 import { DecodeText } from "@/components/ui/DecodeText";
-import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
+import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { sfx } from "@/lib/audio-sfx";
 
 interface RankTier {
@@ -115,8 +116,11 @@ export function Chapter7() {
   return (
     <section
       id="chapter-7"
-      className="relative w-full bg-[#07060D] border-t border-system-accent/15 py-20 px-4 sm:px-8 overflow-hidden"
+      className="relative w-full bg-[#07060D] py-20 px-4 sm:px-8 overflow-hidden"
     >
+      {/* Seamless Volumetric Fog Portal Transition from Chapter 6 */}
+      <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
+
       {/* Background Radial Glow */}
       <div
         className="absolute inset-0 pointer-events-none transition-colors duration-700"
@@ -132,9 +136,13 @@ export function Chapter7() {
             <Award className="w-3.5 h-3.5" />
             <span><DecodeText text="PHASE 07 // EVOLUTION LADDER" /></span>
           </div>
-          <GlitchHeading as="h2" className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
+          <BladeSliceHeading
+            as="h2"
+            accentText="ASCENSION."
+            className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
+          >
             RANK UP: FROM E TO S.
-          </GlitchHeading>
+          </BladeSliceHeading>
           <p className="font-inter text-xs sm:text-sm text-system-muted">
             In Level Up, your rank is not given—it is forged with sweat, protein, and progressive overload. Select any tier to inspect your future stats.
           </p>
@@ -170,77 +178,87 @@ export function Chapter7() {
           })}
         </div>
 
-        {/* Main Rank Showcase: Left sticky visual + Right HUD details */}
+        {/* Main Rank Showcase: Left 3D Character Visual + Right 3D Status HUD */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
-          {/* Left: Hunter Form Image (5 cols) - Fully Visible Character Visage */}
-          <div className="lg:col-span-5 relative w-full h-[480px] sm:h-[580px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
-            <Image
-              src={selectedRank.image}
-              alt={`Hunter Rank ${selectedRank.rank}`}
-              fill
-              className={`object-cover transition-all duration-700 filter contrast-125 brightness-110 ${
-                selectedRank.rank === "E" || selectedRank.rank === "D"
-                  ? "object-[center_32%]"
-                  : selectedRank.rank === "A" || selectedRank.rank === "B" || selectedRank.rank === "C"
-                  ? "object-[center_28%]"
-                  : "object-[center_38%]"
-              }`}
-              sizes="(max-width: 1024px) 100vw, 40vw"
-            />
-            {/* Soft Bottom-Only Fade so character's head and eyes are 100% visible */}
-            <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none" />
-
-            {/* Glowing Eye Glint on S-Rank / A-Rank */}
-            {(selectedRank.rank === "S" || selectedRank.rank === "A") && (
-              <div
-                className="absolute z-20 pointer-events-none animate-ping"
-                style={{
-                  top: selectedRank.rank === "S" ? "36%" : "27%",
-                  left: selectedRank.rank === "S" ? "51%" : "58%",
-                  width: "12px",
-                  height: "12px",
-                  borderRadius: "9999px",
-                  backgroundColor: selectedRank.accentColor,
-                  boxShadow: `0 0 24px ${selectedRank.accentColor}`,
-                }}
+          {/* Left: Hunter Form Image (5 cols) Wrapped in 3D AnimeTiltCard */}
+          <AnimeTiltCard
+            maxTilt={10}
+            glowColor={selectedRank.glowColor}
+            className="lg:col-span-5 w-full flex justify-center"
+          >
+            <div className="relative w-full h-[480px] sm:h-[580px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
+              <Image
+                src={selectedRank.image}
+                alt={`Hunter Rank ${selectedRank.rank}`}
+                fill
+                className={`object-cover transition-all duration-700 filter contrast-125 brightness-110 ${
+                  selectedRank.rank === "E" || selectedRank.rank === "D"
+                    ? "object-[center_32%]"
+                    : selectedRank.rank === "A" || selectedRank.rank === "B" || selectedRank.rank === "C"
+                    ? "object-[center_28%]"
+                    : "object-[center_38%]"
+                }`}
+                sizes="(max-width: 1024px) 100vw, 40vw"
               />
-            )}
+              {/* Soft Bottom-Only Fade so character's head and eyes are 100% visible */}
+              <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none" />
 
-            {/* Rank Badge Stamp */}
-            <div
-              className="absolute top-4 left-4 p-3 rounded border backdrop-blur-md flex items-center gap-3"
-              style={{
-                borderColor: selectedRank.accentColor,
-                backgroundColor: "rgba(7, 6, 13, 0.85)",
-              }}
-            >
+              {/* Glowing Eye Glint on S-Rank / A-Rank */}
+              {(selectedRank.rank === "S" || selectedRank.rank === "A") && (
+                <div
+                  className="absolute z-20 pointer-events-none animate-ping"
+                  style={{
+                    top: selectedRank.rank === "S" ? "36%" : "27%",
+                    left: selectedRank.rank === "S" ? "51%" : "58%",
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "9999px",
+                    backgroundColor: selectedRank.accentColor,
+                    boxShadow: `0 0 24px ${selectedRank.accentColor}`,
+                  }}
+                />
+              )}
+
+              {/* Rank Badge Stamp */}
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center font-cinzel font-black text-xl text-black shadow-lg"
-                style={{ backgroundColor: selectedRank.accentColor }}
+                className="absolute top-4 left-4 p-3 rounded border backdrop-blur-md flex items-center gap-3"
+                style={{
+                  borderColor: selectedRank.accentColor,
+                  backgroundColor: "rgba(7, 6, 13, 0.85)",
+                }}
               >
-                {selectedRank.rank}
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center font-cinzel font-black text-xl text-black shadow-lg"
+                  style={{ backgroundColor: selectedRank.accentColor }}
+                >
+                  {selectedRank.rank}
+                </div>
+                <div>
+                  <div className="font-cinzel text-xs font-bold text-system-text tracking-wider">
+                    {selectedRank.title}
+                  </div>
+                  <div className="font-mono text-[10px] text-system-muted">
+                    EXP: {selectedRank.xpRequired}
+                  </div>
+                </div>
               </div>
-              <div>
-                <div className="font-cinzel text-xs font-bold text-system-text tracking-wider">
-                  {selectedRank.title}
-                </div>
-                <div className="font-mono text-[10px] text-system-muted">
-                  EXP: {selectedRank.xpRequired}
-                </div>
+
+              {/* Bottom Tagline */}
+              <div className="absolute bottom-4 left-4 right-4 p-3 bg-system-panel/90 border border-system-accent/20 rounded backdrop-blur-sm">
+                <p className="font-inter text-xs italic text-system-text text-center">
+                  &ldquo;{selectedRank.tagline}&rdquo;
+                </p>
               </div>
             </div>
+          </AnimeTiltCard>
 
-            {/* Bottom Tagline */}
-            <div className="absolute bottom-4 left-4 right-4 p-3 bg-system-panel/90 border border-system-accent/20 rounded backdrop-blur-sm">
-              <p className="font-inter text-xs italic text-system-text text-center">
-                &ldquo;{selectedRank.tagline}&rdquo;
-              </p>
-            </div>
-          </div>
-
-          {/* Right: Hunter Stat Matrix & Unlocked Perks (7 cols) */}
-          <div className="lg:col-span-7 space-y-6">
+          {/* Right: Hunter Stat Matrix & Unlocked Perks (7 cols) Wrapped in 3D AnimeTiltCard */}
+          <AnimeTiltCard
+            maxTilt={6}
+            glowColor={selectedRank.glowColor}
+            className="lg:col-span-7 w-full"
+          >
             <div className="system-window corner-brackets p-6 sm:p-8 rounded space-y-6">
               
               {/* Header with XP Simulator */}
@@ -361,7 +379,7 @@ export function Chapter7() {
               </div>
 
             </div>
-          </div>
+          </AnimeTiltCard>
 
         </div>
       </div>
