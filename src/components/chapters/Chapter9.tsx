@@ -2,12 +2,52 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Zap, CheckCircle2, ArrowRight, ShieldCheck, Github } from "lucide-react";
+import { Zap, CheckCircle2, ArrowRight, ShieldCheck, Github, Swords, Shield, Crown } from "lucide-react";
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { ShadowExtractionRitual } from "@/components/effects/ShadowExtractionRitual";
+import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
+
+const SHADOW_CORPS = [
+  {
+    name: "IGRIS",
+    role: "COMMANDER // RED BLOOD KNIGHT",
+    buff: "+35% COMPOUND 1RM STRENGTH",
+    stat: "STR 99",
+    border: "border-red-500/50 hover:border-red-400",
+    color: "text-red-400",
+    bg: "bg-red-950/30",
+  },
+  {
+    name: "BERU",
+    role: "MARSHAL // PREDATOR KING",
+    buff: "+45g HIGH-LEUCINE BIOAVAILABILITY",
+    stat: "AGI 99",
+    border: "border-purple-500/50 hover:border-purple-400",
+    color: "text-purple-400",
+    bg: "bg-purple-950/30",
+  },
+  {
+    name: "IRON",
+    role: "VANGUARD // SHIELD FORTRESS",
+    buff: "+50% JOINT & TENDON RESILIENCE",
+    stat: "VIT 99",
+    border: "border-cyan-500/50 hover:border-cyan-400",
+    color: "text-cyan-400",
+    bg: "bg-cyan-950/30",
+  },
+  {
+    name: "TANK",
+    role: "TITAN // FROST BEAST",
+    buff: "+40% LEG HYPERTROPHY VOLUME",
+    stat: "DISC 99",
+    border: "border-yellow-500/50 hover:border-yellow-400",
+    color: "text-yellow-400",
+    bg: "bg-yellow-950/30",
+  },
+];
 
 export function Chapter9() {
   const [email, setEmail] = useState("");
@@ -148,6 +188,42 @@ export function Chapter9() {
           )}
         </div>
         </AnimeTiltCard>
+
+        {/* Interactive Shadow Corps Roster */}
+        <div className="pt-4 space-y-3 max-w-3xl mx-auto w-full">
+          <div className="flex items-center justify-between border-b border-white/10 pb-2">
+            <span className="font-mono text-[11px] text-system-gold uppercase tracking-wider flex items-center gap-1.5">
+              <Crown className="w-3.5 h-3.5" />
+              THE MONARCH&apos;S SHADOW CORPS (CLICK TO SUMMON BUFF):
+            </span>
+            <span className="font-mono text-[10px] text-system-muted">S-RANK SOVEREIGN CORPS</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {SHADOW_CORPS.map((soldier) => (
+              <button
+                key={soldier.name}
+                onClick={() => {
+                  sfx.playBladeSlash();
+                  spawnCombatNumber(`${soldier.name} SUMMONED!`, undefined, undefined, "stat");
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`p-3 rounded-xl border ${soldier.border} ${soldier.bg} flex flex-col justify-between text-left transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md`}
+              >
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-cinzel font-black text-sm text-white">{soldier.name}</span>
+                    <span className={`text-[9px] font-mono font-bold ${soldier.color}`}>{soldier.stat}</span>
+                  </div>
+                  <div className="text-[9px] font-mono text-system-muted leading-tight mb-2">{soldier.role}</div>
+                </div>
+                <div className={`text-[10px] font-mono font-bold ${soldier.color} border-t border-white/10 pt-1.5 leading-tight`}>
+                  {soldier.buff}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Store Badges Preview */}
         <div className="pt-4 flex flex-wrap justify-center items-center gap-4 text-xs font-mono text-system-muted">
