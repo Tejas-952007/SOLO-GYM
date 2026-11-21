@@ -5,6 +5,8 @@ import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { CheckCircle2, Flame, Sparkles, Trophy, Zap } from "lucide-react";
 import { DecodeText } from "@/components/ui/DecodeText";
+import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
+import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter2() {
@@ -134,8 +136,11 @@ export function Chapter2() {
     <section
       id="chapter-2"
       ref={containerRef}
-      className="relative w-full bg-[#07060D] border-t border-system-accent/10"
+      className="relative w-full bg-[#07060D] overflow-hidden"
     >
+      {/* Seamless Volumetric Fog Portal Transition from Chapter 1 */}
+      <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
+
       <div
         ref={pinTargetRef}
         className="w-full min-h-[100svh] flex flex-col justify-center items-center px-4 sm:px-8 py-16 sm:py-20 overflow-hidden"
@@ -151,9 +156,13 @@ export function Chapter2() {
             <Sparkles className="w-3.5 h-3.5" />
             <span><DecodeText text="PHASE 02 // INITIATION" /></span>
           </div>
-          <h2 className="font-cinzel text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider text-system-text">
+          <BladeSliceHeading
+            as="h2"
+            accentText="THE AWAKENING."
+            className="font-cinzel text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider text-system-text"
+          >
             THE SYSTEM CHOSE YOU.
-          </h2>
+          </BladeSliceHeading>
           <p className="font-inter text-xs sm:text-sm text-system-muted max-w-lg">
             Fitness is no longer a chore. It is an algorithmic RPG designed to level your real-world physiology.
           </p>
@@ -161,16 +170,21 @@ export function Chapter2() {
 
         {/* Dual-Column Interactive Composition */}
         <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          {/* Left: Interactive Visual Stage with 3 Iconic Anime States */}
+          {/* Left: Interactive Visual Stage with 3 Iconic Anime States Wrapped in 3D AnimeTiltCard */}
           <div className="md:col-span-6 flex flex-col justify-center items-center relative space-y-3">
-            <div
-              ref={visualRef}
-              className="relative w-full max-w-[480px] h-[480px] sm:h-[560px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer"
-              onClick={() => {
-                sfx.playClick();
-                setActiveVisual((prev) => (prev + 1) % 3);
-              }}
+            <AnimeTiltCard
+              maxTilt={10}
+              glowColor={activeVisual === 0 || activeVisual === 2 ? "rgba(239, 68, 68, 0.4)" : "rgba(56, 189, 248, 0.4)"}
+              className="w-full flex justify-center"
             >
+              <div
+                ref={visualRef}
+                className="relative w-full max-w-[480px] h-[480px] sm:h-[560px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer"
+                onClick={() => {
+                  sfx.playClick();
+                  setActiveVisual((prev) => (prev + 1) % 3);
+                }}
+              >
               {/* State 0: The Terrifying Cartenon Temple God Grin */}
               <div
                 className={`absolute inset-0 transition-opacity duration-700 ${
@@ -247,6 +261,7 @@ export function Chapter2() {
                 </span>
               </div>
             </div>
+            </AnimeTiltCard>
 
             {/* Visual State Selectors */}
             <div className="flex flex-wrap items-center justify-center gap-2 font-mono text-[11px]">
@@ -295,12 +310,17 @@ export function Chapter2() {
             </div>
           </div>
 
-          {/* Right: Live Interactive HTML System Window */}
+          {/* Right: Live Interactive HTML System Window with 3D AnimeTiltCard */}
           <div className="md:col-span-6 w-full flex justify-center">
-            <div
-              ref={questBoxRef}
-              className="w-full max-w-[480px] system-window corner-brackets corner-brackets-full p-6 sm:p-7 rounded-sm shadow-system-glow space-y-5"
+            <AnimeTiltCard
+              maxTilt={8}
+              glowColor="rgba(139, 92, 246, 0.35)"
+              className="w-full flex justify-center"
             >
+              <div
+                ref={questBoxRef}
+                className="w-full max-w-[480px] system-window corner-brackets corner-brackets-full p-6 sm:p-7 rounded-sm shadow-system-glow space-y-5"
+              >
               {/* Decorative Corner Brackets (TR & BL) */}
               <span className="bracket-tr" />
               <span className="bracket-bl" />
@@ -435,6 +455,7 @@ export function Chapter2() {
                 [ COMPLETE DAILY QUESTS TO TRIGGER RANK AWAKENING ]
               </div>
             </div>
+            </AnimeTiltCard>
           </div>
         </div>
       </div>

@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { Dumbbell, ShieldCheck, Swords, Flame, Sparkles } from "lucide-react";
+import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
+import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { sfx } from "@/lib/audio-sfx";
 
 interface DungeonStage {
@@ -154,10 +156,13 @@ export function Chapter3() {
     <section
       id="chapter-3"
       ref={containerRef}
-      className="relative w-full bg-[#07060D] border-t border-system-accent/15"
+      className="relative w-full bg-[#07060D] overflow-hidden"
     >
+      {/* Seamless Volumetric Fog Portal Transition from Chapter 2 */}
+      <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
+
       {/* Dumbbells Divider Texture (Parallax Accent) */}
-      <div className="relative w-full h-16 sm:h-20 overflow-hidden opacity-20 pointer-events-none border-b border-system-accent/10">
+      <div className="relative w-full h-16 sm:h-20 overflow-hidden opacity-20 pointer-events-none">
         <Image
           src="/assets/03-gym/gym-dumbbells.webp"
           alt="Iron Rack Divider"
@@ -180,9 +185,13 @@ export function Chapter3() {
               <Swords className="w-3.5 h-3.5 animate-pulse" />
               <span>PHASE 03 // RAIDING THE DUNGEON</span>
             </div>
-            <h2 className="font-cinzel text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider text-system-text">
+            <BladeSliceHeading
+              as="h2"
+              accentText="ENTER THE GAUNTLET."
+              className="font-cinzel text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider text-system-text"
+            >
               THE GYM IS YOUR DUNGEON.
-            </h2>
+            </BladeSliceHeading>
           </div>
 
           {/* Interactive Floor Fast-Travel Bar */}
@@ -306,87 +315,93 @@ export function Chapter3() {
           </div>
         </div>
 
-        {/* Live Interactive Dungeon Boss Raid Encounter Mini-Game */}
-        <div className={`relative z-20 w-full max-w-6xl mx-auto my-4 p-4 sm:p-5 rounded-lg border bg-black/80 backdrop-blur-md transition-all duration-300 ${
-          shakeCrit ? "border-red-500 shadow-[0_0_35px_rgba(239,68,68,0.7)] scale-[1.01]" : "border-system-accent/30 shadow-system-glow"
-        }`}>
-          {/* Boss Header & Health Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3 border-b border-system-accent/20 pb-2.5">
-            <div className="flex items-center gap-2">
-              <Flame className="w-4 h-4 text-red-500 animate-pulse" />
-              <span className="font-orbitron text-xs sm:text-sm font-bold text-red-400 uppercase tracking-wider">
-                DUNGEON BOSS // TITAN OF INERTIA (FLOOR 04)
-              </span>
+        {/* Live Interactive Dungeon Boss Raid Encounter Mini-Game with 3D AnimeTiltCard */}
+        <AnimeTiltCard
+          maxTilt={5}
+          glowColor="rgba(239, 68, 68, 0.35)"
+          className="relative z-20 w-full max-w-6xl mx-auto my-4"
+        >
+          <div className={`p-4 sm:p-5 rounded-lg border bg-black/80 backdrop-blur-md transition-all duration-300 ${
+            shakeCrit ? "border-red-500 shadow-[0_0_35px_rgba(239,68,68,0.7)] scale-[1.01]" : "border-system-accent/30 shadow-system-glow"
+          }`}>
+            {/* Boss Header & Health Bar */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3 border-b border-system-accent/20 pb-2.5">
+              <div className="flex items-center gap-2">
+                <Flame className="w-4 h-4 text-red-500 animate-pulse" />
+                <span className="font-orbitron text-xs sm:text-sm font-bold text-red-400 uppercase tracking-wider">
+                  DUNGEON BOSS // TITAN OF INERTIA (FLOOR 04)
+                </span>
+              </div>
+              <div className="flex items-center gap-3 font-mono text-xs">
+                <span className="text-yellow-400 font-bold">{bossHp > 0 ? `${bossHp} / 3,000 HP` : "[ BOSS SLAIN! ]"}</span>
+                {bossHp === 0 && (
+                  <button
+                    onClick={resetBoss}
+                    className="px-2 py-0.5 bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 rounded text-[10px] hover:bg-yellow-500 hover:text-black transition-colors"
+                  >
+                    RESPAWN BOSS
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="flex items-center gap-3 font-mono text-xs">
-              <span className="text-yellow-400 font-bold">{bossHp > 0 ? `${bossHp} / 3,000 HP` : "[ BOSS SLAIN! ]"}</span>
-              {bossHp === 0 && (
+
+            {/* Boss Health Bar Meter */}
+            <div className="w-full h-3 bg-black/90 rounded-full border border-red-500/40 overflow-hidden mb-3.5 p-0.5">
+              <div
+                className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 rounded-full transition-all duration-300 shadow-[0_0_12px_rgba(239,68,68,0.8)]"
+                style={{ width: `${(bossHp / 3000) * 100}%` }}
+              />
+            </div>
+
+            {/* Player Attack Moves & Combat Telemetry */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+              {/* 3 Combat Moves */}
+              <div className="md:col-span-7 grid grid-cols-3 gap-2">
                 <button
-                  onClick={resetBoss}
-                  className="px-2 py-0.5 bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 rounded text-[10px] hover:bg-yellow-500 hover:text-black transition-colors"
+                  onClick={() => strikeBoss("heavy")}
+                  disabled={bossHp <= 0}
+                  onMouseEnter={() => sfx.playHover()}
+                  className="p-2 sm:p-2.5 rounded bg-red-950/40 border border-red-500/40 hover:border-red-500 hover:bg-red-900/60 text-red-300 font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center"
                 >
-                  RESPAWN BOSS
+                  <div>[ HEAVY STRIKE ]</div>
+                  <div className="text-[9px] text-system-muted font-normal mt-0.5">100kg Squat</div>
                 </button>
-              )}
-            </div>
-          </div>
 
-          {/* Boss Health Bar Meter */}
-          <div className="w-full h-3 bg-black/90 rounded-full border border-red-500/40 overflow-hidden mb-3.5 p-0.5">
-            <div
-              className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 rounded-full transition-all duration-300 shadow-[0_0_12px_rgba(239,68,68,0.8)]"
-              style={{ width: `${(bossHp / 3000) * 100}%` }}
-            />
-          </div>
-
-          {/* Player Attack Moves & Combat Telemetry */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-            {/* 3 Combat Moves */}
-            <div className="md:col-span-7 grid grid-cols-3 gap-2">
-              <button
-                onClick={() => strikeBoss("heavy")}
-                disabled={bossHp <= 0}
-                onMouseEnter={() => sfx.playHover()}
-                className="p-2 sm:p-2.5 rounded bg-red-950/40 border border-red-500/40 hover:border-red-500 hover:bg-red-900/60 text-red-300 font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center"
-              >
-                <div>[ HEAVY STRIKE ]</div>
-                <div className="text-[9px] text-system-muted font-normal mt-0.5">100kg Squat</div>
-              </button>
-
-              <button
-                onClick={() => strikeBoss("protein")}
-                disabled={bossHp <= 0}
-                onMouseEnter={() => sfx.playHover()}
-                className="p-2 sm:p-2.5 rounded bg-system-cyan/20 border border-system-cyan/40 hover:border-system-cyan hover:bg-system-cyan/40 text-cyan-300 font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center"
-              >
-                <div>[ MACRO BUFF ]</div>
-                <div className="text-[9px] text-system-muted font-normal mt-0.5">160g Protein</div>
-              </button>
-
-              <button
-                onClick={() => strikeBoss("shadow")}
-                disabled={bossHp <= 0}
-                onMouseEnter={() => sfx.playHover()}
-                className="p-2 sm:p-2.5 rounded bg-system-accent/30 border border-system-accent/50 hover:border-white hover:bg-system-accent/60 text-purple-200 font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center shadow-[0_0_15px_rgba(139,92,246,0.3)]"
-              >
-                <div>[ SHADOW CRIT ]</div>
-                <div className="text-[9px] text-system-muted font-normal mt-0.5">1,500 FATAL</div>
-              </button>
-            </div>
-
-            {/* Combat Log Box */}
-            <div className="md:col-span-5 p-2 bg-black/60 border border-white/10 rounded font-mono text-[10px] space-y-1 h-16 overflow-hidden">
-              {combatLog.map((log, idx) => (
-                <div
-                  key={idx}
-                  className={`truncate ${idx === 0 ? "text-yellow-300 font-semibold" : "text-system-muted/70"}`}
+                <button
+                  onClick={() => strikeBoss("protein")}
+                  disabled={bossHp <= 0}
+                  onMouseEnter={() => sfx.playHover()}
+                  className="p-2 sm:p-2.5 rounded bg-system-cyan/20 border border-system-cyan/40 hover:border-system-cyan hover:bg-system-cyan/40 text-cyan-300 font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center"
                 >
-                  {log}
-                </div>
-              ))}
+                  <div>[ MACRO BUFF ]</div>
+                  <div className="text-[9px] text-system-muted font-normal mt-0.5">160g Protein</div>
+                </button>
+
+                <button
+                  onClick={() => strikeBoss("shadow")}
+                  disabled={bossHp <= 0}
+                  onMouseEnter={() => sfx.playHover()}
+                  className="p-2 sm:p-2.5 rounded bg-system-accent/30 border border-system-accent/50 hover:border-white hover:bg-system-accent/60 text-purple-200 font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                >
+                  <div>[ SHADOW CRIT ]</div>
+                  <div className="text-[9px] text-system-muted font-normal mt-0.5">1,500 FATAL</div>
+                </button>
+              </div>
+
+              {/* Combat Log Box */}
+              <div className="md:col-span-5 p-2 bg-black/60 border border-white/10 rounded font-mono text-[10px] space-y-1 h-16 overflow-hidden">
+                {combatLog.map((log, idx) => (
+                  <div
+                    key={idx}
+                    className={`truncate ${idx === 0 ? "text-yellow-300 font-semibold" : "text-system-muted/70"}`}
+                  >
+                    {log}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </AnimeTiltCard>
 
         {/* Bottom Dungeon Sub-HUD */}
         <div className="relative z-20 w-full max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-system-muted gap-2 pt-2 border-t border-system-accent/15">
