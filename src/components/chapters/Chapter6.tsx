@@ -11,6 +11,7 @@ import { sfx } from "@/lib/audio-sfx";
 export function Chapter6() {
   const containerRef = useRef<HTMLDivElement>(null);
   const chainCardRef = useRef<HTMLDivElement>(null);
+  const [selectedPhysique, setSelectedPhysique] = useState<"berserk" | "monarch">("berserk");
 
   useEffect(() => {
     const el = containerRef.current;
@@ -251,17 +252,78 @@ export function Chapter6() {
               </div>
             </div>
 
-            <div className="relative h-80 sm:h-96 md:h-[420px] w-full rounded overflow-hidden border border-system-accent/30 bg-black/90">
-              <Image
-                src="/assets/06-enemies/peak-physique-back.webp"
-                alt="Peak Physique"
-                fill
-                className="object-cover object-[center_28%] filter contrast-125 brightness-110"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
-              <div className="absolute top-3 right-3 font-mono text-[10px] px-2.5 py-1 bg-black/85 border border-system-gold/50 text-system-gold rounded shadow-md">
-                HUNTER ANATOMY // 100% UNLOCKED
+            <div className="flex flex-col items-center gap-3 w-full">
+              <div className="relative h-80 sm:h-96 md:h-[420px] w-full rounded overflow-hidden border border-system-accent/30 bg-black/90 shadow-system-glow">
+                {/* Berserk Brand Physique */}
+                <div
+                  className={`absolute inset-0 transition-opacity duration-500 ${
+                    selectedPhysique === "berserk" ? "opacity-100" : "opacity-0 pointer-events-none"
+                  }`}
+                >
+                  <Image
+                    src="/assets/06-enemies/berserk-physique-brand.webp"
+                    alt="Berserk Sacrificial Rune Anatomy"
+                    fill
+                    className="object-cover object-[center_50%] filter contrast-125 brightness-110"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                  {/* Pulsing Crimson Brand Rune */}
+                  <div className="absolute top-[28%] left-[50%] -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                    <span className="block w-6 h-6 rounded-full bg-red-600 blur-md animate-pulse" />
+                  </div>
+                </div>
+
+                {/* Monarch Peak Physique */}
+                <div
+                  className={`absolute inset-0 transition-opacity duration-500 ${
+                    selectedPhysique === "monarch" ? "opacity-100" : "opacity-0 pointer-events-none"
+                  }`}
+                >
+                  <Image
+                    src="/assets/06-enemies/peak-physique-back.webp"
+                    alt="Monarch Hypertrophy Peak Back"
+                    fill
+                    className="object-cover object-[center_28%] filter contrast-125 brightness-110"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
+                <div className="absolute top-3 right-3 font-mono text-[10px] px-2.5 py-1 bg-black/85 border border-system-gold/50 text-system-gold rounded shadow-md">
+                  {selectedPhysique === "berserk" ? "BERSERK SACRIFICE // BRANDED" : "HUNTER ANATOMY // 100% UNLOCKED"}
+                </div>
+              </div>
+
+              {/* Physique Toggle Selector */}
+              <div className="flex items-center gap-2 font-mono text-xs">
+                <button
+                  onClick={() => {
+                    sfx.playRankAscent();
+                    setSelectedPhysique("berserk");
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1 rounded-sm border transition-all ${
+                    selectedPhysique === "berserk"
+                      ? "bg-red-950/60 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+                      : "bg-black/40 border-white/10 text-system-muted hover:text-red-400"
+                  }`}
+                >
+                  [ BERSERK BRAND ]
+                </button>
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setSelectedPhysique("monarch");
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1 rounded-sm border transition-all ${
+                    selectedPhysique === "monarch"
+                      ? "bg-system-cyan/20 border-system-cyan text-system-cyan shadow-system-glow"
+                      : "bg-black/40 border-white/10 text-system-muted hover:text-white"
+                  }`}
+                >
+                  [ MONARCH HYPERTROPHY ]
+                </button>
               </div>
             </div>
           </div>
