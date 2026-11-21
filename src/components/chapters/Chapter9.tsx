@@ -26,17 +26,22 @@ export function Chapter9() {
       className="relative w-full min-h-[100svh] bg-[#07060D] border-t border-system-accent/20 py-24 px-4 sm:px-8 flex flex-col justify-between overflow-hidden"
     >
       {/* Background Visual: S-Rank Sovereign Hunter - Face & Gold Lightning Clearly Visible */}
-      <div className="absolute inset-0 pointer-events-none opacity-60">
+      <div className="absolute inset-0 pointer-events-none opacity-75">
         <Image
           src="/assets/07-ranks/rank-s-max.webp"
-          alt="S-Rank Sovereign Hunter"
+          alt="S-Rank Sovereign Hunter Visage"
           fill
           priority
-          className="object-cover object-[center_42%] filter contrast-125 brightness-110 saturate-125"
+          className="object-cover object-[center_36%] filter contrast-130 brightness-115 saturate-125"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-[#07060D]/60 to-[#07060D]/70" />
-        <div className="absolute inset-0 bg-radial-gradient from-yellow-500/15 via-purple-900/10 to-transparent" />
+        {/* Sovereign Eye Flares */}
+        <div className="absolute top-[36%] left-[50%] -translate-x-1/2 -translate-y-1/2 flex gap-8 pointer-events-none">
+          <span className="w-2 h-2 rounded-full bg-yellow-300 shadow-[0_0_20px_rgba(245,197,66,1)] animate-ping" />
+          <span className="w-2 h-2 rounded-full bg-yellow-300 shadow-[0_0_20px_rgba(245,197,66,1)] animate-ping" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-[#07060D]/50 to-[#07060D]/65" />
+        <div className="absolute inset-0 bg-radial-gradient from-yellow-500/20 via-purple-900/15 to-transparent" />
       </div>
 
       <div className="relative z-10 w-full max-w-4xl mx-auto my-auto text-center space-y-8">
