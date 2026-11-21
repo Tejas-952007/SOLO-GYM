@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { CheckCircle2, Flame, Sparkles, Trophy, Zap } from "lucide-react";
+import { DecodeText } from "@/components/ui/DecodeText";
+import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter2() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -146,7 +148,7 @@ export function Chapter2() {
         <div className="relative z-10 w-full max-w-6xl mb-8 flex flex-col items-center text-center space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-system-blue/40 border border-system-accent/30 rounded text-xs font-mono tracking-wideSystem text-system-accent uppercase">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>PHASE 02 // INITIATION</span>
+            <span><DecodeText text="PHASE 02 // INITIATION" /></span>
           </div>
           <h2 className="font-cinzel text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider text-system-text">
             THE SYSTEM CHOSE YOU.
@@ -216,7 +218,11 @@ export function Chapter2() {
             {/* Quick Toggle Controls */}
             <div className="flex items-center gap-2 font-mono text-xs">
               <button
-                onClick={() => setShowPotential(false)}
+                onClick={() => {
+                  sfx.playClick();
+                  setShowPotential(false);
+                }}
+                onMouseEnter={() => sfx.playHover()}
                 className={`px-3 py-1 rounded-sm border transition-all ${
                   !showPotential
                     ? "bg-system-cyan/20 border-system-cyan text-system-cyan shadow-system-glow"
@@ -226,7 +232,11 @@ export function Chapter2() {
                 [ ORIGIN STATE ]
               </button>
               <button
-                onClick={() => setShowPotential(true)}
+                onClick={() => {
+                  sfx.playRankAscent();
+                  setShowPotential(true);
+                }}
+                onMouseEnter={() => sfx.playHover()}
                 className={`px-3 py-1 rounded-sm border transition-all ${
                   showPotential
                     ? "bg-red-950/60 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
