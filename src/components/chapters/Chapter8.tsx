@@ -5,6 +5,7 @@ import { Bot, Utensils, Flame, CheckCircle2, MapPin, Sparkles, MessageSquare, Ch
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
 interface ChatScenario {
@@ -190,6 +191,7 @@ export function Chapter8() {
                   onClick={() => {
                     sfx.playClick();
                     setActiveScenario(sc);
+                    spawnCombatNumber(`${sc.protein} PROTOCOL ANALYZED`, undefined, undefined, "mana");
                   }}
                   onMouseEnter={() => sfx.playHover()}
                   className={`px-3 py-1.5 rounded text-xs font-mono transition-colors border ${

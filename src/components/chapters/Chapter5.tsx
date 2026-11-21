@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
 interface FoodItem {
@@ -190,6 +191,7 @@ export function Chapter5() {
                   onClick={() => {
                     sfx.playClick();
                     setGoal("bulk");
+                    spawnCombatNumber("BULK PROTOCOL: 2.0g/kg", undefined, undefined, "mana");
                   }}
                   className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
                     goal === "bulk"
@@ -203,6 +205,7 @@ export function Chapter5() {
                   onClick={() => {
                     sfx.playClick();
                     setGoal("cut");
+                    spawnCombatNumber("CUT PROTOCOL: 1.6g/kg", undefined, undefined, "stat");
                   }}
                   className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
                     goal === "cut"
@@ -304,6 +307,7 @@ export function Chapter5() {
                 onClick={() => {
                   sfx.playBladeSheathe();
                   setActiveFood(item.id);
+                  spawnCombatNumber(`${item.protein}! [LEUCINE SCAN]`, undefined, undefined, "stat");
                 }}
                 onMouseEnter={() => sfx.playHover()}
                 className={`system-window corner-brackets p-4 rounded-lg cursor-pointer border transition-all duration-300 ${

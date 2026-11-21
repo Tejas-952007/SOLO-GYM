@@ -6,6 +6,7 @@ import { Award, Zap, ChevronRight, Shield, Flame, Sparkles } from "lucide-react"
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
 interface RankTier {
@@ -106,11 +107,13 @@ export function Chapter7() {
     }
     setSelectedRank(tier);
     setBonusXP(0);
+    spawnCombatNumber(`RANK ${tier.rank}: ${tier.title}`, undefined, undefined, tier.rank === "S" ? "stat" : "mana");
   };
 
   const handleSimulateXP = () => {
     sfx.playRankAscent();
     setBonusXP((prev) => Math.min(prev + 500, 2000));
+    spawnCombatNumber("+500 HUNTER XP!", undefined, undefined, "xp");
   };
 
   return (
