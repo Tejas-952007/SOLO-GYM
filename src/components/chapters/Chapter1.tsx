@@ -31,6 +31,51 @@ export function Chapter1() {
     discipline: 10,
   });
 
+  // Interactive Character Aura Switcher (Cyan Mana / Crimson Berserk / Violet Shadow)
+  const [hunterAura, setHunterAura] = useState<"cyan" | "crimson" | "violet">("cyan");
+
+  const auraConfigs = {
+    cyan: {
+      name: "CYAN MANA",
+      glowColor: "rgba(56, 189, 248, 0.45)",
+      gradient: "from-system-cyan/40 via-system-accent/25 to-blue-900/45",
+      eyeFlareBg: "bg-cyan-200",
+      eyeFlareShadow: "shadow-[0_0_22px_rgba(56,189,248,1)]",
+      borderColor: "border-system-cyan/50",
+      textColor: "text-system-cyan",
+      btnActive: "bg-system-cyan/25 border-system-cyan text-system-cyan shadow-[0_0_15px_rgba(56,189,248,0.5)]",
+      xpLabel: "+500 MANA OVERDRIVE!",
+    },
+    crimson: {
+      name: "CRIMSON BERSERK",
+      glowColor: "rgba(239, 68, 68, 0.55)",
+      gradient: "from-red-600/45 via-rose-700/35 to-amber-950/50",
+      eyeFlareBg: "bg-red-400",
+      eyeFlareShadow: "shadow-[0_0_22px_rgba(239,68,68,1)]",
+      borderColor: "border-red-500/60",
+      textColor: "text-red-400",
+      btnActive: "bg-red-500/25 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.6)]",
+      xpLabel: "BERSERK RAGE ACTIVATED!",
+    },
+    violet: {
+      name: "SHADOW SOVEREIGN",
+      glowColor: "rgba(168, 85, 247, 0.55)",
+      gradient: "from-purple-600/45 via-violet-700/35 to-fuchsia-950/50",
+      eyeFlareBg: "bg-purple-300",
+      eyeFlareShadow: "shadow-[0_0_22px_rgba(168,85,247,1)]",
+      borderColor: "border-purple-500/60",
+      textColor: "text-purple-400",
+      btnActive: "bg-purple-500/25 border-purple-500 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.6)]",
+      xpLabel: "SHADOW MONARCH DOMAIN!",
+    },
+  };
+
+  const switchAura = (aura: "cyan" | "crimson" | "violet") => {
+    setHunterAura(aura);
+    sfx.playBladeSlash();
+    spawnCombatNumber(auraConfigs[aura].xpLabel, undefined, undefined, aura === "crimson" ? "damage" : "mana");
+  };
+
   const allocateStat = (stat: "str" | "agi" | "vit" | "discipline") => {
     if (availableAP <= 0) {
       sfx.playClick();
@@ -332,27 +377,33 @@ export function Chapter1() {
         </div>
 
         {/* Right Column: Hero Hunter Character with 3D Anime Tilt & Glowing Eye */}
-        <div className="lg:col-span-5 flex justify-center items-center relative">
+        <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
           <AnimeTiltCard
             maxTilt={12}
-            glowColor="rgba(56, 189, 248, 0.4)"
+            glowColor={auraConfigs[hunterAura].glowColor}
             className="w-full flex justify-center"
           >
             <div
               ref={hunterRef}
               className="relative w-[310px] h-[480px] sm:w-[380px] sm:h-[580px] lg:w-[440px] lg:h-[680px] will-change-transform select-none"
             >
-              {/* Pulsing Void Neon Aura Behind Hunter */}
-              <div className="absolute inset-x-4 top-10 bottom-10 bg-gradient-to-b from-system-cyan/35 via-system-accent/25 to-blue-900/40 rounded-full blur-[80px] pointer-events-none -z-10 animate-pulse" />
+              {/* Dynamic Pulsing Void Neon Aura Behind Hunter */}
+              <div
+                className={`absolute inset-x-4 top-10 bottom-10 bg-gradient-to-b ${auraConfigs[hunterAura].gradient} rounded-full blur-[80px] pointer-events-none -z-10 animate-pulse transition-all duration-500`}
+              />
 
-              {/* Glowing Hunter Eye Flare (Positioned precisely at Jin-Woo archetype eye at 27% from top) */}
+              {/* Glowing Hunter Eye Flare (Dynamic color reactive to selected aura) */}
               <div className="absolute top-[28%] left-[49%] -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
-                <span className="block w-2.5 h-2.5 rounded-full bg-cyan-200 shadow-[0_0_20px_rgba(56,189,248,1)] animate-ping" />
+                <span
+                  className={`block w-2.5 h-2.5 rounded-full ${auraConfigs[hunterAura].eyeFlareBg} ${auraConfigs[hunterAura].eyeFlareShadow} animate-ping`}
+                />
                 <span className="block w-1.5 h-1.5 rounded-full bg-white absolute top-0.5 left-0.5 shadow-[0_0_12px_rgba(255,255,255,1)]" />
               </div>
 
               {/* Character Image (object-[center_25%] ensures the face and fierce eyes are fully centered) */}
-              <div className="relative w-full h-full rounded-2xl overflow-hidden border border-system-cyan/30 shadow-[0_15px_50px_rgba(0,0,0,0.9)]">
+              <div
+                className={`relative w-full h-full rounded-2xl overflow-hidden border ${auraConfigs[hunterAura].borderColor} shadow-[0_15px_50px_rgba(0,0,0,0.9)] transition-colors duration-500`}
+              >
                 <Image
                   src="/assets/01-weak/weak-hunter.webp"
                   alt="Rank E Hunter Awakening Visage"
@@ -363,9 +414,14 @@ export function Chapter1() {
                 />
 
                 {/* Floating Holographic Hunter Stats Tag */}
-                <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-md border border-system-cyan/50 px-3 py-1.5 rounded font-mono text-[10px] text-system-cyan shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                <div
+                  className={`absolute top-4 right-4 bg-black/85 backdrop-blur-md border ${auraConfigs[hunterAura].borderColor} px-3 py-1.5 rounded font-mono text-[10px] ${auraConfigs[hunterAura].textColor} shadow-lg transition-colors`}
+                >
                   <div>HP: 120 / 120</div>
                   <div className="text-yellow-400">FATIGUE: 84%</div>
+                  <div className="text-[9px] uppercase tracking-wider opacity-80 mt-0.5">
+                    AURA: {auraConfigs[hunterAura].name}
+                  </div>
                 </div>
 
                 {/* Bottom Vignette melting into dungeon floor */}
@@ -373,10 +429,37 @@ export function Chapter1() {
               </div>
 
               {/* Tech Corner Brackets */}
-              <div className="absolute -top-2 -left-2 w-6 h-6 border-t-2 border-l-2 border-system-cyan pointer-events-none" />
-              <div className="absolute -bottom-2 -right-2 w-6 h-6 border-b-2 border-r-2 border-system-cyan pointer-events-none" />
+              <div
+                className={`absolute -top-2 -left-2 w-6 h-6 border-t-2 border-l-2 ${auraConfigs[hunterAura].borderColor} pointer-events-none transition-colors duration-300`}
+              />
+              <div
+                className={`absolute -bottom-2 -right-2 w-6 h-6 border-b-2 border-r-2 ${auraConfigs[hunterAura].borderColor} pointer-events-none transition-colors duration-300`}
+              />
             </div>
           </AnimeTiltCard>
+
+          {/* Interactive Hunter Aura Mode Selector */}
+          <div className="mt-4 flex items-center gap-2 p-1.5 bg-black/75 backdrop-blur-md border border-white/10 rounded-lg shadow-xl font-mono text-[10px] tracking-wider">
+            <span className="text-system-muted px-1.5 text-[9px] uppercase hidden sm:inline">
+              MANA FREQ:
+            </span>
+            {(["cyan", "crimson", "violet"] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => switchAura(mode)}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded font-semibold uppercase transition-all duration-200 cursor-pointer ${
+                  hunterAura === mode
+                    ? auraConfigs[mode].btnActive
+                    : "text-system-muted/70 hover:text-white hover:bg-white/5 border border-transparent"
+                }`}
+              >
+                {mode === "cyan" && "CYAN"}
+                {mode === "crimson" && "BERSERK"}
+                {mode === "violet" && "SHADOW"}
+              </button>
+            ))}
+          </div>
         </div>
 
       </div>

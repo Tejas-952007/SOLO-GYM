@@ -35,22 +35,34 @@ export function SystemHeader() {
           : "bg-transparent"
       }`}
     >
-      {/* Brand & Official Gothic HUD Badge */}
-      <div className="flex items-center gap-3">
+      {/* Brand & Official Gothic HUD Badge + Solo Leveling Calligraphy */}
+      <div className="flex items-center gap-2 sm:gap-3">
         <a
           href="#chapter-1"
-          className="flex items-center gap-2 group"
+          className="flex items-center gap-2 sm:gap-3 group"
           onMouseEnter={() => sfx.playHover()}
         >
           {/* Official Transparent LEVEL UP HUD Badge */}
-          <div className="relative h-9 sm:h-10 w-auto flex items-center">
+          <div className="relative h-8 sm:h-9 w-auto flex items-center">
             <Image
               src="/assets/logo/hud-level-up-badge-transparent.png"
               alt="LEVEL UP Hunter RPG System Badge"
-              width={160}
-              height={54}
+              width={150}
+              height={50}
               priority
-              className="h-8 sm:h-9 w-auto object-contain filter drop-shadow-[0_0_12px_rgba(56,189,248,0.7)] group-hover:drop-shadow-[0_0_20px_rgba(139,92,246,0.9)] transition-all"
+              className="h-7 sm:h-8 w-auto object-contain filter drop-shadow-[0_0_12px_rgba(56,189,248,0.7)] group-hover:drop-shadow-[0_0_20px_rgba(139,92,246,0.9)] transition-all"
+            />
+          </div>
+
+          <div className="hidden sm:block h-5 w-px bg-system-cyan/30" />
+
+          {/* Gothic Solo Leveling Spiky Title Emblem */}
+          <div className="hidden md:flex relative h-7 sm:h-8 w-28 items-center overflow-hidden">
+            <Image
+              src="/assets/logo/solo-leveling-gothic-title.png"
+              alt="Solo Leveling Gothic Typography"
+              fill
+              className="object-contain object-left filter brightness-125 drop-shadow-[0_0_10px_rgba(168,85,247,0.8)] group-hover:brightness-150 group-hover:drop-shadow-[0_0_18px_rgba(168,85,247,1)] transition-all"
             />
           </div>
         </a>
