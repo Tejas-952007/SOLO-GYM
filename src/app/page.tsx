@@ -9,6 +9,7 @@ import { SystemNoticeModal } from "@/components/SystemNoticeModal";
 import { SystemHeader } from "@/components/SystemHeader";
 import { ThreeManaCanvas } from "@/components/ThreeManaCanvas";
 import { CinematicReticle } from "@/components/CinematicReticle";
+import { CinematicOverlay } from "@/components/CinematicOverlay";
 import { Chapter1 } from "@/components/chapters/Chapter1";
 import { Chapter2 } from "@/components/chapters/Chapter2";
 import { Chapter3 } from "@/components/chapters/Chapter3";
@@ -28,6 +29,9 @@ export default function Home() {
       <SmoothScroll>
         {/* Background 3D WebGL Mana Particle Field */}
         <ThreeManaCanvas />
+
+        {/* Global CRT Scanline, Grain & Vignette Overlay */}
+        <CinematicOverlay />
 
         {/* Desktop Interactive HUD Reticle */}
         <CinematicReticle />
