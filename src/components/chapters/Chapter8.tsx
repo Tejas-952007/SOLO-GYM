@@ -1,60 +1,110 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import { Bot, Utensils, Compass, Flame, CheckCircle2, MapPin, Sparkles } from "lucide-react";
+import { Bot, Utensils, Flame, CheckCircle2, MapPin, Sparkles, MessageSquare, ChevronRight } from "lucide-react";
+import { DecodeText } from "@/components/ui/DecodeText";
+import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { sfx } from "@/lib/audio-sfx";
 
-interface FeatureCard {
+interface ChatScenario {
   id: string;
-  icon: typeof Bot;
   tag: string;
-  title: string;
-  desc: string;
-  metric: string;
-  stats: string;
+  userQuery: string;
+  time: string;
+  protein: string;
+  carbs: string;
+  fats: string;
+  verdict: string;
+  prescription: string;
 }
 
-const APP_FEATURES: FeatureCard[] = [
+const CHAT_SCENARIOS: ChatScenario[] = [
   {
-    id: "grimoire",
-    icon: Utensils,
-    tag: "MODULE 01",
-    title: "DESI FOOD GRIMOIRE",
-    desc: "Every Indian staple catalogued with exact macro verification. Soya chunks, paneer, chicken tikka, dal tadka, misal, and poha with honest protein grams.",
-    metric: "4,500+ VERIFIED FOODS",
-    stats: "ACCURACY: ±2%",
+    id: "chapati-paneer",
+    tag: "LUNCH // ROTI & PANEER",
+    userQuery: "Had 3 rotis, 1 katori dal tadka, and 150g paneer bhurji. Am I on track for my 150g daily quest?",
+    time: "14:32",
+    protein: "38.4g",
+    carbs: "54.0g",
+    fats: "24.5g",
+    verdict: "Logged 82g / 150g protein today. Remaining deficit: 68g.",
+    prescription: "Dinner recommendation: 250g grilled chicken breast or 200g soya chunks pulao to hit quest target before 22:00.",
   },
   {
-    id: "quests",
-    icon: Flame,
-    tag: "MODULE 02",
-    title: "DAILY HUNTER QUESTS",
-    desc: "Your daily mission calibrated automatically to your bodyweight goal. Log 150g protein, hit 10,000 steps, push 5 sets of bench. Finish or take rank decay.",
-    metric: "ADAPTIVE DIFFICULTY",
-    stats: "XP REWARD: +250/DAY",
+    id: "hostel-mess",
+    tag: "HOSTEL MESS // LIMITED OPTIONS",
+    userQuery: "Mess only has aloo paratha and sweet lassi for breakfast. How do I get 35g protein without breaking bank?",
+    time: "08:45",
+    protein: "14.2g",
+    carbs: "72.0g",
+    fats: "28.0g",
+    verdict: "High carbohydrate load with critical protein deficit (-21g).",
+    prescription: "Emergency hack: Add 3 boiled eggs from street stall (18g P) + 1 scoop unflavored whey in water (24g P). Cost: ~₹45.",
   },
   {
-    id: "recipes",
-    icon: Sparkles,
-    tag: "MODULE 03",
-    title: "HIGH-PROTEIN HACKS",
-    desc: "Tired of dry boiled chicken? Access hundreds of 40g+ protein Indian recipes crafted by lifters—soya bhurji, Greek curd raita, and high-protein chicken biryani.",
-    metric: "120+ HIGH-PROTEIN MEALS",
-    stats: "AVG: 42g PROTEIN / MEAL",
+    id: "pure-veg",
+    tag: "PURE VEGETARIAN // 140g GOAL",
+    userQuery: "I don't eat eggs or meat. Can I actually hit 140g protein daily with Indian food?",
+    time: "19:15",
+    protein: "142.0g",
+    carbs: "185.0g",
+    fats: "45.0g",
+    verdict: "Target 100% achievable without non-veg.",
+    prescription: "Daily Veg Protocol: 100g Soya Chunks (52g P) + 200g Low-fat Paneer (36g P) + 250ml Soya Milk (8g P) + 1.5 scoops Whey/Plant Protein (38g P) + Dal (10g P).",
+  },
+];
+
+interface GymSpot {
+  city: string;
+  gymName: string;
+  type: string;
+  features: string;
+  suppStore: string;
+}
+
+const CITY_GYMS: GymSpot[] = [
+  {
+    city: "Mumbai",
+    gymName: "Navi Mumbai Iron Forge",
+    type: "HARDCORE IRON DUNGEON",
+    features: "Chalk Allowed • Dumbbells up to 65kg • 4 Power Racks",
+    suppStore: "Vashi Nutrition Hub (Informed-Choice Verified)",
   },
   {
-    id: "radar",
-    icon: MapPin,
-    tag: "MODULE 04",
-    title: "DUNGEON & SUPP RADAR",
-    desc: "Interactive map locating real iron dungeons (hardcore gyms with heavy plates, chalk allowed) and verified, authentic supplement stores in your city.",
-    metric: "INDIA-WIDE COVERAGE",
-    stats: "VERIFIED OUTLETS ONLY",
+    city: "Pune",
+    gymName: "Kothrud Heavy Metal Club",
+    type: "POWERLIFTING CELL",
+    features: "Calibrated Steel Plates • Deadlift Platforms • Loud Music OK",
+    suppStore: "FC Road Authentic Supplements (Batch QR Tested)",
+  },
+  {
+    city: "Delhi NCR",
+    gymName: "Gurugram Barbell Syndicate",
+    type: "STRENGTH SANCTUARY",
+    features: "Eleiko Bars • Monolift • 24/7 Access",
+    suppStore: "CP Fitness Mart (Direct Brand Importers)",
+  },
+  {
+    city: "Bengaluru",
+    gymName: "Indiranagar Iron Vault",
+    type: "HYPERTROPHY LAB",
+    features: "Arsenal Strength Machines • Chalk • Serious Lifters Only",
+    suppStore: "Koramangala Supplement Station (Labdoor Certified)",
+  },
+  {
+    city: "Hyderabad",
+    gymName: "Gachibowli Titan Gym",
+    type: "MONARCH TRAINING GROUND",
+    features: "Hammer Strength Line • 8 Squat Racks • Cold Plunge",
+    suppStore: "Madhapur Pro Nutrition (Seal Verified)",
   },
 ];
 
 export function Chapter8() {
-  const [activeFeature, setActiveFeature] = useState<string>("grimoire");
+  const [activeScenario, setActiveScenario] = useState<ChatScenario>(CHAT_SCENARIOS[0]);
+  const [selectedCity, setSelectedCity] = useState<string>("Mumbai");
+
+  const currentGym = CITY_GYMS.find((g) => g.city === selectedCity) || CITY_GYMS[0];
 
   return (
     <section
@@ -70,19 +120,19 @@ export function Chapter8() {
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-system-accent/20 border border-system-accent/40 rounded text-xs font-mono tracking-wideSystem text-system-accent uppercase">
             <Bot className="w-3.5 h-3.5" />
-            <span>PHASE 08 // AI HUNTER SYSTEM</span>
+            <span><DecodeText text="PHASE 08 // AI HUNTER SYSTEM" /></span>
           </div>
-          <h2 className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
+          <GlitchHeading as="h2" className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
             YOUR AI COACH.
-          </h2>
+          </GlitchHeading>
           <p className="font-inter text-xs sm:text-sm text-system-muted">
             The Level Up AI analyzes your Indian diet in real time. Numeric calculations, zero fluff, and instant corrective quests.
           </p>
         </div>
 
-        {/* Dynamic Simulated AI Chat Window (Illustrative Preview) */}
-        <div className="max-w-3xl mx-auto system-window corner-brackets p-6 sm:p-8 rounded relative">
-          <div className="flex items-center justify-between border-b border-system-accent/20 pb-3 mb-6">
+        {/* Dynamic Simulated AI Chat Window with Scenario Selectors */}
+        <div className="max-w-3xl mx-auto system-window corner-brackets p-6 sm:p-8 rounded relative space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-system-accent/20 pb-3">
             <div className="flex items-center gap-2 font-mono text-xs text-system-text">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>SYSTEM TERMINAL v2.4 // AI ADVISOR</span>
@@ -92,13 +142,40 @@ export function Chapter8() {
             </span>
           </div>
 
-          <div className="space-y-4">
+          {/* Scenario Buttons */}
+          <div className="space-y-2">
+            <span className="font-mono text-[10px] text-system-muted uppercase tracking-wider flex items-center gap-1.5">
+              <MessageSquare className="w-3 h-3 text-system-accent" />
+              SELECT AN INDIAN LIFTER QUERY:
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {CHAT_SCENARIOS.map((sc) => (
+                <button
+                  key={sc.id}
+                  onClick={() => {
+                    sfx.playClick();
+                    setActiveScenario(sc);
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1.5 rounded text-xs font-mono transition-colors border ${
+                    activeScenario.id === sc.id
+                      ? "bg-system-accent text-white border-system-glow shadow-[0_0_12px_rgba(139,92,246,0.5)]"
+                      : "bg-system-panel/60 border-system-accent/20 text-system-muted hover:text-system-text"
+                  }`}
+                >
+                  {sc.tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-2">
             {/* User Message */}
             <div className="flex items-start gap-3 justify-end">
               <div className="max-w-md bg-system-panel/90 border border-system-accent/30 p-4 rounded-lg rounded-tr-none text-right space-y-1">
-                <span className="text-[10px] font-mono text-system-accent">HUNTER_TEJAS // 14:32</span>
+                <span className="text-[10px] font-mono text-system-accent">HUNTER // {activeScenario.time}</span>
                 <p className="text-xs sm:text-sm font-inter text-system-text">
-                  &ldquo;Just had lunch: 3 chapatis, 1 katori dal tadka, and 150g paneer bhurji. Am I on track for my 150g daily quest?&rdquo;
+                  &ldquo;{activeScenario.userQuery}&rdquo;
                 </p>
               </div>
             </div>
@@ -111,87 +188,113 @@ export function Chapter8() {
               <div className="max-w-xl bg-black/60 border border-system-accent/40 p-4 rounded-lg rounded-tl-none space-y-3 font-mono text-xs">
                 <div className="flex items-center justify-between text-system-accent text-[11px]">
                   <span>[ SYSTEM CALCULATION COMPLETE ]</span>
-                  <span>CONFIDENCE: 98.4%</span>
+                  <span>CONFIDENCE: 99.2%</span>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 p-2 bg-system-panel/70 rounded border border-system-accent/20 text-center">
                   <div>
                     <div className="text-[10px] text-system-muted">PROTEIN</div>
-                    <div className="text-sm font-bold text-system-glow">38.4g</div>
+                    <div className="text-sm font-bold text-system-glow">{activeScenario.protein}</div>
                   </div>
                   <div>
                     <div className="text-[10px] text-system-muted">CARBS</div>
-                    <div className="text-sm font-bold text-blue-400">54.0g</div>
+                    <div className="text-sm font-bold text-blue-400">{activeScenario.carbs}</div>
                   </div>
                   <div>
                     <div className="text-[10px] text-system-muted">FATS</div>
-                    <div className="text-sm font-bold text-amber-400">24.5g</div>
+                    <div className="text-sm font-bold text-amber-400">{activeScenario.fats}</div>
                   </div>
                 </div>
 
-                <p className="text-system-text font-inter text-xs leading-relaxed">
-                  <span className="text-system-accent font-mono font-bold">VERDICT: </span>
-                  You have logged <strong>82g / 150g</strong> protein today. Deficit is <strong>68g</strong>.
-                  Dinner prescription: 250g grilled chicken breast or 200g soya chunks pulao to hit quest target before 22:00.
-                </p>
+                <div className="space-y-1">
+                  <div className="text-system-text font-inter text-xs leading-relaxed">
+                    <span className="text-system-accent font-mono font-bold">VERDICT: </span>
+                    {activeScenario.verdict}
+                  </div>
+                  <div className="text-system-muted font-inter text-xs leading-relaxed">
+                    <span className="text-system-gold font-mono font-bold">PRESCRIPTION: </span>
+                    {activeScenario.prescription}
+                  </div>
+                </div>
 
                 <div className="pt-2 border-t border-system-accent/20 flex items-center justify-between text-[10px] text-system-muted">
                   <span className="flex items-center gap-1 text-emerald-400">
                     <CheckCircle2 className="w-3 h-3" />
-                    <span>DAILY QUEST: 54% PROGRESS</span>
+                    <span>DAILY QUEST RECALIBRATED</span>
                   </span>
-                  <span>XP AT STAKE: +250</span>
+                  <span>XP: +250 READY</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 4 Feature Cards Grid */}
-        <div className="space-y-6">
-          <div className="text-center">
-            <h3 className="font-cinzel text-2xl font-bold uppercase text-system-text">
-              BUILT SPECIFICALLY FOR INDIAN LIFTERS
-            </h3>
-            <p className="font-inter text-xs text-system-muted">
-              Western fitness apps do not understand ghee, roti, or local gym culture. Level Up does.
-            </p>
+        {/* Interactive Dungeon & Supp Radar for Indian Cities */}
+        <div className="system-window corner-brackets p-6 sm:p-8 rounded-lg space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-system-accent/15 pb-4">
+            <div>
+              <div className="font-mono text-xs text-system-accent uppercase flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>MODULE 04 // DUNGEON RADAR</span>
+              </div>
+              <h3 className="font-cinzel text-xl sm:text-2xl font-bold uppercase text-system-text">
+                FIND REAL IRON DUNGEONS IN YOUR CITY
+              </h3>
+            </div>
+
+            {/* City Selector Buttons */}
+            <div className="flex flex-wrap gap-1.5">
+              {CITY_GYMS.map((spot) => (
+                <button
+                  key={spot.city}
+                  onClick={() => {
+                    sfx.playClick();
+                    setSelectedCity(spot.city);
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1 rounded text-xs font-mono transition-colors ${
+                    selectedCity === spot.city
+                      ? "bg-system-gold text-black font-bold"
+                      : "bg-system-panel border border-white/10 text-system-muted hover:text-white"
+                  }`}
+                >
+                  {spot.city}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {APP_FEATURES.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={feature.id}
-                  className="system-window corner-brackets p-6 rounded flex flex-col justify-between group hover:border-system-accent/60 transition-all duration-300"
-                >
-                  <div className="space-y-3">
-                    <div className="w-10 h-10 rounded bg-system-accent/10 border border-system-accent/30 flex items-center justify-center group-hover:bg-system-accent/20 transition-colors">
-                      <Icon className="w-5 h-5 text-system-glow" />
-                    </div>
-                    <div className="font-mono text-[10px] text-system-accent tracking-wideSystem">
-                      {feature.tag}
-                    </div>
-                    <h4 className="font-cinzel text-lg font-bold uppercase text-system-text">
-                      {feature.title}
-                    </h4>
-                    <p className="font-inter text-xs text-system-muted leading-relaxed">
-                      {feature.desc}
-                    </p>
-                  </div>
+          {/* Active City Detail Card */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-black/60 border border-system-accent/30 rounded-lg space-y-2">
+              <span className="font-mono text-[10px] text-system-accent uppercase tracking-wider">
+                RECOMMENDED IRON GYM
+              </span>
+              <div className="font-cinzel text-lg font-bold text-system-text">
+                {currentGym.gymName}
+              </div>
+              <div className="text-[11px] font-mono text-emerald-400">
+                {currentGym.type}
+              </div>
+              <div className="text-xs font-inter text-system-muted">
+                {currentGym.features}
+              </div>
+            </div>
 
-                  <div className="pt-4 border-t border-system-accent/15 mt-4 space-y-1">
-                    <div className="font-mono text-[11px] font-bold text-system-glow">
-                      {feature.metric}
-                    </div>
-                    <div className="font-mono text-[10px] text-system-muted">
-                      {feature.stats}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            <div className="p-4 bg-black/60 border border-system-accent/30 rounded-lg space-y-2">
+              <span className="font-mono text-[10px] text-system-gold uppercase tracking-wider">
+                VERIFIED AUTHENTIC SUPPLEMENTS
+              </span>
+              <div className="font-cinzel text-lg font-bold text-system-gold">
+                {currentGym.suppStore}
+              </div>
+              <div className="text-[11px] font-mono text-system-glow">
+                ZERO COUNTERFEIT GUARANTEE
+              </div>
+              <div className="text-xs font-inter text-system-muted">
+                Batch-tested whey, creatine monohydrate & essential micronutrients.
+              </div>
+            </div>
           </div>
         </div>
 
