@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "@/lib/gsap";
-import { Skull, Moon, Flame, Zap, ShieldAlert, Sparkles } from "lucide-react";
+import { Skull, Moon, Flame, Zap, ShieldAlert, Sparkles, Swords, HeartPulse } from "lucide-react";
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter6() {
@@ -125,9 +126,21 @@ export function Chapter6() {
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-system-accent/15 mt-4 flex items-center justify-between text-xs font-mono text-red-400">
-                <span>PENALTY: RANK DECAY</span>
-                <span>SLAY: COMPLETE QUEST</span>
+              <div className="pt-4 border-t border-system-accent/15 mt-4 space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono text-red-400">
+                  <span>PENALTY: RANK DECAY</span>
+                  <span>SLAY: COMPLETE QUEST</span>
+                </div>
+                <button
+                  onClick={() => {
+                    sfx.playBladeSlash();
+                    spawnCombatNumber("-2,450 CRITICAL SLASH!", undefined, undefined, "damage");
+                  }}
+                  className="w-full py-1.5 bg-red-950/60 hover:bg-red-600/30 border border-red-500/50 hover:border-red-400 rounded text-[11px] font-mono text-red-300 font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-[0_0_12px_rgba(239,68,68,0.3)]"
+                >
+                  <Swords className="w-3.5 h-3.5 text-red-400" />
+                  <span>[ SLAY PROCRASTINATION ]</span>
+                </button>
               </div>
             </div>
           </AnimeTiltCard>
@@ -182,9 +195,21 @@ export function Chapter6() {
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-system-accent/15 mt-4 flex items-center justify-between text-xs font-mono text-system-accent">
-                <span>BUFF: +30% STAMINA</span>
-                <span>PROTOCOL: 8H SLEEP</span>
+              <div className="pt-4 border-t border-system-accent/15 mt-4 space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono text-system-accent">
+                  <span>BUFF: +30% STAMINA</span>
+                  <span>PROTOCOL: 8H SLEEP</span>
+                </div>
+                <button
+                  onClick={() => {
+                    sfx.playStatPointAlloc();
+                    spawnCombatNumber("+350 VITALITY HEAL!", undefined, undefined, "stat");
+                  }}
+                  className="w-full py-1.5 bg-purple-950/60 hover:bg-purple-600/30 border border-purple-500/50 hover:border-purple-400 rounded text-[11px] font-mono text-purple-300 font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.3)]"
+                >
+                  <HeartPulse className="w-3.5 h-3.5 text-purple-400" />
+                  <span>[ INJECT RECOVERY NECTAR ]</span>
+                </button>
               </div>
             </div>
           </AnimeTiltCard>
@@ -239,9 +264,21 @@ export function Chapter6() {
               </p>
             </div>
 
-            <div className="pt-4 border-t border-system-accent/15 mt-4 flex items-center justify-between text-xs font-mono text-amber-400">
-              <span>STATE: ASCENDED</span>
-              <span>MULTIPLIER: 2.0X</span>
+            <div className="pt-4 border-t border-system-accent/15 mt-4 space-y-2">
+              <div className="flex items-center justify-between text-xs font-mono text-amber-400">
+                <span>STATE: ASCENDED</span>
+                <span>MULTIPLIER: 2.0X</span>
+              </div>
+              <button
+                onClick={() => {
+                  sfx.playSubBassBoom();
+                  spawnCombatNumber("+750 BERSERK RAGE!", undefined, undefined, "mana");
+                }}
+                className="w-full py-1.5 bg-amber-950/60 hover:bg-amber-600/30 border border-amber-500/50 hover:border-amber-400 rounded text-[11px] font-mono text-amber-300 font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-[0_0_12px_rgba(245,158,11,0.3)]"
+              >
+                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                <span>[ UNLEASH BERSERK OVERDRIVE ]</span>
+              </button>
             </div>
           </div>
         </AnimeTiltCard>
@@ -333,13 +370,14 @@ export function Chapter6() {
               <div className="flex items-center gap-2 font-mono text-xs">
                 <button
                   onClick={() => {
-                    sfx.playRankAscent();
+                    sfx.playSubBassBoom();
                     setSelectedPhysique("berserk");
+                    spawnCombatNumber("DEMON BACK ACTIVATED // 100% UNLEASHED!", undefined, undefined, "damage");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1 rounded-sm border transition-all ${
+                  className={`px-3 py-1.5 rounded-sm border transition-all cursor-pointer ${
                     selectedPhysique === "berserk"
-                      ? "bg-red-950/60 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+                      ? "bg-red-950/70 border-red-500 text-red-400 shadow-[0_0_18px_rgba(239,68,68,0.5)]"
                       : "bg-black/40 border-white/10 text-system-muted hover:text-red-400"
                   }`}
                 >
@@ -347,13 +385,14 @@ export function Chapter6() {
                 </button>
                 <button
                   onClick={() => {
-                    sfx.playClick();
+                    sfx.playRankUp();
                     setSelectedPhysique("monarch");
+                    spawnCombatNumber("SOVEREIGN ANATOMY // S-RANK ASCENSION", undefined, undefined, "stat");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1 rounded-sm border transition-all ${
+                  className={`px-3 py-1.5 rounded-sm border transition-all cursor-pointer ${
                     selectedPhysique === "monarch"
-                      ? "bg-system-cyan/20 border-system-cyan text-system-cyan shadow-system-glow"
+                      ? "bg-system-cyan/25 border-system-cyan text-system-cyan shadow-system-glow"
                       : "bg-black/40 border-white/10 text-system-muted hover:text-white"
                   }`}
                 >
