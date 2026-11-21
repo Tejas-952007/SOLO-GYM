@@ -2,13 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { Skull, Moon, Flame, Zap, ShieldAlert } from "lucide-react";
+import { gsap } from "@/lib/gsap";
+import { Skull, Moon, Flame, Zap, ShieldAlert, Sparkles } from "lucide-react";
+import { DecodeText } from "@/components/ui/DecodeText";
+import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter6() {
   const containerRef = useRef<HTMLDivElement>(null);
   const chainCardRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState<"enemies" | "recovery" | "rage">("enemies");
 
   useEffect(() => {
     const el = containerRef.current;
@@ -43,18 +45,18 @@ export function Chapter6() {
       className="relative w-full bg-[#07060D] border-t border-system-accent/15 py-20 px-4 sm:px-8 overflow-hidden"
     >
       {/* Background Ambience */}
-      <div className="absolute inset-0 bg-radial-gradient from-red-950/10 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-radial-gradient from-red-950/15 via-transparent to-transparent pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-6xl mx-auto space-y-12">
         {/* Section Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-950/40 border border-red-500/40 rounded text-xs font-mono tracking-wideSystem text-red-400 uppercase">
             <Skull className="w-3.5 h-3.5" />
-            <span>PHASE 06 // DUNGEON THREATS</span>
+            <span><DecodeText text="PHASE 06 // DUNGEON THREATS" /></span>
           </div>
-          <h2 className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
+          <GlitchHeading as="h2" className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
             THE ENEMIES YOU MUST SLAY.
-          </h2>
+          </GlitchHeading>
           <p className="font-inter text-xs sm:text-sm text-system-muted">
             The monsters aren&apos;t in a dungeon. They live in your comfort zone. Break the chains, protect your recovery, and unlock Berserk Rage mode.
           </p>
@@ -66,6 +68,7 @@ export function Chapter6() {
           {/* Card 1: Chained Distraction (Streak Killer) */}
           <div
             ref={chainCardRef}
+            onMouseEnter={() => sfx.playHover()}
             className="system-window corner-brackets p-6 rounded flex flex-col justify-between relative overflow-hidden group border-red-500/30 hover:border-red-500/60 transition-colors"
           >
             <div className="absolute -top-12 -right-12 w-36 h-36 bg-red-500/10 rounded-full blur-2xl pointer-events-none" />
@@ -78,15 +81,16 @@ export function Chapter6() {
                 <ShieldAlert className="w-4 h-4 text-red-400" />
               </div>
 
-              <div className="relative w-full h-56 sm:h-64 rounded overflow-hidden border border-red-500/20 bg-black/60">
+              {/* Struggling Hunter Face & Chains Clearly Visible */}
+              <div className="relative w-full h-64 sm:h-72 rounded overflow-hidden border border-red-500/30 bg-black/80">
                 <Image
                   src="/assets/06-enemies/chained-distraction.webp"
-                  alt="Chained Distraction"
+                  alt="Hunter Struggling Against Chains of Distraction"
                   fill
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-80"
+                  className="object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-700 opacity-95 filter brightness-110 contrast-125"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
 
                 {/* Debuff Flashes */}
                 <div className="absolute bottom-3 left-3 right-3 flex flex-col gap-1.5 font-mono text-[10px]">
@@ -114,7 +118,10 @@ export function Chapter6() {
           </div>
 
           {/* Card 2: Recovery Tank (Rest Quest) */}
-          <div className="system-window corner-brackets p-6 rounded flex flex-col justify-between relative overflow-hidden group border-system-accent/30 hover:border-system-accent/60 transition-colors">
+          <div
+            onMouseEnter={() => sfx.playHover()}
+            className="system-window corner-brackets p-6 rounded flex flex-col justify-between relative overflow-hidden group border-system-accent/30 hover:border-system-accent/60 transition-colors"
+          >
             <div className="absolute -top-12 -right-12 w-36 h-36 bg-system-accent/10 rounded-full blur-2xl pointer-events-none" />
 
             <div className="space-y-4">
@@ -125,15 +132,16 @@ export function Chapter6() {
                 <Moon className="w-4 h-4 text-system-accent" />
               </div>
 
-              <div className="relative w-full h-56 sm:h-64 rounded overflow-hidden border border-system-accent/20 bg-black/60">
+              {/* Recovery Tank Visual */}
+              <div className="relative w-full h-64 sm:h-72 rounded overflow-hidden border border-system-accent/30 bg-black/80">
                 <Image
                   src="/assets/06-enemies/recovery-tank.webp"
-                  alt="Recovery Tank"
+                  alt="Hunter Healing in Recovery Chamber"
                   fill
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-80"
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-95 filter brightness-110 contrast-115"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
 
                 {/* Healing Status */}
                 <div className="absolute bottom-3 left-3 right-3 flex flex-col gap-1.5 font-mono text-[10px]">
@@ -161,7 +169,10 @@ export function Chapter6() {
           </div>
 
           {/* Card 3: Berserk Rage Mode (Streak 30+) */}
-          <div className="system-window corner-brackets p-6 rounded flex flex-col justify-between relative overflow-hidden group border-amber-500/30 hover:border-amber-500/60 transition-colors">
+          <div
+            onMouseEnter={() => sfx.playHover()}
+            className="system-window corner-brackets p-6 rounded flex flex-col justify-between relative overflow-hidden group border-amber-500/30 hover:border-amber-500/60 transition-colors"
+          >
             <div className="absolute -top-12 -right-12 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
             <div className="space-y-4">
@@ -172,15 +183,16 @@ export function Chapter6() {
                 <Flame className="w-4 h-4 text-amber-400" />
               </div>
 
-              <div className="relative w-full h-56 sm:h-64 rounded overflow-hidden border border-amber-500/20 bg-black/60">
+              {/* Hunter Berserk Face with Blazing Red Eyes Clearly Visible */}
+              <div className="relative w-full h-64 sm:h-72 rounded overflow-hidden border border-amber-500/30 bg-black/80">
                 <Image
                   src="/assets/06-enemies/rage-mindset.webp"
-                  alt="Rage Mindset"
+                  alt="Berserk Mindset with Burning Eyes"
                   fill
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-80"
+                  className="object-cover object-[center_32%] group-hover:scale-105 transition-transform duration-700 opacity-95 filter brightness-115 contrast-125"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
 
                 {/* Rage Mode Status */}
                 <div className="absolute bottom-3 left-3 right-3 flex flex-col gap-1.5 font-mono text-[10px]">
@@ -217,9 +229,9 @@ export function Chapter6() {
                 <Zap className="w-3.5 h-3.5" />
                 <span>THE PHYSICAL OUTCOME</span>
               </div>
-              <h3 className="font-cinzel text-2xl sm:text-4xl font-bold uppercase tracking-wider text-system-text">
+              <GlitchHeading as="h3" className="font-cinzel text-2xl sm:text-4xl font-bold uppercase tracking-wider text-system-text">
                 THE BODY YOU ARE BUILDING.
-              </h3>
+              </GlitchHeading>
               <p className="font-inter text-xs sm:text-sm text-system-muted leading-relaxed">
                 Every rep tracked in the gym, every gram of protein measured in your Indian meals, and every night of 8-hour sleep compounds. You are sculpting dense, armor-like muscle.
               </p>
@@ -239,17 +251,16 @@ export function Chapter6() {
               </div>
             </div>
 
-            <div className="relative h-72 sm:h-80 w-full rounded overflow-hidden border border-system-accent/30 bg-black/80">
+            <div className="relative h-80 sm:h-96 md:h-[420px] w-full rounded overflow-hidden border border-system-accent/30 bg-black/90">
               <Image
                 src="/assets/06-enemies/peak-physique-back.webp"
                 alt="Peak Physique"
                 fill
-                className="object-cover object-center"
+                className="object-cover object-[center_28%] filter contrast-125 brightness-110"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#07060D]/60" />
-              <div className="absolute top-3 right-3 font-mono text-[10px] px-2 py-0.5 bg-black/80 border border-system-gold/40 text-system-gold rounded">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
+              <div className="absolute top-3 right-3 font-mono text-[10px] px-2.5 py-1 bg-black/85 border border-system-gold/50 text-system-gold rounded shadow-md">
                 HUNTER ANATOMY // 100% UNLOCKED
               </div>
             </div>
