@@ -179,12 +179,12 @@ export function Chapter7() {
               src={selectedRank.image}
               alt={`Hunter Rank ${selectedRank.rank}`}
               fill
-              className={`object-cover transition-all duration-700 filter contrast-120 brightness-105 ${
+              className={`object-cover transition-all duration-700 filter contrast-125 brightness-110 ${
                 selectedRank.rank === "E" || selectedRank.rank === "D"
-                  ? "object-[center_62%]"
+                  ? "object-[center_32%]"
                   : selectedRank.rank === "A" || selectedRank.rank === "B" || selectedRank.rank === "C"
-                  ? "object-[center_26%]"
-                  : "object-[center_52%]"
+                  ? "object-[center_28%]"
+                  : "object-[center_38%]"
               }`}
               sizes="(max-width: 1024px) 100vw, 40vw"
             />
@@ -196,13 +196,13 @@ export function Chapter7() {
               <div
                 className="absolute z-20 pointer-events-none animate-ping"
                 style={{
-                  top: selectedRank.rank === "S" ? "42%" : "28%",
-                  left: selectedRank.rank === "S" ? "52%" : "62%",
-                  width: "10px",
-                  height: "10px",
+                  top: selectedRank.rank === "S" ? "36%" : "27%",
+                  left: selectedRank.rank === "S" ? "51%" : "58%",
+                  width: "12px",
+                  height: "12px",
                   borderRadius: "9999px",
                   backgroundColor: selectedRank.accentColor,
-                  boxShadow: `0 0 20px ${selectedRank.accentColor}`,
+                  boxShadow: `0 0 24px ${selectedRank.accentColor}`,
                 }}
               />
             )}
