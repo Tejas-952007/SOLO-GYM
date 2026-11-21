@@ -128,6 +128,41 @@ export function ThreeManaCanvas({
     riftRing2.rotation.y = Math.PI / 4;
     scene.add(riftRing2);
 
+    // 4. 3D Geometric Mana Core (Dual-nested Wireframe Icosahedron & Octahedron)
+    const coreOuterGeo = new THREE.IcosahedronGeometry(14, 1);
+    const coreOuterMat = new THREE.MeshBasicMaterial({
+      color: 0x8b5cf6,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.35,
+    });
+    const coreOuter = new THREE.Mesh(coreOuterGeo, coreOuterMat);
+    scene.add(coreOuter);
+
+    const coreInnerGeo = new THREE.OctahedronGeometry(8, 0);
+    const coreInnerMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.65,
+    });
+    const coreInner = new THREE.Mesh(coreInnerGeo, coreInnerMat);
+    scene.add(coreInner);
+
+    // 5. Electric Discharge Lightning Arcs
+    const arcCount = 16;
+    const lightningGeo = new THREE.BufferGeometry();
+    const lightningPositions = new Float32Array(arcCount * 6);
+    lightningGeo.setAttribute("position", new THREE.BufferAttribute(lightningPositions, 3));
+    const lightningMat = new THREE.LineBasicMaterial({
+      color: 0x67e8f9,
+      transparent: true,
+      opacity: 0.0,
+      blending: THREE.AdditiveBlending,
+    });
+    const lightningMesh = new THREE.LineSegments(lightningGeo, lightningMat);
+    scene.add(lightningMesh);
+
     // Mouse & Scroll Tracking
     let mouseX = 0;
     let mouseY = 0;
@@ -177,9 +212,44 @@ export function ThreeManaCanvas({
       riftRing1.rotation.z += 0.003 * boost;
       riftRing2.rotation.z -= 0.002 * boost;
 
+      // Animate 3D Mana Core
+      coreOuter.rotation.x = elapsedTime * 0.15 + targetY * 0.5;
+      coreOuter.rotation.y = elapsedTime * 0.25 + targetX * 0.5;
+      coreInner.rotation.x = -elapsedTime * 0.4;
+      coreInner.rotation.y = -elapsedTime * 0.5;
+
+      const corePulse = 1 + Math.sin(elapsedTime * 2.5) * 0.08 + shockwaveIntensity * 0.6;
+      coreOuter.scale.setScalar(corePulse);
+      coreInner.scale.setScalar(corePulse * (1 + shockwaveIntensity * 0.3));
+
       if (shockwaveIntensity > 0) {
         riftRing1.scale.setScalar(1 + shockwaveIntensity * 0.4);
         riftRing2.scale.setScalar(1 + shockwaveIntensity * 0.3);
+      }
+
+      // Dynamic Electric Lightning Arcs
+      if (shockwaveIntensity > 0.08 || boost > 2.0) {
+        lightningMat.opacity = Math.min(0.9, shockwaveIntensity * 1.2 + (boost - 1) * 0.15);
+        const lPos = lightningGeo.attributes.position.array as Float32Array;
+        for (let a = 0; a < arcCount; a++) {
+          const a6 = a * 6;
+          // Start point: near inner core
+          const phi = Math.random() * Math.PI * 2;
+          const theta = Math.random() * Math.PI;
+          const rInner = 8 + Math.random() * 4;
+          lPos[a6] = Math.sin(theta) * Math.cos(phi) * rInner;
+          lPos[a6 + 1] = Math.cos(theta) * rInner;
+          lPos[a6 + 2] = Math.sin(theta) * Math.sin(phi) * rInner;
+
+          // End point: jumping outward to rift radius
+          const rOuter = 28 + Math.random() * 24;
+          lPos[a6 + 3] = Math.sin(theta) * Math.cos(phi) * rOuter + (Math.random() - 0.5) * 8;
+          lPos[a6 + 4] = Math.cos(theta) * rOuter + (Math.random() - 0.5) * 8;
+          lPos[a6 + 5] = Math.sin(theta) * Math.sin(phi) * rOuter + (Math.random() - 0.5) * 8;
+        }
+        lightningGeo.attributes.position.needsUpdate = true;
+      } else {
+        lightningMat.opacity *= 0.85;
       }
 
       // Particle vertical flow and shockwave radial push
@@ -229,6 +299,12 @@ export function ThreeManaCanvas({
       material.dispose();
       ringGeo.dispose();
       ringMat.dispose();
+      coreOuterGeo.dispose();
+      coreOuterMat.dispose();
+      coreInnerGeo.dispose();
+      coreInnerMat.dispose();
+      lightningGeo.dispose();
+      lightningMat.dispose();
       renderer.dispose();
     };
   }, [particleCount]);
