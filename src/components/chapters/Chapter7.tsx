@@ -173,18 +173,39 @@ export function Chapter7() {
         {/* Main Rank Showcase: Left sticky visual + Right HUD details */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
-          {/* Left: Hunter Form Image (5 cols) */}
-          <div className="lg:col-span-5 relative w-full h-[400px] sm:h-[500px] rounded-lg overflow-hidden border border-system-accent/30 bg-black/80 flex items-center justify-center group">
+          {/* Left: Hunter Form Image (5 cols) - Fully Visible Character Visage */}
+          <div className="lg:col-span-5 relative w-full h-[480px] sm:h-[580px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
             <Image
               src={selectedRank.image}
               alt={`Hunter Rank ${selectedRank.rank}`}
               fill
-              className="object-cover object-top transition-all duration-700"
+              className={`object-cover transition-all duration-700 filter contrast-120 brightness-105 ${
+                selectedRank.rank === "E" || selectedRank.rank === "D"
+                  ? "object-[center_62%]"
+                  : selectedRank.rank === "A" || selectedRank.rank === "B" || selectedRank.rank === "C"
+                  ? "object-[center_26%]"
+                  : "object-[center_52%]"
+              }`}
               sizes="(max-width: 1024px) 100vw, 40vw"
             />
-            {/* Top & Bottom Vignettes */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-radial-gradient from-transparent to-[#07060D]/80" />
+            {/* Soft Bottom-Only Fade so character's head and eyes are 100% visible */}
+            <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none" />
+
+            {/* Glowing Eye Glint on S-Rank / A-Rank */}
+            {(selectedRank.rank === "S" || selectedRank.rank === "A") && (
+              <div
+                className="absolute z-20 pointer-events-none animate-ping"
+                style={{
+                  top: selectedRank.rank === "S" ? "42%" : "28%",
+                  left: selectedRank.rank === "S" ? "52%" : "62%",
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "9999px",
+                  backgroundColor: selectedRank.accentColor,
+                  boxShadow: `0 0 20px ${selectedRank.accentColor}`,
+                }}
+              />
+            )}
 
             {/* Rank Badge Stamp */}
             <div
