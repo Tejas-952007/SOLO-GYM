@@ -10,6 +10,7 @@ import { SystemHeader } from "@/components/SystemHeader";
 import { ThreeManaCanvas } from "@/components/ThreeManaCanvas";
 import { CinematicReticle } from "@/components/CinematicReticle";
 import { CinematicOverlay } from "@/components/CinematicOverlay";
+import { StoryTimelineHUD } from "@/components/StoryTimelineHUD";
 import { Chapter1 } from "@/components/chapters/Chapter1";
 import { Chapter2 } from "@/components/chapters/Chapter2";
 import { Chapter3 } from "@/components/chapters/Chapter3";
@@ -32,6 +33,9 @@ export default function Home() {
 
         {/* Global CRT Scanline, Grain & Vignette Overlay */}
         <CinematicOverlay />
+
+        {/* Persistent 9-Chapter Storyline Progression HUD */}
+        <StoryTimelineHUD />
 
         {/* Desktop Interactive HUD Reticle */}
         <CinematicReticle />
