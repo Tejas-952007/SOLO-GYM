@@ -53,6 +53,55 @@ export function Chapter3() {
   const imagesContainerRef = useRef<HTMLDivElement>(null);
   const [activeStage, setActiveStage] = useState(0);
 
+  // Interactive Boss Encounter State
+  const [bossHp, setBossHp] = useState(3000);
+  const [combatLog, setCombatLog] = useState<string[]>([
+    "[SYSTEM EVENT] Dungeon Boss: Titan of Inertia has appeared on Floor 04!",
+  ]);
+  const [shakeCrit, setShakeCrit] = useState(false);
+
+  const strikeBoss = (type: "heavy" | "protein" | "shadow") => {
+    if (bossHp <= 0) return;
+
+    if (type === "heavy") {
+      sfx.playBladeSheathe();
+      const dmg = Math.floor(650 + Math.random() * 250);
+      const nextHp = Math.max(0, bossHp - dmg);
+      setBossHp(nextHp);
+      setShakeCrit(true);
+      setTimeout(() => setShakeCrit(false), 200);
+      setCombatLog((prev) => [
+        `[CRIT STRIKE] 100kg Heavy Compound Barbell blow dealt -${dmg} DMG to Titan!`,
+        ...prev.slice(0, 3),
+      ]);
+      if (nextHp === 0) sfx.playRankUp();
+    } else if (type === "protein") {
+      sfx.playStatPointAlloc();
+      setCombatLog((prev) => [
+        `[PROTEIN INFUSION] 160g Whey & Soya absorbed! Fatigue wiped! Hunter ATK Buffed!`,
+        ...prev.slice(0, 3),
+      ]);
+    } else if (type === "shadow") {
+      sfx.playSubBassBoom();
+      const dmg = 1500;
+      const nextHp = Math.max(0, bossHp - dmg);
+      setBossHp(nextHp);
+      setShakeCrit(true);
+      setTimeout(() => setShakeCrit(false), 300);
+      setCombatLog((prev) => [
+        `[SHADOW DOMAIN] Sovereign Violet Mana exploded! -${dmg} FATAL DAMAGE!`,
+        ...prev.slice(0, 3),
+      ]);
+      if (nextHp === 0) sfx.playRankUp();
+    }
+  };
+
+  const resetBoss = () => {
+    sfx.playClick();
+    setBossHp(3000);
+    setCombatLog(["[SYSTEM RESET] Titan of Inertia respawned with 3,000 HP."]);
+  };
+
   useEffect(() => {
     const el = containerRef.current;
     const pinSection = pinSectionRef.current;
@@ -254,6 +303,88 @@ export function Chapter3() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Live Interactive Dungeon Boss Raid Encounter Mini-Game */}
+        <div className={`relative z-20 w-full max-w-6xl mx-auto my-4 p-4 sm:p-5 rounded-lg border bg-black/80 backdrop-blur-md transition-all duration-300 ${
+          shakeCrit ? "border-red-500 shadow-[0_0_35px_rgba(239,68,68,0.7)] scale-[1.01]" : "border-system-accent/30 shadow-system-glow"
+        }`}>
+          {/* Boss Header & Health Bar */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3 border-b border-system-accent/20 pb-2.5">
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-red-500 animate-pulse" />
+              <span className="font-orbitron text-xs sm:text-sm font-bold text-red-400 uppercase tracking-wider">
+                DUNGEON BOSS // TITAN OF INERTIA (FLOOR 04)
+              </span>
+            </div>
+            <div className="flex items-center gap-3 font-mono text-xs">
+              <span className="text-yellow-400 font-bold">{bossHp > 0 ? `${bossHp} / 3,000 HP` : "[ BOSS SLAIN! ]"}</span>
+              {bossHp === 0 && (
+                <button
+                  onClick={resetBoss}
+                  className="px-2 py-0.5 bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 rounded text-[10px] hover:bg-yellow-500 hover:text-black transition-colors"
+                >
+                  RESPAWN BOSS
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Boss Health Bar Meter */}
+          <div className="w-full h-3 bg-black/90 rounded-full border border-red-500/40 overflow-hidden mb-3.5 p-0.5">
+            <div
+              className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 rounded-full transition-all duration-300 shadow-[0_0_12px_rgba(239,68,68,0.8)]"
+              style={{ width: `${(bossHp / 3000) * 100}%` }}
+            />
+          </div>
+
+          {/* Player Attack Moves & Combat Telemetry */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+            {/* 3 Combat Moves */}
+            <div className="md:col-span-7 grid grid-cols-3 gap-2">
+              <button
+                onClick={() => strikeBoss("heavy")}
+                disabled={bossHp <= 0}
+                onMouseEnter={() => sfx.playHover()}
+                className="p-2 sm:p-2.5 rounded bg-red-950/40 border border-red-500/40 hover:border-red-500 hover:bg-red-900/60 text-red-300 font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center"
+              >
+                <div>[ HEAVY STRIKE ]</div>
+                <div className="text-[9px] text-system-muted font-normal mt-0.5">100kg Squat</div>
+              </button>
+
+              <button
+                onClick={() => strikeBoss("protein")}
+                disabled={bossHp <= 0}
+                onMouseEnter={() => sfx.playHover()}
+                className="p-2 sm:p-2.5 rounded bg-system-cyan/20 border border-system-cyan/40 hover:border-system-cyan hover:bg-system-cyan/40 text-cyan-300 font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center"
+              >
+                <div>[ MACRO BUFF ]</div>
+                <div className="text-[9px] text-system-muted font-normal mt-0.5">160g Protein</div>
+              </button>
+
+              <button
+                onClick={() => strikeBoss("shadow")}
+                disabled={bossHp <= 0}
+                onMouseEnter={() => sfx.playHover()}
+                className="p-2 sm:p-2.5 rounded bg-system-accent/30 border border-system-accent/50 hover:border-white hover:bg-system-accent/60 text-purple-200 font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+              >
+                <div>[ SHADOW CRIT ]</div>
+                <div className="text-[9px] text-system-muted font-normal mt-0.5">1,500 FATAL</div>
+              </button>
+            </div>
+
+            {/* Combat Log Box */}
+            <div className="md:col-span-5 p-2 bg-black/60 border border-white/10 rounded font-mono text-[10px] space-y-1 h-16 overflow-hidden">
+              {combatLog.map((log, idx) => (
+                <div
+                  key={idx}
+                  className={`truncate ${idx === 0 ? "text-yellow-300 font-semibold" : "text-system-muted/70"}`}
+                >
+                  {log}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
