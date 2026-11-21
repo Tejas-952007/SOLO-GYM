@@ -1,0 +1,74 @@
+import os
+from PIL import Image, ImageDraw, ImageFilter
+
+logo_dir = "/home/tejas/solo-gym/public/assets/logo"
+os.makedirs(logo_dir, exist_ok=True)
+
+# 1. Generate High-Res SVG Logo with Solo Leveling typography aesthetic (sharp horns, thorn barbs, dagger tail)
+svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 240" width="100%" height="100%">
+  <defs>
+    <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <linearGradient id="text-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#EDE9FE" />
+      <stop offset="100%" stop-color="#C4B5FD" />
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#A78BFA" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Under-Glow -->
+  <g filter="url(#neon-glow)" opacity="0.85">
+    <!-- Stylized "LEVEL" with Thorn Horns -->
+    <path d="M 60,35 C 45,15 25,25 35,45 L 35,110 C 35,115 40,118 55,115 L 115,115 C 125,115 130,105 125,95 L 60,95 L 60,45 C 70,40 75,30 60,35 Z" fill="#8B5CF6" />
+    <!-- Dagger Slashes -->
+  </g>
+
+  <!-- Main Sharp Vector Letters -->
+  <g fill="url(#text-grad)">
+    <!-- L1 -->
+    <path d="M 40,30 C 25,12 12,22 28,45 L 28,110 C 28,118 35,122 50,118 L 115,118 C 128,118 132,108 122,96 L 54,96 L 54,42 C 68,36 72,25 54,30 Z" />
+    <!-- E1 with thorn -->
+    <path d="M 140,40 L 205,40 C 218,40 220,28 208,24 L 140,24 C 125,24 120,32 120,48 L 120,110 C 120,120 128,122 145,120 L 210,120 C 222,120 224,108 212,105 L 145,105 L 145,78 L 190,78 C 200,78 202,68 192,65 L 145,65 Z" />
+    <!-- V with sharp pointed base & demonic claw flourish -->
+    <path d="M 230,25 C 220,15 210,25 218,40 L 255,115 C 260,126 270,126 275,115 L 315,38 C 322,24 315,15 302,25 L 285,55 L 265,100 L 245,55 Z" />
+    <!-- E2 -->
+    <path d="M 335,40 L 400,40 C 413,40 415,28 403,24 L 335,24 C 320,24 315,32 315,48 L 315,110 C 315,120 323,122 340,120 L 405,120 C 417,120 419,108 407,105 L 340,105 L 340,78 L 385,78 C 395,78 397,68 387,65 L 340,65 Z" />
+    <!-- L2 -->
+    <path d="M 430,30 C 415,12 402,22 418,45 L 418,110 C 418,118 425,122 440,118 L 505,118 C 518,118 522,108 512,96 L 444,96 L 444,42 C 458,36 462,25 444,30 Z" />
+
+    <!-- U with demonic fang top -->
+    <path d="M 240,140 C 230,128 220,138 226,152 L 226,195 C 226,215 240,225 265,225 C 290,225 304,215 304,195 L 304,152 C 310,138 300,128 290,140 L 280,165 L 280,195 C 280,205 275,208 265,208 C 255,208 250,205 250,195 L 250,165 Z" />
+    <!-- P with sweeping tribal dagger tail under the whole title -->
+    <path d="M 330,135 C 318,125 310,135 315,148 L 315,220 C 315,228 322,230 332,228 L 335,200 L 375,200 C 405,200 420,185 420,165 C 420,145 405,135 375,135 Z M 338,152 L 372,152 C 388,152 396,158 396,166 C 396,176 388,182 372,182 L 338,182 Z" />
+
+    <!-- Sweeping Solo Leveling Dagger Curved Tail -->
+    <path d="M 380,210 C 430,225 490,230 550,220 C 600,210 635,185 660,150 C 635,180 585,198 520,202 C 460,205 405,198 360,190 C 380,195 400,202 420,206 C 410,212 395,212 380,210 Z" fill="url(#accent-grad)" filter="url(#neon-glow)" />
+
+    <!-- Sharp Thorn Embellishments -->
+    <path d="M 520,202 C 555,185 570,165 580,140 C 565,160 540,175 510,185 Z" fill="#8B5CF6" />
+    <path d="M 620,160 C 645,140 665,115 675,90 C 665,115 640,135 615,150 Z" fill="#38BDF8" />
+  </g>
+
+  <!-- Sub-label: HUNTER RPG SYSTEM -->
+  <text x="50" y="235" font-family="'Orbitron', sans-serif" font-size="12" font-weight="900" letter-spacing="8" fill="#38BDF8">
+    HUNTER RPG SYSTEM
+  </text>
+</svg>
+'''
+
+svg_path = os.path.join(logo_dir, "level-up-logo.svg")
+with open(svg_path, "w") as f:
+    f.write(svg_content)
+
+print("Saved SVG logo to:", svg_path)
