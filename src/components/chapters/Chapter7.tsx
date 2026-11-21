@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Award, Zap, ChevronRight, Shield, Flame } from "lucide-react";
+import { Award, Zap, ChevronRight, Shield, Flame, Sparkles } from "lucide-react";
+import { DecodeText } from "@/components/ui/DecodeText";
+import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { sfx } from "@/lib/audio-sfx";
 
 interface RankTier {
   rank: "E" | "D" | "C" | "B" | "A" | "S";
@@ -92,6 +95,22 @@ const RANK_TIERS: RankTier[] = [
 
 export function Chapter7() {
   const [selectedRank, setSelectedRank] = useState<RankTier>(RANK_TIERS[0]);
+  const [bonusXP, setBonusXP] = useState<number>(0);
+
+  const handleRankSelect = (tier: RankTier) => {
+    if (tier.rank === "S" || tier.rank === "A") {
+      sfx.playRankAscent();
+    } else {
+      sfx.playClick();
+    }
+    setSelectedRank(tier);
+    setBonusXP(0);
+  };
+
+  const handleSimulateXP = () => {
+    sfx.playRankAscent();
+    setBonusXP((prev) => Math.min(prev + 500, 2000));
+  };
 
   return (
     <section
@@ -111,11 +130,11 @@ export function Chapter7() {
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-system-accent/20 border border-system-accent/40 rounded text-xs font-mono tracking-wideSystem text-system-accent uppercase">
             <Award className="w-3.5 h-3.5" />
-            <span>PHASE 07 // EVOLUTION LADDER</span>
+            <span><DecodeText text="PHASE 07 // EVOLUTION LADDER" /></span>
           </div>
-          <h2 className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
+          <GlitchHeading as="h2" className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
             RANK UP: FROM E TO S.
-          </h2>
+          </GlitchHeading>
           <p className="font-inter text-xs sm:text-sm text-system-muted">
             In Level Up, your rank is not given—it is forged with sweat, protein, and progressive overload. Select any tier to inspect your future stats.
           </p>
@@ -130,7 +149,8 @@ export function Chapter7() {
             return (
               <button
                 key={tier.rank}
-                onClick={() => setSelectedRank(tier)}
+                onClick={() => handleRankSelect(tier)}
+                onMouseEnter={() => sfx.playHover()}
                 className={`relative px-4 sm:px-6 py-2.5 rounded transition-all duration-300 font-cinzel text-sm sm:text-base font-bold flex items-center gap-2 ${
                   isSelected
                     ? isGold
@@ -175,7 +195,7 @@ export function Chapter7() {
               }}
             >
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center font-cinzel font-black text-xl text-black"
+                className="w-10 h-10 rounded-full flex items-center justify-center font-cinzel font-black text-xl text-black shadow-lg"
                 style={{ backgroundColor: selectedRank.accentColor }}
               >
                 {selectedRank.rank}
@@ -202,8 +222,8 @@ export function Chapter7() {
           <div className="lg:col-span-7 space-y-6">
             <div className="system-window corner-brackets p-6 sm:p-8 rounded space-y-6">
               
-              {/* Header */}
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-system-accent/15 pb-4">
+              {/* Header with XP Simulator */}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-system-accent/15 pb-4">
                 <div>
                   <span className="font-mono text-[10px] uppercase tracking-wideSystem text-system-accent">
                     STATUS WINDOW // SPECIFICATION
@@ -212,16 +232,14 @@ export function Chapter7() {
                     RANK {selectedRank.rank}: {selectedRank.title}
                   </h3>
                 </div>
-                <div
-                  className="px-3 py-1 rounded text-xs font-mono font-bold uppercase border"
-                  style={{
-                    borderColor: selectedRank.accentColor,
-                    color: selectedRank.accentColor,
-                    backgroundColor: "rgba(0,0,0,0.4)",
-                  }}
+                <button
+                  onClick={handleSimulateXP}
+                  onMouseEnter={() => sfx.playHover()}
+                  className="px-3 py-1.5 rounded text-xs font-mono font-bold uppercase border bg-system-accent/15 hover:bg-system-accent/30 text-system-glow border-system-accent/40 transition-colors flex items-center gap-1.5"
                 >
-                  XP CAP: {selectedRank.xpRequired}
-                </div>
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>SIMULATE +500 XP {bonusXP > 0 && `(+${bonusXP})`}</span>
+                </button>
               </div>
 
               {/* Stat Gauges (STR, VIT, AGI, DISCIPLINE) */}
@@ -234,12 +252,14 @@ export function Chapter7() {
                 <div className="space-y-1">
                   <div className="flex justify-between font-mono text-xs">
                     <span className="text-system-text font-bold">STRENGTH [STR]</span>
-                    <span className="text-system-accent font-bold">{selectedRank.stats.str} / 100</span>
+                    <span className="text-system-accent font-bold">
+                      {Math.min(selectedRank.stats.str + (bonusXP > 0 ? 5 : 0), 100)} / 100
+                    </span>
                   </div>
                   <div className="h-2 w-full bg-system-blue/40 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-system-accent transition-all duration-700 rounded-full"
-                      style={{ width: `${selectedRank.stats.str}%` }}
+                      style={{ width: `${Math.min(selectedRank.stats.str + (bonusXP > 0 ? 5 : 0), 100)}%` }}
                     />
                   </div>
                 </div>
@@ -248,12 +268,14 @@ export function Chapter7() {
                 <div className="space-y-1">
                   <div className="flex justify-between font-mono text-xs">
                     <span className="text-system-text font-bold">VITALITY [VIT]</span>
-                    <span className="text-system-glow font-bold">{selectedRank.stats.vit} / 100</span>
+                    <span className="text-system-glow font-bold">
+                      {Math.min(selectedRank.stats.vit + (bonusXP > 0 ? 4 : 0), 100)} / 100
+                    </span>
                   </div>
                   <div className="h-2 w-full bg-system-blue/40 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-system-glow transition-all duration-700 rounded-full"
-                      style={{ width: `${selectedRank.stats.vit}%` }}
+                      style={{ width: `${Math.min(selectedRank.stats.vit + (bonusXP > 0 ? 4 : 0), 100)}%` }}
                     />
                   </div>
                 </div>
@@ -262,12 +284,14 @@ export function Chapter7() {
                 <div className="space-y-1">
                   <div className="flex justify-between font-mono text-xs">
                     <span className="text-system-text font-bold">AGILITY [AGI]</span>
-                    <span className="text-blue-400 font-bold">{selectedRank.stats.agi} / 100</span>
+                    <span className="text-blue-400 font-bold">
+                      {Math.min(selectedRank.stats.agi + (bonusXP > 0 ? 6 : 0), 100)} / 100
+                    </span>
                   </div>
                   <div className="h-2 w-full bg-system-blue/40 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-blue-400 transition-all duration-700 rounded-full"
-                      style={{ width: `${selectedRank.stats.agi}%` }}
+                      style={{ width: `${Math.min(selectedRank.stats.agi + (bonusXP > 0 ? 6 : 0), 100)}%` }}
                     />
                   </div>
                 </div>
@@ -280,14 +304,14 @@ export function Chapter7() {
                       className="font-bold"
                       style={{ color: selectedRank.accentColor }}
                     >
-                      {selectedRank.stats.discipline} / 100
+                      {Math.min(selectedRank.stats.discipline + (bonusXP > 0 ? 8 : 0), 100)} / 100
                     </span>
                   </div>
                   <div className="h-2 w-full bg-system-blue/40 rounded-full overflow-hidden">
                     <div
                       className="h-full transition-all duration-700 rounded-full"
                       style={{
-                        width: `${selectedRank.stats.discipline}%`,
+                        width: `${Math.min(selectedRank.stats.discipline + (bonusXP > 0 ? 8 : 0), 100)}%`,
                         backgroundColor: selectedRank.accentColor,
                       }}
                     />
@@ -305,7 +329,8 @@ export function Chapter7() {
                   {selectedRank.unlocks.map((perk, i) => (
                     <div
                       key={i}
-                      className="p-2.5 bg-system-panel/80 border border-system-accent/20 rounded text-[11px] font-mono text-system-text flex items-center gap-1.5"
+                      onMouseEnter={() => sfx.playHover()}
+                      className="p-2.5 bg-system-panel/80 border border-system-accent/20 rounded text-[11px] font-mono text-system-text flex items-center gap-1.5 hover:border-system-accent/40 transition-colors"
                     >
                       <ChevronRight className="w-3 h-3 text-system-accent shrink-0" />
                       <span className="truncate">{perk}</span>
