@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Shield, Sparkles, RefreshCw } from "lucide-react";
 import { AudioEqualizerButton } from "@/components/AudioPlayer";
 import { GlitchText } from "@/components/GlitchText";
+import { sfx } from "@/lib/audio-sfx";
 
 export function SystemHeader() {
   const [scrolled, setScrolled] = useState(false);
@@ -34,27 +35,23 @@ export function SystemHeader() {
           : "bg-transparent"
       }`}
     >
-      {/* Brand & Gothic Thorn System Logo */}
+      {/* Brand & Official Gothic HUD Badge */}
       <div className="flex items-center gap-3">
-        <a href="#chapter-1" className="flex items-center gap-2 group">
-          <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded border border-system-accent/40 bg-black/60 flex items-center justify-center p-1 shadow-system-glow group-hover:border-system-accent transition-colors overflow-hidden">
+        <a
+          href="#chapter-1"
+          className="flex items-center gap-2 group"
+          onMouseEnter={() => sfx.playHover()}
+        >
+          {/* Official Transparent LEVEL UP HUD Badge */}
+          <div className="relative h-9 sm:h-10 w-auto flex items-center">
             <Image
-              src="/assets/logo/level-up-logo.png"
-              alt="Level Up Sigil"
-              width={40}
-              height={40}
-              className="object-contain filter brightness-125 contrast-125 group-hover:scale-110 transition-transform"
+              src="/assets/logo/hud-level-up-badge-transparent.png"
+              alt="LEVEL UP Hunter RPG System Badge"
+              width={160}
+              height={54}
+              priority
+              className="h-8 sm:h-9 w-auto object-contain filter drop-shadow-[0_0_12px_rgba(56,189,248,0.7)] group-hover:drop-shadow-[0_0_20px_rgba(139,92,246,0.9)] transition-all"
             />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-cinzel text-lg sm:text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-system-text to-purple-300 group-hover:text-glow-accent transition-all">
-                LEVEL UP
-              </span>
-            </div>
-            <span className="font-mono text-[8px] sm:text-[9px] tracking-wideSystem text-system-cyan uppercase block -mt-0.5">
-              HUNTER RPG SYSTEM
-            </span>
           </div>
         </a>
       </div>
