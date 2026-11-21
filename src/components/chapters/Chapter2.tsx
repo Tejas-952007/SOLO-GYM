@@ -21,6 +21,7 @@ export function Chapter2() {
 
   const [typedTitle, setTypedTitle] = useState("");
   const [showPotential, setShowPotential] = useState(false);
+  const [activeVisual, setActiveVisual] = useState(0);
   const fullTitle = "DAILY QUEST: PREPARATION FOR STRENGTH";
 
   useEffect(() => {
@@ -160,94 +161,136 @@ export function Chapter2() {
 
         {/* Dual-Column Interactive Composition */}
         <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          {/* Left: Weak Meets System Visual with Interactive Potential Toggle */}
+          {/* Left: Interactive Visual Stage with 3 Iconic Anime States */}
           <div className="md:col-span-6 flex flex-col justify-center items-center relative space-y-3">
             <div
               ref={visualRef}
               className="relative w-full max-w-[480px] h-[480px] sm:h-[560px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer"
               onClick={() => {
-                sfx.playRankAscent();
-                setShowPotential(!showPotential);
+                sfx.playClick();
+                setActiveVisual((prev) => (prev + 1) % 3);
               }}
             >
-              {/* Image 1: Weak Meets System - Towering Monarch Entity Face Clearly Visible */}
+              {/* State 0: The Terrifying Cartenon Temple God Grin */}
               <div
-                className={`absolute inset-0 transition-opacity duration-500 ${
-                  showPotential ? "opacity-0 pointer-events-none" : "opacity-100"
+                className={`absolute inset-0 transition-opacity duration-700 ${
+                  activeVisual === 0 ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
+              >
+                <Image
+                  src="/assets/02-system/system-grin.webp"
+                  alt="Cartenon Temple System Entity Grin and Glowing Eyes"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 480px"
+                  className="object-cover object-[center_60%] filter contrast-125 brightness-110"
+                />
+                {/* Glowing Crimson Eyes Flare */}
+                <div className="absolute top-[58%] left-[48%] -translate-x-1/2 -translate-y-1/2 flex gap-12 z-20 pointer-events-none">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_20px_rgba(239,68,68,1)] animate-ping" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_20px_rgba(239,68,68,1)] animate-ping" />
+                </div>
+                <div
+                  ref={grinAuraRef}
+                  className="absolute inset-0 bg-radial-gradient from-red-600/35 via-system-accent/20 to-transparent opacity-60 pointer-events-none mix-blend-color-dodge z-10 animate-pulse"
+                />
+              </div>
+
+              {/* State 1: Weak Hunter Facing the Looming Blue System Window */}
+              <div
+                className={`absolute inset-0 transition-opacity duration-700 ${
+                  activeVisual === 1 ? "opacity-100" : "opacity-0 pointer-events-none"
                 }`}
               >
                 <Image
                   src="/assets/02-system/weak-meets-system.webp"
-                  alt="Weak Hunter Meets The Looming System Entity"
+                  alt="Weak Hunter Accepts System Pact"
                   fill
-                  priority
                   sizes="(max-width: 768px) 100vw, 480px"
-                  className="object-cover object-[center_35%] filter contrast-120 brightness-105"
+                  className="object-cover object-[center_42%] filter contrast-120 brightness-110"
                 />
-                <div
-                  ref={grinAuraRef}
-                  className="absolute inset-0 bg-radial-gradient from-red-600/30 via-system-accent/20 to-transparent opacity-40 pointer-events-none mix-blend-color-dodge z-10 animate-pulse"
-                />
+                <div className="absolute inset-0 bg-radial-gradient from-system-cyan/30 via-system-accent/20 to-transparent opacity-50 pointer-events-none mix-blend-screen z-10" />
               </div>
 
-              {/* Image 2: User-Uploaded Berserk S-Rank Physique */}
+              {/* State 2: Berserk S-Rank Anatomy with Glowing Brand of Sacrifice */}
               <div
-                className={`absolute inset-0 transition-opacity duration-500 ${
-                  showPotential ? "opacity-100" : "opacity-0 pointer-events-none"
+                className={`absolute inset-0 transition-opacity duration-700 ${
+                  activeVisual === 2 ? "opacity-100" : "opacity-0 pointer-events-none"
                 }`}
               >
                 <Image
-                  src="/assets/06-enemies/berserk-physique.webp"
-                  alt="S-Rank Awakening Anatomy with Sacrificial Sigil"
+                  src="/assets/06-enemies/berserk-physique-brand.webp"
+                  alt="Berserk Sacrificial Rune Muscular Anatomy"
                   fill
                   sizes="(max-width: 768px) 100vw, 480px"
-                  className="object-cover object-[center_32%] filter contrast-125 brightness-110"
+                  className="object-cover object-[center_50%] filter contrast-130 brightness-110"
                 />
-                <div className="absolute inset-0 bg-radial-gradient from-red-600/40 via-red-900/20 to-transparent opacity-60 pointer-events-none mix-blend-color-dodge z-10 animate-pulse" />
+                {/* Brand of Sacrifice Crimson Glow */}
+                <div className="absolute top-[28%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+                  <span className="block w-4 h-4 rounded-full bg-red-600 blur-[8px] animate-pulse" />
+                </div>
+                <div className="absolute inset-0 bg-radial-gradient from-red-600/40 via-red-950/30 to-transparent opacity-70 pointer-events-none mix-blend-color-dodge z-10 animate-pulse" />
               </div>
 
+              {/* Seamless Bottom Vignette */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
 
               {/* Bottom Interactive HUD Status Bar */}
               <div className="absolute bottom-3 left-3 right-3 z-20 font-mono text-[10px] sm:text-[11px] flex justify-between items-center text-system-cyan bg-black/85 px-2.5 sm:px-3 py-1.5 border border-system-cyan/40 rounded backdrop-blur-sm">
                 <span className="truncate">
-                  {showPotential ? "[ S-RANK ANATOMY: UNLEASHED ]" : "[ HUNTER ENTITY: LVL 01 ]"}
+                  {activeVisual === 0 && "[ ENTITY VISAGE: CARTENON GOD GRIN ]"}
+                  {activeVisual === 1 && "[ HUNTER CONTRACT: WINDOW OF AWAKENING ]"}
+                  {activeVisual === 2 && "[ SACRIFICIAL ANATOMY: BERSERK BRAND ]"}
                 </span>
                 <span className="text-[9px] sm:text-[10px] text-system-muted font-normal underline shrink-0 ml-2">
-                  TAP TO FLIP
+                  TAP TO CYCLE
                 </span>
               </div>
             </div>
 
-            {/* Quick Toggle Controls */}
-            <div className="flex items-center gap-2 font-mono text-xs">
+            {/* Visual State Selectors */}
+            <div className="flex flex-wrap items-center justify-center gap-2 font-mono text-[11px]">
               <button
                 onClick={() => {
                   sfx.playClick();
-                  setShowPotential(false);
+                  setActiveVisual(0);
                 }}
                 onMouseEnter={() => sfx.playHover()}
-                className={`px-3 py-1 rounded-sm border transition-all ${
-                  !showPotential
+                className={`px-2.5 py-1 rounded-sm border transition-all ${
+                  activeVisual === 0
+                    ? "bg-red-950/60 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+                    : "bg-black/40 border-white/10 text-system-muted hover:text-white"
+                }`}
+              >
+                [ GOD GRIN ]
+              </button>
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setActiveVisual(1);
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-2.5 py-1 rounded-sm border transition-all ${
+                  activeVisual === 1
                     ? "bg-system-cyan/20 border-system-cyan text-system-cyan shadow-system-glow"
                     : "bg-black/40 border-white/10 text-system-muted hover:text-white"
                 }`}
               >
-                [ ORIGIN STATE ]
+                [ PACT WINDOW ]
               </button>
               <button
                 onClick={() => {
                   sfx.playRankAscent();
-                  setShowPotential(true);
+                  setActiveVisual(2);
                 }}
                 onMouseEnter={() => sfx.playHover()}
-                className={`px-3 py-1 rounded-sm border transition-all ${
-                  showPotential
+                className={`px-2.5 py-1 rounded-sm border transition-all ${
+                  activeVisual === 2
                     ? "bg-red-950/60 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
                     : "bg-black/40 border-white/10 text-system-muted hover:text-red-400"
                 }`}
               >
-                [ S-RANK POTENTIAL ]
+                [ BERSERK BRAND ]
               </button>
             </div>
           </div>
