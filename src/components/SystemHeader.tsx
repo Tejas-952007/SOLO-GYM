@@ -9,12 +9,49 @@ import { sfx } from "@/lib/audio-sfx";
 
 export function SystemHeader() {
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [currentRank, setCurrentRank] = useState({
+    rank: "RANK E",
+    title: "WEAKEST HUNTER",
+    color: "text-system-cyan",
+  });
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 40);
+
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalHeight > 0 ? (scrollY / totalHeight) * 100 : 0;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
+
+      // Detect active chapter based on scroll position
+      const chapters = [
+        { id: "chapter-9", rank: "RANK S+", title: "SHADOW SOVEREIGN", color: "text-system-gold" },
+        { id: "chapter-8", rank: "RANK S", title: "STRATEGIC MASTER", color: "text-yellow-400" },
+        { id: "chapter-7", rank: "RANK A+", title: "MONARCH CANDIDATE", color: "text-purple-400" },
+        { id: "chapter-6", rank: "RANK A", title: "BERSERK UNLEASHED", color: "text-red-400" },
+        { id: "chapter-5", rank: "RANK B", title: "NUTRITION ALCHEMIST", color: "text-emerald-400" },
+        { id: "chapter-4", rank: "RANK C+", title: "DISCIPLINE FORGED", color: "text-blue-400" },
+        { id: "chapter-3", rank: "RANK C", title: "DUNGEON CONQUEROR", color: "text-system-cyan" },
+        { id: "chapter-2", rank: "RANK D", title: "SYSTEM AWAKENED", color: "text-system-cyan" },
+        { id: "chapter-1", rank: "RANK E", title: "WEAKEST HUNTER", color: "text-system-cyan" },
+      ];
+
+      const current = chapters.find((ch) => {
+        const el = document.getElementById(ch.id);
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        return rect.top <= window.innerHeight * 0.45;
+      });
+
+      if (current) {
+        setCurrentRank({ rank: current.rank, title: current.title, color: current.color });
+      }
     };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -35,6 +72,11 @@ export function SystemHeader() {
           : "bg-transparent"
       }`}
     >
+      {/* Top Real-time Mana XP Progress Line */}
+      <div
+        className="absolute top-0 left-0 h-[2px] bg-gradient-to-r from-system-cyan via-purple-500 to-system-gold transition-all duration-150 shadow-[0_0_12px_rgba(56,189,248,0.85)] pointer-events-none"
+        style={{ width: `${scrollProgress}%` }}
+      />
       {/* Brand & Official Gothic HUD Badge + Solo Leveling Calligraphy */}
       <div className="flex items-center gap-2 sm:gap-3">
         <a
@@ -68,14 +110,27 @@ export function SystemHeader() {
         </a>
       </div>
 
-      {/* Center Rank HUD Indicator */}
-      <div className="hidden lg:flex items-center gap-2.5 px-3 py-1 bg-black/60 border border-system-accent/30 rounded font-mono text-xs">
-        <span className="w-2 h-2 rounded-full bg-system-cyan animate-ping" />
+      {/* Center Dynamic Rank & XP HUD Indicator */}
+      <div className="hidden lg:flex items-center gap-3 px-3.5 py-1 bg-black/75 backdrop-blur-md border border-system-accent/30 rounded font-mono text-xs shadow-md">
+        <span
+          className={`w-2 h-2 rounded-full ${
+            currentRank.color === "text-system-gold"
+              ? "bg-system-gold shadow-[0_0_8px_#f5c542]"
+              : currentRank.color === "text-red-400"
+              ? "bg-red-500 shadow-[0_0_8px_#ef4444]"
+              : currentRank.color === "text-purple-400"
+              ? "bg-purple-400 shadow-[0_0_8px_#a855f7]"
+              : "bg-system-cyan shadow-[0_0_8px_#38bdf8]"
+          } animate-pulse`}
+        />
         <span className="text-system-muted">STATUS:</span>
         <GlitchText
-          text="RANK E // UNRANKED"
-          className="text-system-cyan font-bold tracking-wider uppercase"
+          text={`${currentRank.rank} // ${currentRank.title}`}
+          className={`${currentRank.color} font-bold tracking-wider uppercase transition-colors duration-300`}
         />
+        <span className="text-[10px] text-system-muted/80 border-l border-white/10 pl-2 hidden xl:inline">
+          XP: <strong className="text-white">{Math.round(scrollProgress * 99 + 100)}</strong> / 10,000
+        </span>
       </div>
 
       {/* Right Controls: Audio + Re-Awaken + Action */}
