@@ -5,7 +5,8 @@ import Image from "next/image";
 import { Utensils, Sparkles, Check, Flame, Calculator, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { DecodeText } from "@/components/ui/DecodeText";
-import { GlitchHeading } from "@/components/ui/GlitchHeading";
+import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
+import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { sfx } from "@/lib/audio-sfx";
 
 interface FoodItem {
@@ -67,8 +68,11 @@ export function Chapter5() {
   return (
     <section
       id="chapter-5"
-      className="relative w-full bg-[#07060D] border-t border-system-accent/15 py-16 sm:py-24 px-4 sm:px-8 overflow-hidden"
+      className="relative w-full bg-[#07060D] py-16 sm:py-24 px-4 sm:px-8 overflow-hidden"
     >
+      {/* Seamless Volumetric Fog Portal Transition from Chapter 4 */}
+      <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
+
       <div className="max-w-6xl mx-auto space-y-12 sm:space-y-16">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
@@ -76,171 +80,187 @@ export function Chapter5() {
             <Utensils className="w-3.5 h-3.5" />
             <span><DecodeText text="PHASE 05 // NUTRITION GRIMOIRE" /></span>
           </div>
-          <GlitchHeading as="h2" className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
+          <BladeSliceHeading
+            as="h2"
+            accentText="NO STARVATION."
+            className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
+          >
             FOOD IS YOUR WEAPON.
-          </GlitchHeading>
+          </BladeSliceHeading>
           <p className="font-inter text-sm sm:text-base text-system-muted max-w-xl mx-auto">
             You cannot out-train a 40-gram protein deficit. Calibrate your Indian diet with mathematical precision.
           </p>
         </div>
 
-        {/* Central Anchor: "Needs Carbs" Hero Banner + Floating Sticker */}
-        <div className="relative system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 p-6 sm:p-10 shadow-system-glow">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Visual with Unified Dark Overlay */}
-            <div className="lg:col-span-7 relative h-[260px] sm:h-[340px] rounded-lg overflow-hidden border border-system-accent/20">
-              <Image
-                src="/assets/05-nutrition/needs-carbs.webp"
-                alt="Fueling with Complex Carbohydrates"
-                fill
-                sizes="(max-width: 1024px) 100vw, 650px"
-                className="object-cover object-center filter contrast-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#120F24] via-transparent to-transparent pointer-events-none" />
-              <div className="absolute top-4 left-4 bg-black/85 border border-system-cyan/40 px-3 py-1 rounded text-xs font-mono text-system-cyan backdrop-blur-sm">
-                [ RULE: CARBS ARE NOT THE ENEMY ]
+        {/* Central Anchor: "Needs Carbs" Hero Banner + Floating Sticker Wrapped in 3D AnimeTiltCard */}
+        <AnimeTiltCard
+          maxTilt={8}
+          glowColor="rgba(234, 179, 8, 0.25)"
+          className="w-full"
+        >
+          <div className="relative system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 p-6 sm:p-10 shadow-system-glow">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              {/* Visual with Unified Dark Overlay */}
+              <div className="lg:col-span-7 relative h-[260px] sm:h-[340px] rounded-lg overflow-hidden border border-system-accent/20">
+                <Image
+                  src="/assets/05-nutrition/needs-carbs.webp"
+                  alt="Fueling with Complex Carbohydrates"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 650px"
+                  className="object-cover object-center filter contrast-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#120F24] via-transparent to-transparent pointer-events-none" />
+                <div className="absolute top-4 left-4 bg-black/85 border border-system-cyan/40 px-3 py-1 rounded text-xs font-mono text-system-cyan backdrop-blur-sm">
+                  [ RULE: CARBS ARE NOT THE ENEMY ]
+                </div>
               </div>
-            </div>
 
-            {/* Copy & Mascot Sticker */}
-            <div className="lg:col-span-5 space-y-5">
-              <div className="space-y-2">
-                <span className="font-mono text-xs text-system-gold uppercase tracking-wider flex items-center gap-1.5">
-                  <Flame className="w-3.5 h-3.5" />
-                  GLYCOGEN SYNTHESIS
-                </span>
-                <h3 className="font-cinzel text-2xl sm:text-3xl font-bold uppercase text-white leading-tight">
-                  NOT JUST PROTEIN. <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-system-cyan via-purple-300 to-system-accent">
-                    FUEL THE MACHINE.
+              {/* Copy & Mascot Sticker */}
+              <div className="lg:col-span-5 space-y-5">
+                <div className="space-y-2">
+                  <span className="font-mono text-xs text-system-gold uppercase tracking-wider flex items-center gap-1.5">
+                    <Flame className="w-3.5 h-3.5" />
+                    GLYCOGEN SYNTHESIS
                   </span>
+                  <h3 className="font-cinzel text-2xl sm:text-3xl font-bold uppercase text-white leading-tight">
+                    NOT JUST PROTEIN. <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-system-cyan via-purple-300 to-system-accent">
+                      FUEL THE MACHINE.
+                    </span>
+                  </h3>
+                  <p className="font-inter text-xs sm:text-sm text-system-muted leading-relaxed">
+                    Protein repairs muscle. Roti, rice, and oats fuel the progressive overload in the gym dungeon. The System balances both in 1 tap.
+                  </p>
+                </div>
+
+                {/* Bouncing Sticker Elements */}
+                <div className="flex items-center gap-4 pt-2">
+                  <motion.div
+                    whileHover={{ rotate: 8, scale: 1.08 }}
+                    onMouseEnter={() => sfx.playHover()}
+                    className="relative w-20 h-20 rounded-lg overflow-hidden border border-system-gold/40 shadow-gold-glow cursor-pointer bg-black/60 p-1"
+                  >
+                    <Image
+                      src="/assets/05-nutrition/food-chicken-roti-sticker.webp"
+                      alt="Roti & Chicken Macro Sticker"
+                      fill
+                      className="object-contain"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    whileHover={{ rotate: -8, scale: 1.08 }}
+                    onMouseEnter={() => sfx.playHover()}
+                    className="relative w-20 h-20 rounded-lg overflow-hidden border border-system-cyan/40 shadow-cyan-glow cursor-pointer bg-black/60 p-1"
+                  >
+                    <Image
+                      src="/assets/05-nutrition/protein-mascot.webp"
+                      alt="System Protein Mascot"
+                      fill
+                      className="object-contain"
+                    />
+                  </motion.div>
+
+                  <div className="text-[11px] font-mono text-system-muted space-y-0.5">
+                    <div className="text-system-text font-semibold">100% INDIAN FOOD DB</div>
+                    <div>Roti, Paneer, Biryani, Dal</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AnimeTiltCard>
+
+        {/* Interactive Desi Protein Calculator Widget Wrapped in 3D AnimeTiltCard */}
+        <AnimeTiltCard
+          maxTilt={6}
+          glowColor="rgba(234, 179, 8, 0.3)"
+          className="w-full"
+        >
+          <div className="system-window corner-brackets p-6 sm:p-8 rounded-lg border border-system-accent/30 space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-system-accent/15 pb-4">
+              <div className="flex items-center gap-2">
+                <Calculator className="w-4 h-4 text-system-gold" />
+                <h3 className="font-cinzel text-lg sm:text-xl font-bold uppercase text-system-text">
+                  DESI MACRO CALIBRATOR
                 </h3>
-                <p className="font-inter text-xs sm:text-sm text-system-muted leading-relaxed">
-                  Protein repairs muscle. Roti, rice, and oats fuel the progressive overload in the gym dungeon. The System balances both in 1 tap.
-                </p>
               </div>
-
-              {/* Bouncing Sticker Elements */}
-              <div className="flex items-center gap-4 pt-2">
-                <motion.div
-                  whileHover={{ rotate: 8, scale: 1.08 }}
-                  onMouseEnter={() => sfx.playHover()}
-                  className="relative w-20 h-20 rounded-lg overflow-hidden border border-system-gold/40 shadow-gold-glow cursor-pointer bg-black/60 p-1"
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setGoal("bulk");
+                  }}
+                  className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
+                    goal === "bulk"
+                      ? "bg-system-accent text-white"
+                      : "bg-system-panel border border-white/10 text-system-muted"
+                  }`}
                 >
-                  <Image
-                    src="/assets/05-nutrition/food-chicken-roti-sticker.webp"
-                    alt="Roti & Chicken Macro Sticker"
-                    fill
-                    className="object-contain"
-                  />
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ rotate: -8, scale: 1.08 }}
-                  onMouseEnter={() => sfx.playHover()}
-                  className="relative w-20 h-20 rounded-lg overflow-hidden border border-system-cyan/40 shadow-cyan-glow cursor-pointer bg-black/60 p-1"
+                  BULK (2.0g/kg)
+                </button>
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setGoal("cut");
+                  }}
+                  className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
+                    goal === "cut"
+                      ? "bg-system-gold text-black"
+                      : "bg-system-panel border border-white/10 text-system-muted"
+                  }`}
                 >
-                  <Image
-                    src="/assets/05-nutrition/protein-mascot.webp"
-                    alt="System Protein Mascot"
-                    fill
-                    className="object-contain"
-                  />
-                </motion.div>
+                  CUT (1.6g/kg)
+                </button>
+              </div>
+            </div>
 
-                <div className="text-[11px] font-mono text-system-muted space-y-0.5">
-                  <div className="text-system-text font-semibold">100% INDIAN FOOD DB</div>
-                  <div>Roti, Paneer, Biryani, Dal</div>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+              {/* Slider Control */}
+              <div className="md:col-span-6 space-y-4">
+                <div className="flex justify-between font-mono text-xs">
+                  <span className="text-system-muted">YOUR CURRENT BODYWEIGHT:</span>
+                  <span className="text-system-text font-bold text-sm">{weightKg} KG</span>
+                </div>
+                <input
+                  type="range"
+                  min="50"
+                  max="105"
+                  step="1"
+                  value={weightKg}
+                  onChange={(e) => {
+                    sfx.playHover();
+                    setWeightKg(Number(e.target.value));
+                  }}
+                  className="w-full accent-system-accent cursor-pointer"
+                />
+                <div className="flex justify-between font-mono text-[10px] text-system-muted">
+                  <span>50 KG</span>
+                  <span>75 KG</span>
+                  <span>105 KG</span>
+                </div>
+              </div>
+
+              {/* Live Target Card */}
+              <div className="md:col-span-6 bg-black/60 border border-system-accent/30 p-4 rounded-lg flex items-center justify-between">
+                <div>
+                  <span className="font-mono text-[10px] text-system-muted uppercase">
+                    RECOMMENDED DAILY PROTOCOL
+                  </span>
+                  <div className="font-cinzel text-2xl sm:text-3xl font-black text-system-gold">
+                    {targetProtein}g PROTEIN
+                  </div>
+                  <div className="font-inter text-xs text-system-muted">
+                    Approx. 150g Paneer + 100g Soya + 1 scoop Whey
+                  </div>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-system-gold/10 border border-system-gold/30 flex items-center justify-center font-cinzel font-bold text-system-gold">
+                  S-TIER
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Interactive Desi Protein Calculator Widget */}
-        <div className="system-window corner-brackets p-6 sm:p-8 rounded-lg border border-system-accent/30 space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-system-accent/15 pb-4">
-            <div className="flex items-center gap-2">
-              <Calculator className="w-4 h-4 text-system-gold" />
-              <h3 className="font-cinzel text-lg sm:text-xl font-bold uppercase text-system-text">
-                DESI MACRO CALIBRATOR
-              </h3>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  sfx.playClick();
-                  setGoal("bulk");
-                }}
-                className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
-                  goal === "bulk"
-                    ? "bg-system-accent text-white"
-                    : "bg-system-panel border border-white/10 text-system-muted"
-                }`}
-              >
-                BULK (2.0g/kg)
-              </button>
-              <button
-                onClick={() => {
-                  sfx.playClick();
-                  setGoal("cut");
-                }}
-                className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
-                  goal === "cut"
-                    ? "bg-system-gold text-black"
-                    : "bg-system-panel border border-white/10 text-system-muted"
-                }`}
-              >
-                CUT (1.6g/kg)
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            {/* Slider Control */}
-            <div className="md:col-span-6 space-y-4">
-              <div className="flex justify-between font-mono text-xs">
-                <span className="text-system-muted">YOUR CURRENT BODYWEIGHT:</span>
-                <span className="text-system-text font-bold text-sm">{weightKg} KG</span>
-              </div>
-              <input
-                type="range"
-                min="50"
-                max="105"
-                step="1"
-                value={weightKg}
-                onChange={(e) => {
-                  sfx.playHover();
-                  setWeightKg(Number(e.target.value));
-                }}
-                className="w-full accent-system-accent cursor-pointer"
-              />
-              <div className="flex justify-between font-mono text-[10px] text-system-muted">
-                <span>50 KG</span>
-                <span>75 KG</span>
-                <span>105 KG</span>
-              </div>
-            </div>
-
-            {/* Live Target Card */}
-            <div className="md:col-span-6 bg-black/60 border border-system-accent/30 p-4 rounded-lg flex items-center justify-between">
-              <div>
-                <span className="font-mono text-[10px] text-system-muted uppercase">
-                  RECOMMENDED DAILY PROTOCOL
-                </span>
-                <div className="font-cinzel text-2xl sm:text-3xl font-black text-system-gold">
-                  {targetProtein}g PROTEIN
-                </div>
-                <div className="font-inter text-xs text-system-muted">
-                  Approx. 150g Paneer + 100g Soya + 1 scoop Whey
-                </div>
-              </div>
-              <div className="w-12 h-12 rounded-full bg-system-gold/10 border border-system-gold/30 flex items-center justify-center font-cinzel font-bold text-system-gold">
-                S-TIER
-              </div>
-            </div>
-          </div>
-        </div>
+        </AnimeTiltCard>
 
         {/* 4 Interactive Food Weapon Cards with Real-time Nutritional Scanner */}
         <div className="space-y-4">

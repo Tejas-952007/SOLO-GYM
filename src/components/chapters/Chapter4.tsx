@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { Bot, Shield, Trophy, Flame } from "lucide-react";
+import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
+import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { sfx } from "@/lib/audio-sfx";
 
 interface MentorCard {
@@ -79,8 +81,11 @@ export function Chapter4() {
     <section
       id="chapter-4"
       ref={containerRef}
-      className="relative w-full bg-[#07060D] border-t border-system-accent/15 overflow-hidden"
+      className="relative w-full bg-[#07060D] overflow-hidden"
     >
+      {/* Seamless Volumetric Fog Portal Transition from Chapter 3 */}
+      <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
+
       <div className="w-full min-h-[100svh] flex flex-col justify-center px-4 sm:px-8 py-16 sm:py-20 relative">
         {/* Section Header */}
         <div className="relative z-10 w-full max-w-6xl mx-auto mb-8 sm:mb-12">
@@ -88,9 +93,13 @@ export function Chapter4() {
             <Bot className="w-3.5 h-3.5" />
             <span>PHASE 04 // MENTOR PROTOCOL</span>
           </div>
-          <h2 className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text">
+          <BladeSliceHeading
+            as="h2"
+            accentText="NO EXCUSES."
+            className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
+          >
             DISCIPLINE BEATS MOTIVATION.
-          </h2>
+          </BladeSliceHeading>
           <p className="font-inter text-sm sm:text-base text-system-muted max-w-xl">
             A coach that gives you exact numbers, not speeches. Meet your AI Hunter Mentor.
           </p>
@@ -103,53 +112,59 @@ export function Chapter4() {
             className="flex flex-col md:flex-row gap-6 md:gap-8 will-change-transform max-w-6xl mx-auto md:max-w-none md:w-max md:px-8"
           >
             {MENTOR_CARDS.map((card) => (
-              <div
+              <AnimeTiltCard
                 key={card.id}
-                onMouseEnter={() => sfx.playHover()}
-                className="w-full md:w-[440px] system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 shadow-system-glow flex flex-col shrink-0 hover:border-system-accent transition-all duration-300"
+                maxTilt={10}
+                glowColor="rgba(139, 92, 246, 0.35)"
+                className="w-full md:w-[440px] shrink-0"
               >
-                {/* Image Frame with Precise Facial Focal Framing */}
-                <div className="relative w-full h-[260px] sm:h-[300px] overflow-hidden bg-black">
-                  <Image
-                    src={card.image}
-                    alt={card.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 440px"
-                    className={`object-cover filter contrast-115 brightness-105 ${
-                      card.id === 3 ? "object-[center_25%]" : "object-center"
-                    }`}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#120F24] via-transparent to-transparent pointer-events-none" />
-                  <div className="absolute top-3 left-3 bg-black/80 border border-system-accent/40 px-2.5 py-1 rounded text-[10px] font-mono text-system-cyan">
-                    {card.tag}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <h3 className="font-cinzel text-xl sm:text-2xl font-bold uppercase text-system-text tracking-wide leading-tight">
-                      {card.title}
-                    </h3>
-                    <div className="font-mono text-xs text-system-gold italic">
-                      {card.quote}
+                <div
+                  onMouseEnter={() => sfx.playHover()}
+                  className="w-full system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 shadow-system-glow flex flex-col hover:border-system-accent transition-all duration-300"
+                >
+                  {/* Image Frame with Precise Facial Focal Framing */}
+                  <div className="relative w-full h-[260px] sm:h-[300px] overflow-hidden bg-black">
+                    <Image
+                      src={card.image}
+                      alt={card.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 440px"
+                      className={`object-cover filter contrast-115 brightness-105 ${
+                        card.id === 3 ? "object-[center_25%]" : "object-center"
+                      }`}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#120F24] via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute top-3 left-3 bg-black/80 border border-system-accent/40 px-2.5 py-1 rounded text-[10px] font-mono text-system-cyan">
+                      {card.tag}
                     </div>
-                    <p className="font-inter text-xs sm:text-sm text-system-muted leading-relaxed">
-                      {card.desc}
-                    </p>
                   </div>
 
-                  <div className="pt-3 border-t border-system-accent/20 flex items-center justify-between text-[11px] font-mono text-system-muted">
-                    <span className="flex items-center gap-1.5 text-system-cyan">
-                      <Shield className="w-3 h-3" />
-                      <span>HUNTER DISCIPLINE +50 XP</span>
-                    </span>
-                    <span className="text-system-accent font-bold">
-                      CARD 0{card.id}/03
-                    </span>
+                  {/* Content */}
+                  <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <h3 className="font-cinzel text-xl sm:text-2xl font-bold uppercase text-system-text tracking-wide leading-tight">
+                        {card.title}
+                      </h3>
+                      <div className="font-mono text-xs text-system-gold italic">
+                        {card.quote}
+                      </div>
+                      <p className="font-inter text-xs sm:text-sm text-system-muted leading-relaxed">
+                        {card.desc}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-system-accent/20 flex items-center justify-between text-[11px] font-mono text-system-muted">
+                      <span className="flex items-center gap-1.5 text-system-cyan">
+                        <Shield className="w-3 h-3" />
+                        <span>HUNTER DISCIPLINE +50 XP</span>
+                      </span>
+                      <span className="text-system-accent font-bold">
+                        CARD 0{card.id}/03
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </AnimeTiltCard>
             ))}
           </div>
         </div>
