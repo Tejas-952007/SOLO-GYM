@@ -18,6 +18,32 @@ export function Chapter1() {
   const [completedQuests, setCompletedQuests] = useState<Record<number, boolean>>({});
   const [bonusXP, setBonusXP] = useState(0);
 
+  // Interactive Hunter Stat Allocator (5 AP)
+  const [activeHeroTab, setActiveHeroTab] = useState<"quests" | "stats">("quests");
+  const [availableAP, setAvailableAP] = useState(5);
+  const [stats, setStats] = useState({
+    str: 10,
+    agi: 10,
+    vit: 10,
+    discipline: 10,
+  });
+
+  const allocateStat = (stat: "str" | "agi" | "vit" | "discipline") => {
+    if (availableAP <= 0) {
+      sfx.playClick();
+      return;
+    }
+    sfx.playStatPointAlloc();
+    setAvailableAP((prev) => prev - 1);
+    setStats((prev) => ({ ...prev, [stat]: prev[stat] + 1 }));
+  };
+
+  const resetStats = () => {
+    sfx.playClick();
+    setAvailableAP(5);
+    setStats({ str: 10, agi: 10, vit: 10, discipline: 10 });
+  };
+
   const toggleQuest = (id: number, xpValue: number) => {
     setCompletedQuests((prev) => {
       const next = { ...prev, [id]: !prev[id] };
@@ -153,50 +179,130 @@ export function Chapter1() {
             </p>
           </div>
 
-          {/* Interactive System Quest Card (Simulating App Gameplay) */}
+          {/* Interactive System HUD Box (Daily Quests & Stat Allocator) */}
           <div className="w-full max-w-lg p-4 sm:p-5 rounded-xl border border-system-cyan/30 bg-[#0B1021]/80 backdrop-blur-md shadow-[0_0_25px_rgba(14,165,233,0.15)] space-y-3.5">
-            <div className="flex justify-between items-center text-xs font-mono text-system-cyan border-b border-system-cyan/20 pb-2">
-              <span className="flex items-center gap-2 font-bold tracking-wider">
-                <Sparkles className="w-4 h-4 text-system-cyan" />
-                DAILY QUEST: SURVIVAL CALIBRATION
-              </span>
-              <span className="text-yellow-400 font-bold">XP: +{bonusXP}/500</span>
-            </div>
-
-            <div className="space-y-2">
-              {[
-                { id: 1, label: "100 Pushups (Or to failure)", xp: 150 },
-                { id: 2, label: "140g High-Protein Intake (Paneer/Soya/Eggs)", xp: 200 },
-                { id: 3, label: "Enter Iron Dungeon (No excuses)", xp: 150 },
-              ].map((quest) => (
+            {/* Tab Switches */}
+            <div className="flex items-center justify-between border-b border-system-cyan/20 pb-2.5">
+              <div className="flex items-center gap-2">
                 <button
-                  key={quest.id}
-                  onClick={() => toggleQuest(quest.id, quest.xp)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2 rounded text-left text-xs font-mono transition-all ${
-                    completedQuests[quest.id]
-                      ? "bg-system-cyan/20 border border-system-cyan/60 text-white shadow-[0_0_12px_rgba(56,189,248,0.4)]"
-                      : "bg-black/40 border border-white/10 text-system-muted hover:border-system-cyan/40 hover:text-white"
+                  onClick={() => {
+                    sfx.playClick();
+                    setActiveHeroTab("quests");
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1 rounded text-xs font-mono tracking-wider transition-all ${
+                    activeHeroTab === "quests"
+                      ? "bg-system-cyan/20 border border-system-cyan text-white shadow-[0_0_12px_rgba(56,189,248,0.5)] font-bold"
+                      : "text-system-muted hover:text-white"
                   }`}
                 >
-                  <span className="flex items-center gap-2.5">
-                    {completedQuests[quest.id] ? (
-                      <CheckCircle2 className="w-4 h-4 text-system-cyan shrink-0" />
-                    ) : (
-                      <Circle className="w-4 h-4 text-system-muted shrink-0" />
-                    )}
-                    <span className={completedQuests[quest.id] ? "line-through opacity-80" : ""}>
-                      {quest.label}
-                    </span>
-                  </span>
-                  <span className="text-yellow-400/90 text-[10px] shrink-0 font-bold">+{quest.xp} XP</span>
+                  [ QUEST LOG ]
                 </button>
-              ))}
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setActiveHeroTab("stats");
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1.5 ${
+                    activeHeroTab === "stats"
+                      ? "bg-yellow-500/20 border border-yellow-500 text-yellow-300 shadow-[0_0_12px_rgba(234,179,8,0.5)] font-bold"
+                      : "text-system-muted hover:text-white"
+                  }`}
+                >
+                  <Award className="w-3.5 h-3.5" />
+                  <span>STATS [{availableAP} AP]</span>
+                </button>
+              </div>
+              <span className="text-yellow-400 font-mono text-xs font-bold">
+                {activeHeroTab === "quests" ? `XP: +${bonusXP}/500` : `AP: ${availableAP} REMAINING`}
+              </span>
             </div>
 
-            <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-system-muted">
-              <span>PENALTY ZONE: 4-HOUR RUN IN THE DESERT</span>
-              <span className="text-system-cyan font-bold">STATUS: {bonusXP > 0 ? "PROGRESSING" : "PENDING"}</span>
-            </div>
+            {/* View 1: Daily Quests */}
+            {activeHeroTab === "quests" ? (
+              <div className="space-y-2">
+                {[
+                  { id: 1, label: "100 Pushups (Or to failure)", xp: 150 },
+                  { id: 2, label: "140g High-Protein Intake (Paneer/Soya/Eggs)", xp: 200 },
+                  { id: 3, label: "Enter Iron Dungeon (No excuses)", xp: 150 },
+                ].map((quest) => (
+                  <button
+                    key={quest.id}
+                    onClick={() => toggleQuest(quest.id, quest.xp)}
+                    className={`w-full flex items-center justify-between px-3.5 py-2 rounded text-left text-xs font-mono transition-all ${
+                      completedQuests[quest.id]
+                        ? "bg-system-cyan/20 border border-system-cyan/60 text-white shadow-[0_0_12px_rgba(56,189,248,0.4)]"
+                        : "bg-black/40 border border-white/10 text-system-muted hover:border-system-cyan/40 hover:text-white"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      {completedQuests[quest.id] ? (
+                        <CheckCircle2 className="w-4 h-4 text-system-cyan shrink-0" />
+                      ) : (
+                        <Circle className="w-4 h-4 text-system-muted shrink-0" />
+                      )}
+                      <span className={completedQuests[quest.id] ? "line-through opacity-80" : ""}>
+                        {quest.label}
+                      </span>
+                    </span>
+                    <span className="text-yellow-400/90 text-[10px] shrink-0 font-bold">+{quest.xp} XP</span>
+                  </button>
+                ))}
+                <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-system-muted">
+                  <span>PENALTY ZONE: 4-HOUR RUN IN THE DESERT</span>
+                  <span className="text-system-cyan font-bold">STATUS: {bonusXP > 0 ? "PROGRESSING" : "PENDING"}</span>
+                </div>
+              </div>
+            ) : (
+              /* View 2: Interactive Hunter Stat Allocator */
+              <div className="space-y-3 font-mono text-xs">
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { key: "str", name: "STR (STRENGTH)", val: stats.str, desc: "Compound Push/Pull 1RM" },
+                    { key: "agi", name: "AGI (AGILITY)", val: stats.agi, desc: "Rest Interval Recovery" },
+                    { key: "vit", name: "VIT (VITALITY)", val: stats.vit, desc: "Sleep Hypertrophy Index" },
+                    { key: "discipline", name: "DISCIPLINE", val: stats.discipline, desc: "Macro Adherence Rate" },
+                  ].map((s) => (
+                    <div
+                      key={s.key}
+                      className="p-2.5 bg-black/50 border border-white/10 rounded flex flex-col justify-between"
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[10px] text-system-muted font-bold">{s.name}</span>
+                        <span className="text-yellow-400 font-bold text-sm">{s.val}</span>
+                      </div>
+                      <div className="text-[9px] text-system-muted mb-2 leading-tight">{s.desc}</div>
+                      <button
+                        onClick={() => allocateStat(s.key as "str" | "agi" | "vit" | "discipline")}
+                        disabled={availableAP <= 0}
+                        className={`w-full py-1 rounded text-[10px] font-bold uppercase transition-all ${
+                          availableAP > 0
+                            ? "bg-yellow-500/20 hover:bg-yellow-500 text-yellow-300 hover:text-black border border-yellow-500/50 shadow-sm cursor-pointer"
+                            : "bg-white/5 text-system-muted/40 border border-white/5 cursor-not-allowed"
+                        }`}
+                      >
+                        [+1 ALLOCATE]
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Live Output Simulation */}
+                <div className="p-2.5 bg-system-cyan/10 border border-system-cyan/30 rounded flex items-center justify-between text-[11px]">
+                  <span>EST. BENCH: <strong className="text-white">{50 + (stats.str - 10) * 4} KG</strong></span>
+                  <span>RECOVERY: <strong className="text-emerald-400">{60 + (stats.vit - 10) * 8}%</strong></span>
+                  {availableAP === 0 && (
+                    <button
+                      onClick={resetStats}
+                      className="text-[10px] text-yellow-400 underline hover:text-white ml-2"
+                    >
+                      RESET
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Interactive CTA Buttons */}
