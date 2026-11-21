@@ -25,17 +25,18 @@ export function Chapter9() {
       id="chapter-9"
       className="relative w-full min-h-[100svh] bg-[#07060D] border-t border-system-accent/20 py-24 px-4 sm:px-8 flex flex-col justify-between overflow-hidden"
     >
-      {/* Background Visual: Rank S Max Hunter with subtle aura */}
-      <div className="absolute inset-0 pointer-events-none opacity-25">
+      {/* Background Visual: S-Rank Sovereign Hunter - Face & Gold Lightning Clearly Visible */}
+      <div className="absolute inset-0 pointer-events-none opacity-60">
         <Image
           src="/assets/07-ranks/rank-s-max.webp"
           alt="S-Rank Sovereign Hunter"
           fill
-          className="object-cover object-center filter saturate-150"
+          priority
+          className="object-cover object-[center_42%] filter contrast-125 brightness-110 saturate-125"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-[#07060D]/80 to-[#07060D]" />
-        <div className="absolute inset-0 bg-radial-gradient from-purple-900/20 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-[#07060D]/60 to-[#07060D]/70" />
+        <div className="absolute inset-0 bg-radial-gradient from-yellow-500/15 via-purple-900/10 to-transparent" />
       </div>
 
       <div className="relative z-10 w-full max-w-4xl mx-auto my-auto text-center space-y-8">

@@ -66,15 +66,15 @@ export function SystemNoticeModal({ onAwaken }: SystemNoticeModalProps) {
         exit={{ opacity: 0, transition: { duration: 0.5 } }}
         className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#07060D]/95 backdrop-blur-xl overflow-hidden"
       >
-        {/* Sinister Grin in the Background */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-80 select-none overflow-hidden">
-          <div className="relative w-[420px] h-[420px] sm:w-[620px] sm:h-[620px] md:w-[820px] md:h-[820px] mask-radial">
+        {/* Sinister Grin in the Background - Fully Visible Menacing Eyes & Grin */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-90 select-none overflow-hidden">
+          <div className="relative w-[360px] h-[360px] sm:w-[540px] sm:h-[540px] md:w-[720px] md:h-[720px]">
             <Image
               src="/assets/02-system/system-grin.webp"
               alt="System Entity Grin"
               fill
               priority
-              className="object-contain filter contrast-150 brightness-110 drop-shadow-[0_0_35px_rgba(139,92,246,0.5)] animate-pulse"
+              className="object-contain filter contrast-130 brightness-115 drop-shadow-[0_0_45px_rgba(239,68,68,0.7)] animate-pulse"
             />
           </div>
         </div>
