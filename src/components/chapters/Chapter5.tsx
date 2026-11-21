@@ -242,11 +242,38 @@ export function Chapter5() {
           </div>
         </div>
 
-        {/* 4 Interactive Food Weapon Cards */}
+        {/* 4 Interactive Food Weapon Cards with Real-time Nutritional Scanner */}
         <div className="space-y-4">
-          <div className="flex justify-between items-center text-xs font-mono text-system-muted">
-            <span className="uppercase">[ WEAPON INVENTORY: HIGH-PROTEIN PLATES ]</span>
-            <span className="text-system-accent">HOVER / TAP FOR MACROS</span>
+          <div className="flex flex-wrap justify-between items-center text-xs font-mono text-system-muted gap-2">
+            <span className="uppercase text-system-cyan font-bold">[ WEAPON INVENTORY: HIGH-PROTEIN PLATES ]</span>
+            <span className="text-yellow-400">[ TAP ANY DISH TO RUN AI MACRO SCAN ]</span>
+          </div>
+
+          {/* Active Dish Laser Scanning HUD Box */}
+          <div className="system-window corner-brackets p-4 sm:p-5 rounded-lg border border-system-cyan/40 bg-black/85 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-pulse" />
+            
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <div className="md:col-span-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div className="w-2.5 h-2.5 rounded-full bg-system-cyan animate-ping shrink-0" />
+                <div>
+                  <div className="font-mono text-xs text-system-cyan font-bold uppercase">
+                    AI SCANNER IDENTIFIED: {NUTRITION_ITEMS.find((f) => f.id === activeFood)?.name}
+                  </div>
+                  <div className="font-mono text-[11px] text-system-muted">
+                    MACRO PROFILE: {NUTRITION_ITEMS.find((f) => f.id === activeFood)?.protein} • {NUTRITION_ITEMS.find((f) => f.id === activeFood)?.calories}
+                  </div>
+                </div>
+              </div>
+              <div className="md:col-span-4 flex items-center justify-start md:justify-end gap-2 font-mono text-[10px]">
+                <span className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-300">
+                  LEUCINE: 2.8g [PEAK]
+                </span>
+                <span className="px-2 py-0.5 rounded bg-system-accent/20 border border-system-accent/40 text-purple-300">
+                  BIOAVAILABILITY: 94%
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -255,13 +282,13 @@ export function Chapter5() {
                 key={item.id}
                 whileHover={{ y: -4 }}
                 onClick={() => {
-                  sfx.playClick();
+                  sfx.playBladeSheathe();
                   setActiveFood(item.id);
                 }}
                 onMouseEnter={() => sfx.playHover()}
                 className={`system-window corner-brackets p-4 rounded-lg cursor-pointer border transition-all duration-300 ${
                   activeFood === item.id
-                    ? "border-system-accent shadow-system-glow scale-[1.02]"
+                    ? "border-system-cyan shadow-[0_0_20px_rgba(56,189,248,0.5)] scale-[1.02]"
                     : "border-system-accent/20 hover:border-system-accent/50"
                 }`}
               >
