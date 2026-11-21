@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { Bot, Shield, Trophy, Flame } from "lucide-react";
+import { sfx } from "@/lib/audio-sfx";
 
 interface MentorCard {
   id: number;
@@ -104,16 +105,19 @@ export function Chapter4() {
             {MENTOR_CARDS.map((card) => (
               <div
                 key={card.id}
-                className="w-full md:w-[440px] system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 shadow-system-glow flex flex-col shrink-0"
+                onMouseEnter={() => sfx.playHover()}
+                className="w-full md:w-[440px] system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 shadow-system-glow flex flex-col shrink-0 hover:border-system-accent transition-all duration-300"
               >
-                {/* Image Frame with Unified Dark Overlay */}
+                {/* Image Frame with Precise Facial Focal Framing */}
                 <div className="relative w-full h-[260px] sm:h-[300px] overflow-hidden bg-black">
                   <Image
                     src={card.image}
                     alt={card.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 440px"
-                    className="object-cover object-center filter contrast-110 brightness-95"
+                    className={`object-cover filter contrast-115 brightness-105 ${
+                      card.id === 3 ? "object-[center_25%]" : "object-center"
+                    }`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#120F24] via-transparent to-transparent pointer-events-none" />
                   <div className="absolute top-3 left-3 bg-black/80 border border-system-accent/40 px-2.5 py-1 rounded text-[10px] font-mono text-system-cyan">
