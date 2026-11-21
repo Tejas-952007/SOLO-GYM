@@ -164,10 +164,13 @@ export function Chapter2() {
           <div className="md:col-span-6 flex flex-col justify-center items-center relative space-y-3">
             <div
               ref={visualRef}
-              className="relative w-full max-w-[420px] aspect-[4/5] rounded-lg overflow-hidden border border-system-accent/30 shadow-system-glow will-change-transform group cursor-pointer"
-              onClick={() => setShowPotential(!showPotential)}
+              className="relative w-full max-w-[480px] h-[480px] sm:h-[560px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer"
+              onClick={() => {
+                sfx.playRankAscent();
+                setShowPotential(!showPotential);
+              }}
             >
-              {/* Image 1: Weak Meets System */}
+              {/* Image 1: Weak Meets System - Towering Monarch Entity Face Clearly Visible */}
               <div
                 className={`absolute inset-0 transition-opacity duration-500 ${
                   showPotential ? "opacity-0 pointer-events-none" : "opacity-100"
@@ -177,8 +180,9 @@ export function Chapter2() {
                   src="/assets/02-system/weak-meets-system.webp"
                   alt="Weak Hunter Meets The Looming System Entity"
                   fill
-                  sizes="(max-width: 768px) 100vw, 420px"
-                  className="object-cover object-center filter contrast-110"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 480px"
+                  className="object-cover object-[center_35%] filter contrast-120 brightness-105"
                 />
                 <div
                   ref={grinAuraRef}
@@ -196,8 +200,8 @@ export function Chapter2() {
                   src="/assets/06-enemies/berserk-physique.webp"
                   alt="S-Rank Awakening Anatomy with Sacrificial Sigil"
                   fill
-                  sizes="(max-width: 768px) 100vw, 420px"
-                  className="object-cover object-top filter contrast-125 brightness-105"
+                  sizes="(max-width: 768px) 100vw, 480px"
+                  className="object-cover object-[center_32%] filter contrast-125 brightness-110"
                 />
                 <div className="absolute inset-0 bg-radial-gradient from-red-600/40 via-red-900/20 to-transparent opacity-60 pointer-events-none mix-blend-color-dodge z-10 animate-pulse" />
               </div>
