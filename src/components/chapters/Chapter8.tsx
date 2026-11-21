@@ -52,6 +52,28 @@ const CHAT_SCENARIOS: ChatScenario[] = [
     verdict: "Target 100% achievable without non-veg.",
     prescription: "Daily Veg Protocol: 100g Soya Chunks (52g P) + 200g Low-fat Paneer (36g P) + 250ml Soya Milk (8g P) + 1.5 scoops Whey/Plant Protein (38g P) + Dal (10g P).",
   },
+  {
+    id: "night-shift",
+    tag: "NIGHT SHIFT // IT / BPO",
+    userQuery: "Working 10PM to 7AM shift in Pune Hinjewadi. My circadian rhythm is ruined and I miss meals. When should I train?",
+    time: "23:40",
+    protein: "148.0g",
+    carbs: "190.0g",
+    fats: "48.0g",
+    verdict: "Circadian mismatch detected. Fasting window recalibrated.",
+    prescription: "Shift Protocol: Train at 19:30 before your shift starts with high caffeine. Eat main protein feast at 01:00 AM. Sleep in pitch darkness with blackout curtains from 08:30 AM to 16:30 PM.",
+  },
+  {
+    id: "budget-bulk",
+    tag: "STUDENT BUDGET // ₹100/DAY",
+    userQuery: "College student in Delhi with ₹100 daily food budget. Can't afford ₹2,500 whey jars. What is the cheapest protein protocol?",
+    time: "11:20",
+    protein: "135.0g",
+    carbs: "220.0g",
+    fats: "35.0g",
+    verdict: "Ultra-lean student protocol locked in under ₹85/day.",
+    prescription: "Desi Survival Stack: 100g Fortune Soya Chunks (₹15 / 52g P) + 6 Local Eggs (₹42 / 36g P) + 100g Roasted Chana/Sattu (₹18 / 22g P) + 500ml Toned Milk (₹28 / 16g P). Total Cost: ₹88. Total Protein: 126g.",
+  },
 ];
 
 interface GymSpot {
