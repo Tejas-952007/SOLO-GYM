@@ -9,6 +9,7 @@ import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { RecoverySleepChamber } from "@/components/ui/RecoverySleepChamber";
 import { DeloadPlanner } from "@/components/ui/DeloadPlanner";
+import { MuscleHypertrophyHeatmap } from "@/components/ui/MuscleHypertrophyHeatmap";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -450,6 +451,11 @@ export function Chapter6() {
         {/* Central Nervous System Reboot & Deload Architect */}
         <div className="w-full max-w-6xl mx-auto mt-6">
           <DeloadPlanner />
+        </div>
+
+        {/* 3D Anatomical Muscle Hypertrophy Heatmap & Recovery Matrix */}
+        <div className="w-full max-w-6xl mx-auto mt-6">
+          <MuscleHypertrophyHeatmap />
         </div>
       </div>
     </section>
