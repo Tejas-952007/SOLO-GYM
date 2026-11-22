@@ -8,6 +8,7 @@ import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { DailyDisciplineFlame } from "@/components/ui/DailyDisciplineFlame";
 import { AnimeGymSynthEngine } from "@/components/ui/AnimeGymSynthEngine";
+import { RpeCalculator } from "@/components/ui/RpeCalculator";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -213,6 +214,11 @@ export function Chapter4() {
         {/* Procedural Web Audio Synthwave Rhythm Engine */}
         <div className="w-full max-w-6xl mx-auto mt-6 relative z-10">
           <AnimeGymSynthEngine />
+        </div>
+
+        {/* RPE & Reps in Reserve Autoregulation Matrix */}
+        <div className="w-full max-w-6xl mx-auto mt-6 relative z-10">
+          <RpeCalculator />
         </div>
       </div>
     </section>
