@@ -6,6 +6,7 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { Dumbbell, ShieldCheck, Swords, Flame, Sparkles, Trophy } from "lucide-react";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { DungeonBossGauntlet } from "@/components/ui/DungeonBossGauntlet";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -465,6 +466,11 @@ export function Chapter3() {
             </div>
           </div>
         </AnimeTiltCard>
+
+        {/* 4 Dungeon Boss Raid Gauntlet Registry */}
+        <div className="relative z-20 w-full max-w-6xl mx-auto my-6">
+          <DungeonBossGauntlet />
+        </div>
 
         {/* Bottom Dungeon Sub-HUD */}
         <div className="relative z-20 w-full max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-system-muted gap-2 pt-2 border-t border-system-accent/15">
