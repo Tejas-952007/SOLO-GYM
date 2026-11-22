@@ -7,6 +7,7 @@ import { Skull, Moon, Flame, Zap, ShieldAlert, Sparkles, Swords, HeartPulse } fr
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { RecoverySleepChamber } from "@/components/ui/RecoverySleepChamber";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -439,6 +440,11 @@ export function Chapter6() {
           </div>
         </div>
         </AnimeTiltCard>
+
+        {/* Hyperbolic Cellular Sleep Recovery & Bio-Tank Telemetry */}
+        <div className="w-full max-w-6xl mx-auto mt-10">
+          <RecoverySleepChamber />
+        </div>
       </div>
     </section>
   );
