@@ -6,6 +6,7 @@ import { Award, Zap, ChevronRight, Shield, Flame, Sparkles } from "lucide-react"
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { PowerliftingRadarMatrix } from "@/components/ui/PowerliftingRadarMatrix";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -432,6 +433,11 @@ export function Chapter7() {
             </div>
           </AnimeTiltCard>
 
+        </div>
+
+        {/* Real-time 1RM Compound Wilks / DOTS Radar Telemetry Matrix */}
+        <div className="w-full max-w-6xl mx-auto mt-8">
+          <PowerliftingRadarMatrix />
         </div>
       </div>
     </section>
