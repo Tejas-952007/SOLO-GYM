@@ -14,6 +14,13 @@ export function Chapter6() {
   const containerRef = useRef<HTMLDivElement>(null);
   const chainCardRef = useRef<HTMLDivElement>(null);
   const [selectedPhysique, setSelectedPhysique] = useState<"berserk" | "monarch">("berserk");
+  const [showAnatomyScan, setShowAnatomyScan] = useState(false);
+
+  const toggleAnatomyScan = () => {
+    sfx.playBladeSlash();
+    setShowAnatomyScan((prev) => !prev);
+    spawnCombatNumber(showAnatomyScan ? "SCANNER OFF" : "ANATOMICAL SCAN ACTIVE", undefined, undefined, "stat");
+  };
 
   useEffect(() => {
     const el = containerRef.current;
@@ -360,14 +367,32 @@ export function Chapter6() {
                   />
                 </div>
 
+                {/* Interactive Anatomical Callout Pins */}
+                {showAnatomyScan && (
+                  <div className="absolute inset-0 pointer-events-none z-20">
+                    <div className="absolute top-[22%] left-[48%] -translate-x-1/2 bg-black/90 border border-system-cyan px-2 py-0.5 rounded text-[9px] font-mono text-system-cyan shadow-lg animate-pulse">
+                      TRAPEZIUS COBRA HOOD
+                    </div>
+                    <div className="absolute top-[45%] left-[24%] bg-black/90 border border-purple-400 px-2 py-0.5 rounded text-[9px] font-mono text-purple-300 shadow-lg animate-pulse">
+                      LATISSIMUS V-TAPER
+                    </div>
+                    <div className="absolute top-[45%] right-[24%] bg-black/90 border border-purple-400 px-2 py-0.5 rounded text-[9px] font-mono text-purple-300 shadow-lg animate-pulse">
+                      TERES MAJOR DENSITY
+                    </div>
+                    <div className="absolute bottom-[28%] left-[48%] -translate-x-1/2 bg-black/90 border border-system-gold px-2 py-0.5 rounded text-[9px] font-mono text-system-gold shadow-lg animate-pulse">
+                      LUMBAR TREE ERECTORS
+                    </div>
+                  </div>
+                )}
+
                 <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
                 <div className="absolute top-3 right-3 font-mono text-[10px] px-2.5 py-1 bg-black/85 border border-system-gold/50 text-system-gold rounded shadow-md">
                   {selectedPhysique === "berserk" ? "BERSERK SACRIFICE // BRANDED" : "HUNTER ANATOMY // 100% UNLOCKED"}
                 </div>
               </div>
 
-              {/* Physique Toggle Selector */}
-              <div className="flex items-center gap-2 font-mono text-xs">
+              {/* Physique Toggle Selector & Anatomy Scanner */}
+              <div className="flex flex-wrap items-center justify-center gap-2 font-mono text-xs">
                 <button
                   onClick={() => {
                     sfx.playSubBassBoom();
@@ -397,6 +422,17 @@ export function Chapter6() {
                   }`}
                 >
                   [ MONARCH HYPERTROPHY ]
+                </button>
+                <button
+                  onClick={toggleAnatomyScan}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1.5 rounded-sm border transition-all cursor-pointer ${
+                    showAnatomyScan
+                      ? "bg-system-gold/25 border-system-gold text-system-gold shadow-[0_0_12px_rgba(245,197,66,0.5)] font-bold"
+                      : "bg-black/40 border-white/10 text-system-muted hover:text-system-gold"
+                  }`}
+                >
+                  [ {showAnatomyScan ? "HIDE ANATOMY" : "SCAN ANATOMY"} ]
                 </button>
               </div>
             </div>
