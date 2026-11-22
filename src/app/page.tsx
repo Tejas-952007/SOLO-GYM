@@ -14,6 +14,7 @@ import { FloatingDamageNumbers } from "@/components/effects/FloatingDamageNumber
 import { SpatialDungeonPerspective } from "@/components/effects/SpatialDungeonPerspective";
 import { CinematicOverlay } from "@/components/CinematicOverlay";
 import { HunterStatusConsole } from "@/components/HunterStatusConsole";
+import { BladeSlashDivider } from "@/components/ui/BladeSlashDivider";
 import { StoryTimelineHUD } from "@/components/StoryTimelineHUD";
 import { Chapter1 } from "@/components/chapters/Chapter1";
 import { Chapter2 } from "@/components/chapters/Chapter2";
@@ -71,29 +72,45 @@ export default function Home() {
           {/* Ch1: "THIS IS YOU. RANK E." */}
           <Chapter1 />
 
+          <BladeSlashDivider label="GATEWAY 01 // THE AWAKENING" sub="CARTENON TEMPLE PACT" theme="cyan" />
+
           {/* Ch2: "THE SYSTEM CHOSE YOU" + S-Rank Anatomy Flip Card */}
           <Chapter2 />
+
+          <BladeSlashDivider label="GATEWAY 02 // GAUNTLET DESCENT" sub="FLOORS 01 TO 04 CLEARANCE" theme="violet" />
 
           {/* Ch3: "THE GYM IS YOUR DUNGEON" (Floors 01 to 04 Clearance) */}
           <Chapter3 />
 
+          <BladeSlashDivider label="GATEWAY 03 // DISCIPLINE PROTOCOL" sub="MENTOR CODE ACTIVATED" theme="cyan" />
+
           {/* Ch4: "DISCIPLINE BEATS MOTIVATION" (Desktop Horizontal Pinned Scroll) */}
           <Chapter4 />
+
+          <BladeSlashDivider label="GATEWAY 04 // NUTRITION ALCHEMY" sub="INDIAN FOOD GRIMOIRE" theme="gold" />
 
           {/* Ch5: "FOOD IS YOUR WEAPON" (Indian Nutrition Grimoire & Macros) */}
           <Chapter5 />
 
+          <BladeSlashDivider label="GATEWAY 05 // DEMON BACK OVERDRIVE" sub="SLAY PROCRASTINATION" theme="red" />
+
           {/* Ch6: "THE ENEMIES" (Distraction Chains, Recovery Tank, Rage Mindset) */}
           <Chapter6 />
 
+          <BladeSlashDivider label="GATEWAY 06 // SOVEREIGN ASCENSION" sub="RANK E TO RANK S LADDER" theme="violet" />
+
           {/* Ch7: "RANK UP" (Signature E -> S Evolution Matrix & Stat Gauges) */}
           <Chapter7 />
+
+          <BladeSlashDivider label="GATEWAY 07 // NEURAL ADVISOR" sub="DESI MACRO TERMINAL" theme="cyan" />
 
           {/* Ch8: "YOUR AI COACH" (Illustrative Chat HUD & 4 Feature Pillars) */}
           <Chapter8 />
 
           {/* Unlockable System Armory Skins (Obsidian, Solar, Jade) */}
           <SkinsSection />
+
+          <BladeSlashDivider label="GATEWAY 08 // THE MONARCH MONOLITH" sub="ARISE EXTRACTION RITUAL" theme="gold" />
 
           {/* Ch9: "ARISE." (The Sovereign Awakening & Final Waitlist CTA) */}
           <Chapter9 />
