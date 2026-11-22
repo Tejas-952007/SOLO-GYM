@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useDeviceTilt } from "@/hooks/useDeviceTilt";
 
 interface FloatingRune {
   id: number;
@@ -20,6 +21,11 @@ export function SpatialDungeonPerspective() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [runes, setRunes] = useState<FloatingRune[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const tilt = useDeviceTilt();
+
+  // Combine desktop mouse parallax with mobile physical gyroscope
+  const effectiveX = tilt.isSupported ? tilt.tiltY : mousePos.x;
+  const effectiveY = tilt.isSupported ? tilt.tiltX : mousePos.y;
 
   useEffect(() => {
     // Generate 18 floating 3D dungeon runes across the viewport
@@ -53,14 +59,14 @@ export function SpatialDungeonPerspective() {
       className="fixed inset-0 pointer-events-none z-[4] overflow-hidden"
       style={{
         perspective: "1200px",
-        perspectiveOrigin: `${50 + mousePos.x * 10}% ${50 + mousePos.y * 10}%`,
+        perspectiveOrigin: `${50 + effectiveX * 10}% ${50 + effectiveY * 10}%`,
       }}
     >
       {/* 3D Parallax Deep Atmospheric Fog */}
       <div
         className="absolute inset-[-10%] transition-transform duration-700 ease-out pointer-events-none"
         style={{
-          transform: `translate3d(${mousePos.x * -25}px, ${mousePos.y * -25}px, -100px)`,
+          transform: `translate3d(${effectiveX * -25}px, ${effectiveY * -25}px, -100px)`,
           background: "radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.06) 0%, transparent 70%)",
         }}
       />
@@ -70,7 +76,7 @@ export function SpatialDungeonPerspective() {
         className="absolute inset-0 transition-transform duration-500 ease-out"
         style={{
           transformStyle: "preserve-3d",
-          transform: `rotateY(${mousePos.x * 4}deg) rotateX(${-mousePos.y * 4}deg)`,
+          transform: `rotateY(${effectiveX * 4}deg) rotateX(${-effectiveY * 4}deg)`,
         }}
       >
         {runes.map((rune) => (
@@ -80,7 +86,7 @@ export function SpatialDungeonPerspective() {
             style={{
               left: `${rune.x}%`,
               top: `${rune.y}%`,
-              transform: `translate3d(${mousePos.x * rune.speed * 30}px, ${mousePos.y * rune.speed * 30}px, ${rune.z}px)`,
+              transform: `translate3d(${effectiveX * rune.speed * 30}px, ${effectiveY * rune.speed * 30}px, ${rune.z}px)`,
               fontSize: `${rune.size}px`,
               color: rune.color,
               opacity: rune.opacity,
@@ -97,7 +103,7 @@ export function SpatialDungeonPerspective() {
       <div
         className="absolute inset-0 transition-transform duration-300 ease-out pointer-events-none"
         style={{
-          transform: `translate3d(${mousePos.x * 35}px, ${mousePos.y * 35}px, 60px)`,
+          transform: `translate3d(${effectiveX * 35}px, ${effectiveY * 35}px, 60px)`,
         }}
       >
         {/* Subtle Edge Grid Lines */}
