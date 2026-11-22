@@ -16,6 +16,7 @@ import { CinematicOverlay } from "@/components/CinematicOverlay";
 import { HunterStatusConsole } from "@/components/HunterStatusConsole";
 import { HunterCommandPalette } from "@/components/ui/HunterCommandPalette";
 import { KeyboardShortcutsModal } from "@/components/ui/KeyboardShortcutsModal";
+import { AriseAwakeningSequence } from "@/components/effects/AriseAwakeningSequence";
 import { BladeSlashDivider } from "@/components/ui/BladeSlashDivider";
 import { StoryTimelineHUD } from "@/components/StoryTimelineHUD";
 import { Chapter1 } from "@/components/chapters/Chapter1";
@@ -32,6 +33,15 @@ import { Chapter9 } from "@/components/chapters/Chapter9";
 export default function Home() {
   const [awakened, setAwakened] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [isAriseOpen, setIsAriseOpen] = useState(false);
+
+  useEffect(() => {
+    const handleTriggerArise = () => {
+      setIsAriseOpen(true);
+    };
+    window.addEventListener("trigger-arise-cutscene", handleTriggerArise);
+    return () => window.removeEventListener("trigger-arise-cutscene", handleTriggerArise);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -70,15 +80,18 @@ export default function Home() {
         {/* Global Hunter Keyboard Shortcuts Modal (?) & Bottom-Left Dock */}
         <KeyboardShortcutsModal />
 
+        {/* Cinematic Fullscreen "ARISE" Awakening Sequence Cutscene */}
+        <AriseAwakeningSequence
+          isOpen={isAriseOpen}
+          onClose={() => setIsAriseOpen(false)}
+        />
+
         {/* Global Dimensional Command Palette (K / Cmd+K) */}
         <HunterCommandPalette
           isOpen={isCommandOpen}
           onClose={() => setIsCommandOpen(false)}
           onOpenConsole={() => window.dispatchEvent(new CustomEvent("open-hunter-console"))}
-          onTriggerArise={() => {
-            const el = document.getElementById("chapter-9");
-            if (el) el.scrollIntoView({ behavior: "smooth" });
-          }}
+          onTriggerArise={() => setIsAriseOpen(true)}
         />
 
         {/* Floating Quick Command Trigger Pill */}

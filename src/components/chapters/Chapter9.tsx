@@ -134,17 +134,29 @@ export function Chapter9() {
         </div>
 
         {/* Cinematic Sovereign Shadow Extraction CTA Button */}
-        <div className="flex justify-center pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+          <button
+            onClick={() => {
+              sfx.playDemonRoar();
+              window.dispatchEvent(new CustomEvent("trigger-arise-cutscene"));
+            }}
+            onMouseEnter={() => sfx.playHover()}
+            className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 rounded-2xl bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 text-black font-cinzel font-black text-sm sm:text-base uppercase tracking-widest shadow-[0_0_40px_rgba(245,197,66,0.7)] hover:shadow-[0_0_65px_rgba(245,197,66,1)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer"
+          >
+            <Zap className="w-5 h-5 sm:w-6 sm:h-6 fill-black" />
+            <span>[ FULLSCREEN ARISE CUTSCENE ]</span>
+          </button>
+
           <button
             onClick={() => {
               sfx.playSubBassBoom();
               setRitualOpen(true);
             }}
             onMouseEnter={() => sfx.playHover()}
-            className="px-8 py-4 sm:px-10 sm:py-5 rounded-2xl bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 text-black font-cinzel font-black text-sm sm:text-lg uppercase tracking-widest shadow-[0_0_40px_rgba(245,197,66,0.7)] hover:shadow-[0_0_65px_rgba(245,197,66,1)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-3 cursor-pointer"
+            className="w-full sm:w-auto px-6 py-4 sm:px-8 sm:py-5 rounded-2xl bg-black/80 border border-purple-500/60 text-purple-300 font-mono font-bold text-xs sm:text-sm uppercase tracking-wider hover:border-purple-400 hover:text-white shadow-[0_0_25px_rgba(168,85,247,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            <Zap className="w-5 h-5 sm:w-6 sm:h-6 fill-black" />
-            <span>[ INITIATE SHADOW EXTRACTION: &quot;ARISE&quot; ]</span>
+            <Crown className="w-4 h-4 text-purple-400" />
+            <span>SOUL EXTRACTION RITUAL</span>
           </button>
         </div>
 
