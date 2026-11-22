@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Shield, Sparkles, RefreshCw } from "lucide-react";
 import { AudioEqualizerButton } from "@/components/AudioPlayer";
+import { SoundtrackSelector } from "@/components/ui/SoundtrackSelector";
 import { AudioVisualizerCanvas } from "@/components/effects/AudioVisualizerCanvas";
 import { GlitchText } from "@/components/GlitchText";
 import { LevelUpLogo } from "@/components/ui/LevelUpLogo";
@@ -133,6 +134,9 @@ export function SystemHeader() {
 
         {/* Dark Aria Audio Toggle */}
         <AudioEqualizerButton />
+
+        {/* Tactical Anime Soundtrack Selector */}
+        <SoundtrackSelector />
 
         {/* Reset Awakening Session */}
         <button
