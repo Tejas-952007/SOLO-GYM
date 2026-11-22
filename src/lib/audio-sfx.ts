@@ -281,8 +281,9 @@ class SystemSFXEngine {
   private droneGain: GainNode | null = null;
   private droneOsc1: OscillatorNode | null = null;
   private droneOsc2: OscillatorNode | null = null;
+  private droneLFO: OscillatorNode | null = null;
 
-  // 8. Synthesized Ambient Dungeon Drone (42Hz / 55Hz sub-harmonics with gentle lowpass)
+  // 9. Synthesized Dark Anime Dungeon Pulse & Bass Drone (42Hz / 55Hz sub-harmonics with rhythmic LFO filter)
   public startAmbientDrone() {
     if (this.isMuted || this.droneGain) return;
     const ctx = this.initContext();
@@ -291,20 +292,31 @@ class SystemSFXEngine {
     try {
       const osc1 = ctx.createOscillator();
       const osc2 = ctx.createOscillator();
+      const lfo = ctx.createOscillator();
       const filter = ctx.createBiquadFilter();
       const gain = ctx.createGain();
+      const lfoGain = ctx.createGain();
 
       osc1.type = "sawtooth";
-      osc1.frequency.setValueAtTime(42, ctx.currentTime);
+      osc1.frequency.setValueAtTime(43.65, ctx.currentTime); // F1 sub-bass
 
       osc2.type = "sine";
-      osc2.frequency.setValueAtTime(55, ctx.currentTime);
+      osc2.frequency.setValueAtTime(65.41, ctx.currentTime); // C2 fifth harmony
+
+      // LFO for hypnotic 120 BPM dark anime combat pulse
+      lfo.type = "sine";
+      lfo.frequency.setValueAtTime(2.0, ctx.currentTime); // 2 Hz = 120 BPM pulse
 
       filter.type = "lowpass";
-      filter.frequency.setValueAtTime(140, ctx.currentTime);
+      filter.frequency.setValueAtTime(160, ctx.currentTime);
+      filter.Q.setValueAtTime(3.5, ctx.currentTime);
+
+      lfoGain.gain.setValueAtTime(60, ctx.currentTime); // Modulate filter cutoff ±60Hz
+      lfo.connect(lfoGain);
+      lfoGain.connect(filter.frequency);
 
       gain.gain.setValueAtTime(0.001, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.03, ctx.currentTime + 2.0);
+      gain.gain.exponentialRampToValueAtTime(0.045, ctx.currentTime + 1.5);
 
       osc1.connect(filter);
       osc2.connect(filter);
@@ -313,9 +325,11 @@ class SystemSFXEngine {
 
       osc1.start();
       osc2.start();
+      lfo.start();
 
       this.droneOsc1 = osc1;
       this.droneOsc2 = osc2;
+      this.droneLFO = lfo;
       this.droneGain = gain;
     } catch {
       // Fallback
@@ -326,21 +340,24 @@ class SystemSFXEngine {
     if (!this.droneGain || !this.ctx) return;
     try {
       this.droneGain.gain.setValueAtTime(this.droneGain.gain.value, this.ctx.currentTime);
-      this.droneGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 1.0);
+      this.droneGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.8);
       setTimeout(() => {
         try {
           this.droneOsc1?.stop();
           this.droneOsc2?.stop();
+          this.droneLFO?.stop();
           this.droneOsc1?.disconnect();
           this.droneOsc2?.disconnect();
+          this.droneLFO?.disconnect();
           this.droneGain?.disconnect();
         } catch {
           // ignore
         }
         this.droneOsc1 = null;
         this.droneOsc2 = null;
+        this.droneLFO = null;
         this.droneGain = null;
-      }, 1000);
+      }, 800);
     } catch {
       this.droneGain = null;
     }
