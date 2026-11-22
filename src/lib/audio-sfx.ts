@@ -362,6 +362,30 @@ class SystemSFXEngine {
       this.droneGain = null;
     }
   }
+
+  public toggle(): boolean {
+    return this.toggleMute();
+  }
+
+  public playWhoosh() {
+    this.playBladeSheathe();
+  }
+
+  public playLevelUp() {
+    this.playRankUp();
+  }
+
+  public playMenuOpen() {
+    this.playSubBassBoom();
+  }
+
+  public playTick() {
+    this.playHover();
+  }
+
+  public playSwordSlash() {
+    this.playBladeSlash();
+  }
 }
 
 export const sfx = new SystemSFXEngine();

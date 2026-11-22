@@ -102,8 +102,16 @@ export function HunterStatusConsole() {
         });
       }
     };
+    const handleCustomOpen = () => {
+      setIsOpen(true);
+      sfx.playRankAscent();
+    };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("open-hunter-console", handleCustomOpen);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("open-hunter-console", handleCustomOpen);
+    };
   }, []);
 
   return (
