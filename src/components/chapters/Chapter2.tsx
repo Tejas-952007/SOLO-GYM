@@ -24,7 +24,21 @@ export function Chapter2() {
   const [typedTitle, setTypedTitle] = useState("");
   const [showPotential, setShowPotential] = useState(false);
   const [activeVisual, setActiveVisual] = useState(0);
+  const [templeReverence, setTempleReverence] = useState(false);
+  const [claimedReward, setClaimedReward] = useState(false);
   const fullTitle = "DAILY QUEST: PREPARATION FOR STRENGTH";
+
+  const triggerReverence = () => {
+    sfx.playDemonRoar();
+    setTempleReverence(true);
+    setTimeout(() => setTempleReverence(false), 800);
+  };
+
+  const claimAwakeningXP = () => {
+    if (claimedReward) return;
+    sfx.playRankUp();
+    setClaimedReward(true);
+  };
 
   useEffect(() => {
     const el = containerRef.current;
@@ -179,7 +193,9 @@ export function Chapter2() {
             >
               <div
                 ref={visualRef}
-                className="relative w-full max-w-[480px] h-[480px] sm:h-[560px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer"
+                className={`relative w-full max-w-[480px] h-[480px] sm:h-[560px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer transition-transform duration-200 ${
+                  templeReverence ? "scale-95 ring-4 ring-red-600 animate-pulse" : ""
+                }`}
                 onClick={() => {
                   sfx.playClick();
                   setActiveVisual((prev) => (prev + 1) % 3);
@@ -199,6 +215,13 @@ export function Chapter2() {
                   sizes="(max-width: 768px) 100vw, 480px"
                   className="object-cover object-[center_60%] filter contrast-125 brightness-110"
                 />
+                
+                {/* Ancient Temple Commandments Top Banner */}
+                <div className="absolute top-3 inset-x-3 z-20 flex justify-between items-center text-[9px] font-mono bg-black/85 border border-red-500/40 px-3 py-1.5 rounded text-red-400">
+                  <span>COMMANDMENT I: REVERE THE LORD</span>
+                  <span className="text-white/60">TEMPLE 0-0</span>
+                </div>
+
                 {/* Glowing Crimson Eyes Flare */}
                 <div className="absolute top-[58%] left-[48%] -translate-x-1/2 -translate-y-1/2 flex gap-12 z-20 pointer-events-none">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_20px_rgba(239,68,68,1)] animate-ping" />
@@ -208,6 +231,19 @@ export function Chapter2() {
                   ref={grinAuraRef}
                   className="absolute inset-0 bg-radial-gradient from-red-600/35 via-system-accent/20 to-transparent opacity-60 pointer-events-none mix-blend-color-dodge z-10 animate-pulse"
                 />
+
+                {/* Reverence Trigger Button */}
+                <div className="absolute bottom-12 inset-x-4 z-20 flex justify-center">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerReverence();
+                    }}
+                    className="px-4 py-1.5 bg-red-950/80 hover:bg-red-700 border border-red-500 text-white font-mono text-[10px] uppercase font-bold tracking-widest rounded shadow-[0_0_15px_rgba(239,68,68,0.7)] transition-all cursor-pointer active:scale-95"
+                  >
+                    [ BOW BEFORE THE STATUE ]
+                  </button>
+                </div>
               </div>
 
               {/* State 1: Weak Hunter Facing the Looming Blue System Window */}
@@ -325,17 +361,25 @@ export function Chapter2() {
               <span className="bracket-tr" />
               <span className="bracket-bl" />
 
-              {/* System Header */}
+              {/* System Header with Claimable XP Badge */}
               <div className="flex items-center justify-between border-b border-system-accent/30 pb-3">
                 <div className="flex items-center gap-2">
                   <Flame className="w-4 h-4 text-system-accent animate-pulse" />
                   <span className="font-orbitron text-xs sm:text-sm font-bold tracking-wideSystem text-system-accent uppercase">
-                    QUEST LOG
+                    QUEST LOG // AWAKENING
                   </span>
                 </div>
-                <span className="font-mono text-[10px] text-system-gold border border-system-gold/40 px-2 py-0.5 rounded bg-system-gold/10">
-                  +250 EXP
-                </span>
+                <button
+                  onClick={claimAwakeningXP}
+                  disabled={claimedReward}
+                  className={`font-mono text-[10px] px-2.5 py-1 rounded transition-all cursor-pointer ${
+                    claimedReward
+                      ? "bg-emerald-950/60 border border-emerald-500 text-emerald-300 font-bold"
+                      : "bg-system-gold/20 border border-system-gold/50 text-system-gold hover:bg-system-gold hover:text-black font-bold animate-pulse shadow-[0_0_10px_rgba(245,197,66,0.4)]"
+                  }`}
+                >
+                  {claimedReward ? "[ XP CLAIMED! ]" : "[ CLAIM +250 EXP ]"}
+                </button>
               </div>
 
               {/* Typewriter Quest Title */}
@@ -422,14 +466,14 @@ export function Chapter2() {
                       XP PROGRESS
                     </span>
                     <span className="text-system-accent font-bold">
-                      1,950 / 2,500 XP
+                      {claimedReward ? "2,200 / 2,500 XP" : "1,950 / 2,500 XP"}
                     </span>
                   </div>
                   <div className="w-full h-2.5 bg-black/60 rounded-full overflow-hidden border border-system-accent/30">
                     <div
                       ref={xpBarRef}
-                      className="h-full bg-gradient-to-r from-system-cyan via-system-accent to-purple-400 rounded-full shadow-[0_0_12px_rgba(139,92,246,0.6)]"
-                      style={{ width: "78%" }}
+                      className="h-full bg-gradient-to-r from-system-cyan via-system-accent to-purple-400 rounded-full shadow-[0_0_12px_rgba(139,92,246,0.6)] transition-all duration-500"
+                      style={{ width: claimedReward ? "88%" : "78%" }}
                     />
                   </div>
                 </div>

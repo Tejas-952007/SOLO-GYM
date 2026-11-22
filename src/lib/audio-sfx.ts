@@ -245,6 +245,39 @@ class SystemSFXEngine {
     this.playRankAscent();
   }
 
+  // 8. Menacing Cartenon God Statue Roar / Deep Subharmonic Resonance
+  public playDemonRoar() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(80, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(28, ctx.currentTime + 0.8);
+
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(320, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.8);
+
+      gain.gain.setValueAtTime(0.22, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.85);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.9);
+    } catch {
+      // Fallback
+    }
+  }
+
   private droneGain: GainNode | null = null;
   private droneOsc1: OscillatorNode | null = null;
   private droneOsc2: OscillatorNode | null = null;
