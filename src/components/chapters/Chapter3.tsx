@@ -6,6 +6,7 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { Dumbbell, ShieldCheck, Swords, Flame, Sparkles, Trophy } from "lucide-react";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { DungeonWarmupCircuit } from "@/components/ui/DungeonWarmupCircuit";
 import { DungeonBossGauntlet } from "@/components/ui/DungeonBossGauntlet";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
@@ -466,6 +467,11 @@ export function Chapter3() {
             </div>
           </div>
         </AnimeTiltCard>
+
+        {/* Pre-Lift Dynamic Mobility & Joint Lubrication Circuit */}
+        <div className="relative z-20 w-full max-w-6xl mx-auto my-6">
+          <DungeonWarmupCircuit />
+        </div>
 
         {/* 4 Dungeon Boss Raid Gauntlet Registry */}
         <div className="relative z-20 w-full max-w-6xl mx-auto my-6">
