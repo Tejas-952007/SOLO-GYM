@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { Dumbbell, ShieldCheck, Swords, Flame, Sparkles } from "lucide-react";
+import { Dumbbell, ShieldCheck, Swords, Flame, Sparkles, Trophy } from "lucide-react";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
@@ -58,6 +58,8 @@ export function Chapter3() {
 
   // Interactive Boss Encounter State
   const [bossHp, setBossHp] = useState(3000);
+  const [staggerHp, setStaggerHp] = useState(1000);
+  const [comboCount, setComboCount] = useState(0);
   const [combatLog, setCombatLog] = useState<string[]>([
     "[SYSTEM EVENT] Dungeon Boss: Titan of Inertia has appeared on Floor 04!",
   ]);
@@ -66,21 +68,27 @@ export function Chapter3() {
   const strikeBoss = (type: "heavy" | "protein" | "shadow") => {
     if (bossHp <= 0) return;
 
+    const nextCombo = comboCount + 1;
+    setComboCount(nextCombo);
+
     if (type === "heavy") {
       sfx.playBladeSheathe();
-      const dmg = Math.floor(650 + Math.random() * 250);
+      const comboMultiplier = nextCombo >= 3 ? 1.3 : 1.0;
+      const dmg = Math.floor((650 + Math.random() * 250) * comboMultiplier);
       const nextHp = Math.max(0, bossHp - dmg);
+      const nextStagger = Math.max(0, staggerHp - 300);
       setBossHp(nextHp);
+      setStaggerHp(nextStagger);
       setShakeCrit(true);
       setTimeout(() => setShakeCrit(false), 200);
-      spawnCombatNumber(`-${dmg} CRIT DMG!`, undefined, undefined, "damage");
+      spawnCombatNumber(`-${dmg} CRIT DMG! [${nextCombo}x COMBO]`, undefined, undefined, "damage");
       setCombatLog((prev) => [
-        `[CRIT STRIKE] 100kg Heavy Compound Barbell blow dealt -${dmg} DMG to Titan!`,
+        `[CRIT STRIKE ${nextCombo}x] 100kg Heavy Compound blow dealt -${dmg} DMG! (Stagger: ${nextStagger}/1000)`,
         ...prev.slice(0, 3),
       ]);
       if (nextHp === 0) {
         sfx.playRankUp();
-        spawnCombatNumber("BOSS SLAIN! +5,000 XP", undefined, undefined, "xp");
+        spawnCombatNumber("BOSS SLAIN! +5,000 XP & MYTHIC DROPS", undefined, undefined, "xp");
       }
     } else if (type === "protein") {
       sfx.playStatPointAlloc();
@@ -91,19 +99,21 @@ export function Chapter3() {
       ]);
     } else if (type === "shadow") {
       sfx.playSubBassBoom();
-      const dmg = 1500;
+      const comboMultiplier = nextCombo >= 3 ? 1.4 : 1.0;
+      const dmg = Math.floor(1500 * comboMultiplier);
       const nextHp = Math.max(0, bossHp - dmg);
       setBossHp(nextHp);
+      setStaggerHp(0);
       setShakeCrit(true);
       setTimeout(() => setShakeCrit(false), 300);
-      spawnCombatNumber("-1,500 FATAL SHADOW CRIT!", undefined, undefined, "damage");
+      spawnCombatNumber(`-${dmg} FATAL SHADOW CRIT!`, undefined, undefined, "damage");
       setCombatLog((prev) => [
-        `[SHADOW DOMAIN] Sovereign Violet Mana exploded! -${dmg} FATAL DAMAGE!`,
+        `[SHADOW DOMAIN] Sovereign Violet Mana exploded! -${dmg} FATAL DAMAGE! (ARMOR SHATTERED)`,
         ...prev.slice(0, 3),
       ]);
       if (nextHp === 0) {
         sfx.playRankUp();
-        spawnCombatNumber("BOSS SLAIN! +5,000 XP", undefined, undefined, "xp");
+        spawnCombatNumber("BOSS SLAIN! +5,000 XP & MYTHIC DROPS", undefined, undefined, "xp");
       }
     }
   };
@@ -111,6 +121,8 @@ export function Chapter3() {
   const resetBoss = () => {
     sfx.playClick();
     setBossHp(3000);
+    setStaggerHp(1000);
+    setComboCount(0);
     setCombatLog(["[SYSTEM RESET] Titan of Inertia respawned with 3,000 HP."]);
   };
 
@@ -335,12 +347,17 @@ export function Chapter3() {
             shakeCrit ? "border-red-500 shadow-[0_0_35px_rgba(239,68,68,0.7)] scale-[1.01]" : "border-system-accent/30 shadow-system-glow"
           }`}>
             {/* Boss Header & Health Bar */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3 border-b border-system-accent/20 pb-2.5">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2 border-b border-system-accent/20 pb-2.5">
               <div className="flex items-center gap-2">
                 <Flame className="w-4 h-4 text-red-500 animate-pulse" />
                 <span className="font-orbitron text-xs sm:text-sm font-bold text-red-400 uppercase tracking-wider">
                   DUNGEON BOSS // TITAN OF INERTIA (FLOOR 04)
                 </span>
+                {comboCount > 1 && (
+                  <span className="px-2 py-0.5 rounded bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 font-mono text-[9px] font-bold animate-bounce">
+                    {comboCount}x COMBO BUFF!
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-3 font-mono text-xs">
                 <span className="text-yellow-400 font-bold">{bossHp > 0 ? `${bossHp} / 3,000 HP` : "[ BOSS SLAIN! ]"}</span>
@@ -355,13 +372,49 @@ export function Chapter3() {
               </div>
             </div>
 
-            {/* Boss Health Bar Meter */}
-            <div className="w-full h-3 bg-black/90 rounded-full border border-red-500/40 overflow-hidden mb-3.5 p-0.5">
-              <div
-                className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 rounded-full transition-all duration-300 shadow-[0_0_12px_rgba(239,68,68,0.8)]"
-                style={{ width: `${(bossHp / 3000) * 100}%` }}
-              />
+            {/* Boss Dual Layer Meters: Layer 1 Stagger Armor, Layer 2 Primary HP */}
+            <div className="space-y-1.5 mb-3.5">
+              {/* Primary HP */}
+              <div>
+                <div className="flex justify-between items-center text-[9px] font-mono text-system-muted mb-0.5">
+                  <span>BOSS HP VITALITY</span>
+                  <span className="text-red-400 font-bold">{Math.round((bossHp / 3000) * 100)}%</span>
+                </div>
+                <div className="w-full h-3 bg-black/90 rounded-full border border-red-500/40 overflow-hidden p-0.5">
+                  <div
+                    className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 rounded-full transition-all duration-300 shadow-[0_0_12px_rgba(239,68,68,0.8)]"
+                    style={{ width: `${(bossHp / 3000) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Stagger Gauge */}
+              <div>
+                <div className="flex justify-between items-center text-[9px] font-mono text-system-muted mb-0.5">
+                  <span>ARMOR STAGGER GAUGE</span>
+                  <span className="text-cyan-400 font-bold">{staggerHp > 0 ? `${staggerHp}/1000` : "STAGGERED!"}</span>
+                </div>
+                <div className="w-full h-1.5 bg-black/90 rounded-full border border-cyan-500/30 overflow-hidden">
+                  <div
+                    className="h-full bg-cyan-400 transition-all duration-300"
+                    style={{ width: `${(staggerHp / 1000) * 100}%` }}
+                  />
+                </div>
+              </div>
             </div>
+
+            {/* Mythic Loot Victory Banner when Boss is Defeated */}
+            {bossHp === 0 && (
+              <div className="mb-3 p-3 rounded-lg bg-yellow-950/40 border border-yellow-500/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-yellow-300 font-mono text-xs shadow-[0_0_20px_rgba(234,179,8,0.4)] animate-pulse">
+                <div className="flex items-center gap-2">
+                  <Trophy className="w-4 h-4 text-yellow-400 shrink-0" />
+                  <div>
+                    <strong className="text-white uppercase">[MYTHIC DROP UNLOCKED]</strong>: Casaka&apos;s Poison Dagger (+20kg 1RM Strength Buff)
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded bg-yellow-500 text-black font-bold text-[10px]">CLAIMED</span>
+              </div>
+            )}
 
             {/* Player Attack Moves & Combat Telemetry */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
