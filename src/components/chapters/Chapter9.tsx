@@ -7,6 +7,7 @@ import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { ShadowExtractionRitual } from "@/components/effects/ShadowExtractionRitual";
+import { ShadowBarracks } from "@/components/ui/ShadowBarracks";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -266,6 +267,11 @@ export function Chapter9() {
               );
             })}
           </div>
+        </div>
+
+        {/* Shadow Army Barracks Roster with Rank Evolution */}
+        <div className="w-full max-w-4xl mx-auto my-6">
+          <ShadowBarracks />
         </div>
 
         {/* Store Badges Preview */}
