@@ -8,6 +8,7 @@ import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { DesiMealCombinator } from "@/components/ui/DesiMealCombinator";
+import { ManaBrewFormulator } from "@/components/ui/ManaBrewFormulator";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -440,6 +441,11 @@ export function Chapter5() {
           {/* Interactive Desi Meal & Daily Budget Combinator */}
           <div className="w-full mt-8">
             <DesiMealCombinator />
+          </div>
+
+          {/* Pre-Workout Mana Brew Formulator & Caffeine Half-Life Alchemy */}
+          <div className="w-full mt-8">
+            <ManaBrewFormulator />
           </div>
         </div>
       </div>
