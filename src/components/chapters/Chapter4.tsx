@@ -6,6 +6,7 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { Bot, Shield, Trophy, Flame, CheckCircle2 } from "lucide-react";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { DailyDisciplineFlame } from "@/components/ui/DailyDisciplineFlame";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -201,6 +202,11 @@ export function Chapter4() {
               </AnimeTiltCard>
             ))}
           </div>
+        </div>
+
+        {/* 7-Day Discipline Streak Flame & Penalty Zone Tracker */}
+        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10">
+          <DailyDisciplineFlame />
         </div>
       </div>
     </section>
