@@ -367,6 +367,10 @@ class SystemSFXEngine {
     return this.toggleMute();
   }
 
+  public playAmbientDrone() {
+    this.startAmbientDrone();
+  }
+
   public playWhoosh() {
     this.playBladeSheathe();
   }
