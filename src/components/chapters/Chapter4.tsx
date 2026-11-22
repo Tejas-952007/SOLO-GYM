@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { Bot, Shield, Trophy, Flame } from "lucide-react";
+import { Bot, Shield, Trophy, Flame, CheckCircle2 } from "lucide-react";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
 interface MentorCard {
@@ -47,6 +48,20 @@ const MENTOR_CARDS: MentorCard[] = [
 export function Chapter4() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const [committedCards, setCommittedCards] = useState<Record<number, boolean>>({});
+
+  const toggleCommitment = (id: number, title: string) => {
+    setCommittedCards((prev) => {
+      const isNow = !prev[id];
+      if (isNow) {
+        sfx.playStatPointAlloc();
+        spawnCombatNumber(`+50 DISCIPLINE XP! [CARD 0${id}]`, undefined, undefined, "stat");
+      } else {
+        sfx.playClick();
+      }
+      return { ...prev, [id]: isNow };
+    });
+  };
 
   useEffect(() => {
     const el = containerRef.current;
@@ -162,6 +177,25 @@ export function Chapter4() {
                         CARD 0{card.id}/03
                       </span>
                     </div>
+
+                    {/* Interactive Commitment Button */}
+                    <button
+                      onClick={() => toggleCommitment(card.id, card.title)}
+                      className={`w-full py-2 px-3 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        committedCards[card.id]
+                          ? "bg-emerald-950/60 border border-emerald-500 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.3)]"
+                          : "bg-system-accent/15 hover:bg-system-accent/30 border border-system-accent/40 text-system-text"
+                      }`}
+                    >
+                      {committedCards[card.id] ? (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>[ PROTOCOL COMMITTED ]</span>
+                        </>
+                      ) : (
+                        <span>[ ACCEPT DISCIPLINE CODE ]</span>
+                      )}
+                    </button>
                   </div>
                 </div>
               </AnimeTiltCard>
