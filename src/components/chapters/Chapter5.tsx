@@ -10,6 +10,7 @@ import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { DesiMealCombinator } from "@/components/ui/DesiMealCombinator";
 import { ManaBrewFormulator } from "@/components/ui/ManaBrewFormulator";
 import { HydrationChamber } from "@/components/ui/HydrationChamber";
+import { MacroSwapper } from "@/components/ui/MacroSwapper";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -452,6 +453,11 @@ export function Chapter5() {
           {/* Intra-Cellular Hydration & Creatine Reservoir */}
           <div className="w-full mt-8">
             <HydrationChamber />
+          </div>
+
+          {/* Macro Swapper & Ingredient Alchemy Matrix */}
+          <div className="w-full mt-8">
+            <MacroSwapper />
           </div>
         </div>
       </div>
