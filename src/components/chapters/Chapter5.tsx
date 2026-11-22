@@ -63,6 +63,26 @@ export function Chapter5() {
   const [weightKg, setWeightKg] = useState<number>(68);
   const [goal, setGoal] = useState<"bulk" | "cut">("bulk");
 
+  // Interactive Plate Builder Tray
+  const [plateItems, setPlateItems] = useState<{ name: string; protein: number; cal: number }[]>([
+    { name: "Low-Fat Paneer (150g)", protein: 27, cal: 210 },
+  ]);
+
+  const addPlateItem = (name: string, protein: number, cal: number) => {
+    sfx.playStatPointAlloc();
+    setPlateItems((prev) => [...prev, { name, protein, cal }]);
+    spawnCombatNumber(`+${protein}g PROTEIN ADDED!`, undefined, undefined, "stat");
+  };
+
+  const clearPlate = () => {
+    sfx.playClick();
+    setPlateItems([]);
+    spawnCombatNumber("PLATE RESET", undefined, undefined, "mana");
+  };
+
+  const totalPlateProtein = plateItems.reduce((acc, cur) => acc + cur.protein, 0);
+  const totalPlateCalories = plateItems.reduce((acc, cur) => acc + cur.cal, 0);
+
   const multiplier = goal === "bulk" ? 2.0 : 1.6;
   const targetProtein = Math.round(weightKg * multiplier);
 
@@ -324,6 +344,10 @@ export function Chapter5() {
                     sizes="(max-width: 768px) 100vw, 25vw"
                     className="object-cover object-center filter brightness-95 contrast-105"
                   />
+                  {/* Laser Sweeper on Active Dish */}
+                  {activeFood === item.id && (
+                    <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-system-cyan to-transparent opacity-80 animate-laser-sweep pointer-events-none" />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
                   <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/85 border border-system-gold/40 text-system-gold font-mono text-[10px] font-bold">
                     {item.protein}
@@ -344,18 +368,35 @@ export function Chapter5() {
           </div>
         </div>
 
-        {/* Indian Staples Quick Ratio Matrix */}
-        <div className="system-window corner-brackets p-6 rounded-lg space-y-4">
-          <div className="font-mono text-xs uppercase tracking-wide text-system-accent flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>DESI STAPLE PROTEIN EFFICIENCY INDEX</span>
+        {/* Indian Staples Quick Ratio Matrix & Interactive Plate Builder */}
+        <div className="system-window corner-brackets p-6 rounded-lg space-y-5">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div className="font-mono text-xs uppercase tracking-wide text-system-accent flex items-center gap-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>DESI STAPLE PROTEIN EFFICIENCY INDEX (TAP TO ADD TO PLATE)</span>
+            </div>
+            {plateItems.length > 0 && (
+              <button
+                onClick={clearPlate}
+                className="text-[10px] font-mono text-yellow-400 underline hover:text-white cursor-pointer"
+              >
+                [ CLEAR PLATE ]
+              </button>
+            )}
           </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-            {INDIAN_STAPLES.map((staple, i) => (
-              <div
+            {[
+              { name: "Low-Fat Paneer", protein: "18g / 100g", badge: "VEG S-TIER", pVal: 18, cal: 140 },
+              { name: "Soya Chunks", protein: "52g / 100g", badge: "MAX DENSITY", pVal: 52, cal: 345 },
+              { name: "Sattu Drink", protein: "20g / scoop", badge: "DESI POWER", pVal: 20, cal: 180 },
+              { name: "Double Egg Omelette", protein: "14g / 2 eggs", badge: "DAILY BASIC", pVal: 14, cal: 160 },
+            ].map((staple, i) => (
+              <button
                 key={i}
+                onClick={() => addPlateItem(staple.name, staple.pVal, staple.cal)}
                 onMouseEnter={() => sfx.playHover()}
-                className="p-3 bg-black/40 border border-system-accent/20 rounded hover:border-system-accent/40 transition-colors"
+                className="p-3 bg-black/40 border border-system-accent/20 rounded hover:border-system-cyan hover:scale-[1.02] active:scale-95 transition-all text-center cursor-pointer"
               >
                 <div className="text-xs font-mono text-system-muted">{staple.name}</div>
                 <div className="text-base font-cinzel font-bold text-system-gold my-1">
@@ -364,8 +405,35 @@ export function Chapter5() {
                 <div className="text-[9px] font-mono px-2 py-0.5 bg-system-accent/15 border border-system-accent/30 text-system-accent rounded inline-block">
                   {staple.badge}
                 </div>
-              </div>
+                <div className="text-[9px] text-system-cyan font-mono mt-1 font-semibold">[+ ADD]</div>
+              </button>
             ))}
+          </div>
+
+          {/* Live Cumulative Desi Plate Builder Summary */}
+          <div className="p-4 bg-black/80 border border-system-accent/30 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono text-xs">
+            <div className="space-y-1">
+              <span className="text-system-muted text-[10px] uppercase">[ ACTIVE DESI WARRIOR PLATE ]</span>
+              <div className="text-white font-bold text-sm">
+                TOTAL: <span className="text-system-gold">{totalPlateProtein}g PROTEIN</span> • <span className="text-system-cyan">{totalPlateCalories} KCAL</span>
+              </div>
+              <div className="text-[10px] text-system-muted truncate max-w-md">
+                ITEMS: {plateItems.length === 0 ? "Empty Plate (Tap staples above to add)" : plateItems.map((p) => p.name).join(", ")}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="text-right text-[10px]">
+                <div className="text-system-muted">TARGET RATIO</div>
+                <div className="text-emerald-400 font-bold">{Math.round((totalPlateProtein / targetProtein) * 100)}% MET</div>
+              </div>
+              <div className="w-16 h-2 bg-black/60 rounded-full overflow-hidden border border-emerald-500/30">
+                <div
+                  className="h-full bg-emerald-400 transition-all duration-300"
+                  style={{ width: `${Math.min(100, (totalPlateProtein / targetProtein) * 100)}%` }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
