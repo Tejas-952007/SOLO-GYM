@@ -9,6 +9,7 @@ import { GlitchHeading } from "@/components/ui/GlitchHeading";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { RepVelocityMeter } from "@/components/ui/RepVelocityMeter";
+import { PullupProgressionLadder } from "@/components/ui/PullupProgressionLadder";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -545,6 +546,11 @@ export function Chapter1() {
       {/* Cadence Metronome & Time Under Tension Velocity Meter */}
       <div className="w-full max-w-6xl mx-auto mt-10 relative z-10 px-4">
         <RepVelocityMeter />
+      </div>
+
+      {/* 0 to 10 Pull-Up Calisthenics Progression Ladder */}
+      <div className="w-full max-w-6xl mx-auto mt-6 relative z-10 px-4">
+        <PullupProgressionLadder />
       </div>
 
       {/* 5. Bottom Prompt */}
