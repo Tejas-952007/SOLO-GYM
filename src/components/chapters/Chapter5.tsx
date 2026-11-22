@@ -11,6 +11,7 @@ import { DesiMealCombinator } from "@/components/ui/DesiMealCombinator";
 import { ManaBrewFormulator } from "@/components/ui/ManaBrewFormulator";
 import { HydrationChamber } from "@/components/ui/HydrationChamber";
 import { MacroSwapper } from "@/components/ui/MacroSwapper";
+import { MetabolicEngine } from "@/components/ui/MetabolicEngine";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -458,6 +459,11 @@ export function Chapter5() {
           {/* Macro Swapper & Ingredient Alchemy Matrix */}
           <div className="w-full mt-8">
             <MacroSwapper />
+          </div>
+
+          {/* Metabolic Adaptation & Reverse Dieting Radar */}
+          <div className="w-full mt-8">
+            <MetabolicEngine />
           </div>
         </div>
       </div>
