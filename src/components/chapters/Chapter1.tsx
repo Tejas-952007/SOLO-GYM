@@ -8,6 +8,7 @@ import { DecodeText } from "@/components/ui/DecodeText";
 import { GlitchHeading } from "@/components/ui/GlitchHeading";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { RepVelocityMeter } from "@/components/ui/RepVelocityMeter";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -539,6 +540,11 @@ export function Chapter1() {
           </div>
         </div>
 
+      </div>
+
+      {/* Cadence Metronome & Time Under Tension Velocity Meter */}
+      <div className="w-full max-w-6xl mx-auto mt-10 relative z-10 px-4">
+        <RepVelocityMeter />
       </div>
 
       {/* 5. Bottom Prompt */}
