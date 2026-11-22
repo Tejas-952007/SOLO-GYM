@@ -243,3 +243,24 @@ html.lenis, html.lenis body {
   }
 }
 
+/* S-Rank Hunter Ascension Print Stylesheet */
+@media print {
+  header, footer, .hud-overlay, .reticle-overlay, canvas, button, .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #000 !important;
+    color: #fff !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print-certificate-container {
+    page-break-inside: avoid;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: none !important;
+  }
+}
+
