@@ -12,6 +12,7 @@ import { ManaBrewFormulator } from "@/components/ui/ManaBrewFormulator";
 import { HydrationChamber } from "@/components/ui/HydrationChamber";
 import { MacroSwapper } from "@/components/ui/MacroSwapper";
 import { MetabolicEngine } from "@/components/ui/MetabolicEngine";
+import { DesiProteinBudgetRanker } from "@/components/ui/DesiProteinBudgetRanker";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -464,6 +465,11 @@ export function Chapter5() {
           {/* Metabolic Adaptation & Reverse Dieting Radar */}
           <div className="w-full mt-8">
             <MetabolicEngine />
+          </div>
+
+          {/* Indian Protein Cost-Per-Gram Budget Leaderboard */}
+          <div className="w-full mt-8">
+            <DesiProteinBudgetRanker />
           </div>
         </div>
       </div>
