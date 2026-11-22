@@ -7,6 +7,7 @@ import { Dumbbell, ShieldCheck, Swords, Flame, Sparkles, Trophy } from "lucide-r
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { DungeonWarmupCircuit } from "@/components/ui/DungeonWarmupCircuit";
+import { RestTimerMetronome } from "@/components/ui/RestTimerMetronome";
 import { DungeonBossGauntlet } from "@/components/ui/DungeonBossGauntlet";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
@@ -467,6 +468,11 @@ export function Chapter3() {
             </div>
           </div>
         </AnimeTiltCard>
+
+        {/* Intra-Set Rest Chronometer & Box Breathing Metronome */}
+        <div className="relative z-20 w-full max-w-6xl mx-auto my-6">
+          <RestTimerMetronome />
+        </div>
 
         {/* Pre-Lift Dynamic Mobility & Joint Lubrication Circuit */}
         <div className="relative z-20 w-full max-w-6xl mx-auto my-6">
