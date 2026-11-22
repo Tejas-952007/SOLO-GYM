@@ -5,6 +5,7 @@ import { Bot, Utensils, Flame, CheckCircle2, MapPin, Sparkles, MessageSquare, Ch
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { GuildCoachTelemetry } from "@/components/ui/GuildCoachTelemetry";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -449,6 +450,10 @@ export function Chapter8() {
         </div>
         </AnimeTiltCard>
 
+        {/* AI Guild Coach Neural Voice Telemetry & Tactical Inquiry Panel */}
+        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10">
+          <GuildCoachTelemetry />
+        </div>
       </div>
     </section>
   );
