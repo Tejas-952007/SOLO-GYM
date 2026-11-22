@@ -7,6 +7,7 @@ import { Bot, Shield, Trophy, Flame, CheckCircle2 } from "lucide-react";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { DailyDisciplineFlame } from "@/components/ui/DailyDisciplineFlame";
+import { WaterCreatineWidget } from "@/components/ui/WaterCreatineWidget";
 import { AnimeGymSynthEngine } from "@/components/ui/AnimeGymSynthEngine";
 import { RpeCalculator } from "@/components/ui/RpeCalculator";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
@@ -209,6 +210,11 @@ export function Chapter4() {
         {/* 7-Day Discipline Streak Flame & Penalty Zone Tracker */}
         <div className="w-full max-w-6xl mx-auto mt-10 relative z-10">
           <DailyDisciplineFlame />
+        </div>
+
+        {/* Daily Hydration Volume & 5g Creapure Saturation Reservoir */}
+        <div className="w-full max-w-6xl mx-auto mt-6 relative z-10">
+          <WaterCreatineWidget />
         </div>
 
         {/* Procedural Web Audio Synthwave Rhythm Engine */}
