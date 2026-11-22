@@ -54,6 +54,24 @@ export function Chapter9() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [ritualOpen, setRitualOpen] = useState(false);
   const [ticketId] = useState(() => Math.floor(Math.random() * 8999 + 1000));
+  const [summonedArmy, setSummonedArmy] = useState<Record<string, boolean>>({
+    IGRIS: true,
+  });
+
+  const toggleSummon = (name: string, buff: string) => {
+    sfx.playBladeSlash();
+    setSummonedArmy((prev) => {
+      const nextState = !prev[name];
+      if (nextState) {
+        spawnCombatNumber(`${name} SUMMONED! [${buff}]`, undefined, undefined, "stat");
+      } else {
+        spawnCombatNumber(`${name} RETRACTED TO SHADOW`, undefined, undefined, "mana");
+      }
+      return { ...prev, [name]: nextState };
+    });
+  };
+
+  const activeSummonCount = Object.values(summonedArmy).filter(Boolean).length;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -191,37 +209,50 @@ export function Chapter9() {
 
         {/* Interactive Shadow Corps Roster */}
         <div className="pt-4 space-y-3 max-w-3xl mx-auto w-full">
-          <div className="flex items-center justify-between border-b border-white/10 pb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-2 gap-1">
             <span className="font-mono text-[11px] text-system-gold uppercase tracking-wider flex items-center gap-1.5">
               <Crown className="w-3.5 h-3.5" />
-              THE MONARCH&apos;S SHADOW CORPS (CLICK TO SUMMON BUFF):
+              THE MONARCH&apos;S SHADOW CORPS (CLICK TO TOGGLE SUMMON):
             </span>
-            <span className="font-mono text-[10px] text-system-muted">S-RANK SOVEREIGN CORPS</span>
+            <span className="font-mono text-[10px] text-cyan-400 font-bold">
+              [ {activeSummonCount}/4 ACTIVE IN DOMAIN ]
+            </span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {SHADOW_CORPS.map((soldier) => (
-              <button
-                key={soldier.name}
-                onClick={() => {
-                  sfx.playBladeSlash();
-                  spawnCombatNumber(`${soldier.name} SUMMONED!`, undefined, undefined, "stat");
-                }}
-                onMouseEnter={() => sfx.playHover()}
-                className={`p-3 rounded-xl border ${soldier.border} ${soldier.bg} flex flex-col justify-between text-left transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md`}
-              >
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-cinzel font-black text-sm text-white">{soldier.name}</span>
-                    <span className={`text-[9px] font-mono font-bold ${soldier.color}`}>{soldier.stat}</span>
+            {SHADOW_CORPS.map((soldier) => {
+              const isSummoned = !!summonedArmy[soldier.name];
+              return (
+                <button
+                  key={soldier.name}
+                  onClick={() => toggleSummon(soldier.name, soldier.buff)}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`p-3 rounded-xl border flex flex-col justify-between text-left transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md ${
+                    isSummoned
+                      ? `${soldier.border} ${soldier.bg} ring-2 ring-system-gold/60 shadow-[0_0_15px_rgba(245,197,66,0.3)]`
+                      : "border-white/10 bg-black/40 opacity-60 hover:opacity-100"
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-cinzel font-black text-sm text-white">{soldier.name}</span>
+                      <span className={`text-[9px] font-mono font-bold ${soldier.color}`}>{soldier.stat}</span>
+                    </div>
+                    <div className="text-[9px] font-mono text-system-muted leading-tight mb-2">{soldier.role}</div>
                   </div>
-                  <div className="text-[9px] font-mono text-system-muted leading-tight mb-2">{soldier.role}</div>
-                </div>
-                <div className={`text-[10px] font-mono font-bold ${soldier.color} border-t border-white/10 pt-1.5 leading-tight`}>
-                  {soldier.buff}
-                </div>
-              </button>
-            ))}
+                  <div className={`text-[10px] font-mono font-bold ${soldier.color} border-t border-white/10 pt-1.5 leading-tight`}>
+                    {soldier.buff}
+                  </div>
+                  <div className="text-[9px] font-mono mt-2 pt-1 border-t border-white/5 text-right font-bold">
+                    {isSummoned ? (
+                      <span className="text-emerald-400">[ ACTIVE ]</span>
+                    ) : (
+                      <span className="text-system-muted">[ SUMMON ]</span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
