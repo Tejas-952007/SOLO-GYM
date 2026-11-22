@@ -87,6 +87,17 @@ export function Chapter1() {
     spawnCombatNumber(`+1 ${stat.toUpperCase()} ALLOCATED!`, undefined, undefined, "stat");
   };
 
+  const deallocateStat = (stat: "str" | "agi" | "vit" | "discipline") => {
+    if (stats[stat] <= 10) {
+      sfx.playClick();
+      return;
+    }
+    sfx.playClick();
+    setAvailableAP((prev) => prev + 1);
+    setStats((prev) => ({ ...prev, [stat]: prev[stat] - 1 }));
+    spawnCombatNumber(`-1 ${stat.toUpperCase()} (AP REFUNDED)`, undefined, undefined, "mana");
+  };
+
   const resetStats = () => {
     sfx.playClick();
     setAvailableAP(5);
@@ -275,39 +286,63 @@ export function Chapter1() {
             {activeHeroTab === "quests" ? (
               <div className="space-y-2">
                 {[
-                  { id: 1, label: "100 Pushups (Or to failure)", xp: 150 },
-                  { id: 2, label: "140g High-Protein Intake (Paneer/Soya/Eggs)", xp: 200 },
-                  { id: 3, label: "Enter Iron Dungeon (No excuses)", xp: 150 },
+                  { id: 1, label: "100 Pushups (Or to failure)", xp: 150, sub: "Chest / Anterior Delts / Core" },
+                  { id: 2, label: "140g High-Protein Intake", xp: 200, sub: "Paneer, Soya, Chicken, Whey" },
+                  { id: 3, label: "Enter Iron Dungeon (No excuses)", xp: 150, sub: "Hypertrophy Overload Session" },
                 ].map((quest) => (
                   <button
                     key={quest.id}
                     onClick={() => toggleQuest(quest.id, quest.xp)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2 rounded text-left text-xs font-mono transition-all ${
+                    className={`w-full flex items-center justify-between p-2.5 sm:p-3 rounded-lg text-left text-xs font-mono transition-all duration-200 border ${
                       completedQuests[quest.id]
-                        ? "bg-system-cyan/20 border border-system-cyan/60 text-white shadow-[0_0_12px_rgba(56,189,248,0.4)]"
-                        : "bg-black/40 border border-white/10 text-system-muted hover:border-system-cyan/40 hover:text-white"
+                        ? "bg-system-cyan/20 border-system-cyan/70 text-white shadow-[0_0_15px_rgba(56,189,248,0.35)]"
+                        : "bg-black/50 border-white/10 text-system-muted hover:border-system-cyan/40 hover:text-white"
                     }`}
                   >
-                    <span className="flex items-center gap-2.5">
-                      {completedQuests[quest.id] ? (
-                        <CheckCircle2 className="w-4 h-4 text-system-cyan shrink-0" />
-                      ) : (
-                        <Circle className="w-4 h-4 text-system-muted shrink-0" />
-                      )}
-                      <span className={completedQuests[quest.id] ? "line-through opacity-80" : ""}>
-                        {quest.label}
+                    <span className="flex items-center gap-3">
+                      <span className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${
+                        completedQuests[quest.id]
+                          ? "bg-system-cyan border-system-cyan text-black shadow-[0_0_10px_rgba(56,189,248,0.8)]"
+                          : "border-white/30 bg-black/40 text-transparent"
+                      }`}>
+                        <svg className="w-3.5 h-3.5 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
                       </span>
+                      <div>
+                        <div className={`font-semibold tracking-wide ${completedQuests[quest.id] ? "line-through text-white/90" : "text-white"}`}>
+                          {quest.label}
+                        </div>
+                        <div className="text-[10px] text-system-muted">{quest.sub}</div>
+                      </div>
                     </span>
-                    <span className="text-yellow-400/90 text-[10px] shrink-0 font-bold">+{quest.xp} XP</span>
+                    <span className="text-yellow-400 font-bold text-[11px] shrink-0 font-mono">+{quest.xp} XP</span>
                   </button>
                 ))}
-                <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-system-muted">
-                  <span>PENALTY ZONE: 4-HOUR RUN IN THE DESERT</span>
-                  <span className="text-system-cyan font-bold">STATUS: {bonusXP > 0 ? "PROGRESSING" : "PENDING"}</span>
+                
+                {/* Daily Quest Progress Line */}
+                <div className="pt-2">
+                  <div className="flex justify-between items-center text-[10px] font-mono text-system-muted mb-1">
+                    <span>DAILY COMPLETION RATIO</span>
+                    <span className="text-system-cyan font-bold">{Math.round((bonusXP / 500) * 100)}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/10">
+                    <div
+                      className="h-full bg-gradient-to-r from-system-cyan to-system-accent transition-all duration-300"
+                      style={{ width: `${Math.min(100, (bonusXP / 500) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-1 flex items-center justify-between text-[10px] font-mono text-system-muted">
+                  <span className="text-red-400/90 font-semibold">[ PENALTY: 4-HR DESERT TRIAL ]</span>
+                  <span className={bonusXP >= 500 ? "text-emerald-400 font-bold" : "text-system-cyan font-bold"}>
+                    {bonusXP >= 500 ? "[ ALL QUESTS CLEARED ]" : "STATUS: PROGRESSING"}
+                  </span>
                 </div>
               </div>
             ) : (
-              /* View 2: Interactive Hunter Stat Allocator */
+              /* View 2: Interactive Hunter Stat Allocator with +/- Controls */
               <div className="space-y-3 font-mono text-xs">
                 <div className="grid grid-cols-2 gap-2">
                   {[
@@ -318,39 +353,58 @@ export function Chapter1() {
                   ].map((s) => (
                     <div
                       key={s.key}
-                      className="p-2.5 bg-black/50 border border-white/10 rounded flex flex-col justify-between"
+                      className="p-2.5 bg-black/60 border border-white/10 rounded-lg flex flex-col justify-between hover:border-system-cyan/30 transition-colors"
                     >
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-[10px] text-system-muted font-bold">{s.name}</span>
+                        <span className="text-[10px] text-system-muted font-bold tracking-wider">{s.name}</span>
                         <span className="text-yellow-400 font-bold text-sm">{s.val}</span>
                       </div>
                       <div className="text-[9px] text-system-muted mb-2 leading-tight">{s.desc}</div>
-                      <button
-                        onClick={() => allocateStat(s.key as "str" | "agi" | "vit" | "discipline")}
-                        disabled={availableAP <= 0}
-                        className={`w-full py-1 rounded text-[10px] font-bold uppercase transition-all ${
-                          availableAP > 0
-                            ? "bg-yellow-500/20 hover:bg-yellow-500 text-yellow-300 hover:text-black border border-yellow-500/50 shadow-sm cursor-pointer"
-                            : "bg-white/5 text-system-muted/40 border border-white/5 cursor-not-allowed"
-                        }`}
-                      >
-                        [+1 ALLOCATE]
-                      </button>
+                      
+                      {/* Dual Tactile Controls (- / +) */}
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => deallocateStat(s.key as "str" | "agi" | "vit" | "discipline")}
+                          disabled={s.val <= 10}
+                          className="flex-1 py-1 rounded bg-white/5 hover:bg-white/15 text-system-muted hover:text-white border border-white/10 text-xs font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                          title="Refund 1 AP"
+                        >
+                          -
+                        </button>
+                        <button
+                          onClick={() => allocateStat(s.key as "str" | "agi" | "vit" | "discipline")}
+                          disabled={availableAP <= 0}
+                          className={`flex-1 py-1 rounded text-xs font-bold transition-all ${
+                            availableAP > 0
+                              ? "bg-yellow-500/20 hover:bg-yellow-500 text-yellow-300 hover:text-black border border-yellow-500/50 shadow-[0_0_8px_rgba(234,179,8,0.3)] cursor-pointer"
+                              : "bg-white/5 text-system-muted/30 border border-white/5 cursor-not-allowed"
+                          }`}
+                          title="Allocate 1 AP"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Live Output Simulation */}
-                <div className="p-2.5 bg-system-cyan/10 border border-system-cyan/30 rounded flex items-center justify-between text-[11px]">
-                  <span>EST. BENCH: <strong className="text-white">{50 + (stats.str - 10) * 4} KG</strong></span>
-                  <span>RECOVERY: <strong className="text-emerald-400">{60 + (stats.vit - 10) * 8}%</strong></span>
-                  {availableAP === 0 && (
-                    <button
-                      onClick={resetStats}
-                      className="text-[10px] text-yellow-400 underline hover:text-white ml-2"
-                    >
-                      RESET
-                    </button>
+                {/* Live Output Simulation with 4 Physical Telemetry Gauges */}
+                <div className="p-2.5 bg-system-cyan/10 border border-system-cyan/30 rounded-lg space-y-1.5 text-[10px]">
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-system-muted">
+                    <div>EST. BENCH 1RM: <strong className="text-white">{50 + (stats.str - 10) * 4} KG</strong></div>
+                    <div>SET REST INTERVAL: <strong className="text-cyan-300">{90 - (stats.agi - 10) * 3} SEC</strong></div>
+                    <div>SLEEP RECOVERY: <strong className="text-emerald-400">{60 + (stats.vit - 10) * 6}%</strong></div>
+                    <div>DIET ADHERENCE: <strong className="text-yellow-400">{70 + (stats.discipline - 10) * 5}%</strong></div>
+                  </div>
+                  {availableAP < 5 && (
+                    <div className="pt-1 text-right">
+                      <button
+                        onClick={resetStats}
+                        className="text-[10px] text-yellow-400 underline hover:text-white font-mono cursor-pointer"
+                      >
+                        [ RESET ALL AP ]
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -413,16 +467,39 @@ export function Chapter1() {
                   className="object-cover object-[center_25%] filter brightness-110 contrast-125"
                 />
 
-                {/* Floating Holographic Hunter Stats Tag */}
+                {/* Official Hunter Association Holographic Badge */}
                 <div
-                  className={`absolute top-4 right-4 bg-black/85 backdrop-blur-md border ${auraConfigs[hunterAura].borderColor} px-3 py-1.5 rounded font-mono text-[10px] ${auraConfigs[hunterAura].textColor} shadow-lg transition-colors`}
+                  className={`absolute top-4 left-4 bg-black/85 backdrop-blur-md border ${auraConfigs[hunterAura].borderColor} px-2.5 py-1 rounded font-mono text-[9px] ${auraConfigs[hunterAura].textColor} tracking-wider shadow-lg flex items-center gap-1.5`}
                 >
-                  <div>HP: 120 / 120</div>
-                  <div className="text-yellow-400">FATIGUE: 84%</div>
-                  <div className="text-[9px] uppercase tracking-wider opacity-80 mt-0.5">
-                    AURA: {auraConfigs[hunterAura].name}
+                  <span className="w-1.5 h-1.5 rounded-full bg-system-cyan animate-pulse" />
+                  <span>KHA-0091 // CLASS-E</span>
+                </div>
+
+                {/* Floating Holographic Hunter Vitals Telemetry */}
+                <div
+                  className={`absolute top-4 right-4 bg-black/85 backdrop-blur-md border ${auraConfigs[hunterAura].borderColor} p-2 rounded-lg font-mono text-[10px] ${auraConfigs[hunterAura].textColor} shadow-lg transition-colors space-y-1 min-w-[120px]`}
+                >
+                  <div className="flex justify-between items-center text-[9px]">
+                    <span className="text-system-muted">HP</span>
+                    <span className="text-white font-bold">120/120</span>
+                  </div>
+                  <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                    <div className="w-full h-full bg-emerald-400" />
+                  </div>
+                  <div className="flex justify-between items-center text-[9px]">
+                    <span className="text-system-muted">FATIGUE</span>
+                    <span className="text-amber-400 font-bold">84%</span>
+                  </div>
+                  <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                    <div className="w-[84%] h-full bg-amber-400" />
+                  </div>
+                  <div className="text-[8px] uppercase tracking-wider text-system-muted pt-0.5 border-t border-white/10">
+                    AURA: <span className={auraConfigs[hunterAura].textColor}>{auraConfigs[hunterAura].name}</span>
                   </div>
                 </div>
+
+                {/* Laser Sweep Scanner Line across Character */}
+                <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-system-cyan to-transparent opacity-60 animate-laser-sweep pointer-events-none" />
 
                 {/* Bottom Vignette melting into dungeon floor */}
                 <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none" />
