@@ -13,6 +13,7 @@ import { ManaTrailCursor } from "@/components/effects/ManaTrailCursor";
 import { FloatingDamageNumbers } from "@/components/effects/FloatingDamageNumbers";
 import { SpatialDungeonPerspective } from "@/components/effects/SpatialDungeonPerspective";
 import { CinematicOverlay } from "@/components/CinematicOverlay";
+import { HunterStatusConsole } from "@/components/HunterStatusConsole";
 import { StoryTimelineHUD } from "@/components/StoryTimelineHUD";
 import { Chapter1 } from "@/components/chapters/Chapter1";
 import { Chapter2 } from "@/components/chapters/Chapter2";
@@ -42,6 +43,9 @@ export default function Home() {
 
         {/* Persistent 9-Chapter Storyline Progression HUD */}
         <StoryTimelineHUD />
+
+        {/* Global Hunter RPG Status Console & Hotkey (C) */}
+        <HunterStatusConsole />
 
         {/* Desktop Interactive HUD Reticle */}
         <CinematicReticle />
