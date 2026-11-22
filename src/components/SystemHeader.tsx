@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Shield, Sparkles, RefreshCw } from "lucide-react";
 import { AudioEqualizerButton } from "@/components/AudioPlayer";
+import { AudioVisualizerCanvas } from "@/components/effects/AudioVisualizerCanvas";
 import { GlitchText } from "@/components/GlitchText";
 import { LevelUpLogo } from "@/components/ui/LevelUpLogo";
 import { sfx } from "@/lib/audio-sfx";
@@ -127,6 +128,9 @@ export function SystemHeader() {
 
       {/* Right Controls: Audio + Re-Awaken + Action */}
       <div className="flex items-center gap-2.5 sm:gap-3">
+        {/* Real-time Frequency Spectrum Visualizer */}
+        <AudioVisualizerCanvas className="hidden md:block" />
+
         {/* Dark Aria Audio Toggle */}
         <AudioEqualizerButton />
 
