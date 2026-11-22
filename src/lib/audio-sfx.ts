@@ -155,6 +155,10 @@ class SystemSFXEngine {
     this.playBladeSheathe();
   }
 
+  public playItemPickup() {
+    this.playStatPointAlloc();
+  }
+
   // 5. Stat Point Allocation Level-up Chime
   public playStatPointAlloc() {
     if (this.isMuted) return;

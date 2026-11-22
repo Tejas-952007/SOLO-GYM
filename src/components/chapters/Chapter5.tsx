@@ -13,6 +13,7 @@ import { HydrationChamber } from "@/components/ui/HydrationChamber";
 import { MacroSwapper } from "@/components/ui/MacroSwapper";
 import { MetabolicEngine } from "@/components/ui/MetabolicEngine";
 import { DesiProteinBudgetRanker } from "@/components/ui/DesiProteinBudgetRanker";
+import { SundayMealPrepChecklist } from "@/components/ui/SundayMealPrepChecklist";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -470,6 +471,11 @@ export function Chapter5() {
           {/* Indian Protein Cost-Per-Gram Budget Leaderboard */}
           <div className="w-full mt-8">
             <DesiProteinBudgetRanker />
+          </div>
+
+          {/* Sunday Desi Meal Prep & Batch Cooking Protocol */}
+          <div className="w-full mt-8">
+            <SundayMealPrepChecklist />
           </div>
         </div>
       </div>
