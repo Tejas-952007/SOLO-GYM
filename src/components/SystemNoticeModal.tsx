@@ -116,24 +116,35 @@ export function SystemNoticeModal({ onAwaken }: SystemNoticeModalProps) {
           <span className="bracket-bl" />
 
           {/* System Notification Header */}
-          <div className="flex items-center justify-between border-b border-system-accent/30 pb-3 mb-5">
-            <div className="flex items-center gap-2">
-              <span
-                className={`w-2.5 h-2.5 rounded-full animate-ping ${
-                  rejectCount > 0 ? "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,1)]" : "bg-system-cyan shadow-[0_0_12px_rgba(56,189,248,1)]"
-                }`}
+          <div className="flex flex-col items-center border-b border-system-accent/30 pb-3 mb-5 space-y-2">
+            <div className="relative h-8 sm:h-10 w-44 sm:w-52">
+              <Image
+                src="/assets/logo/solo-leveling-gothic-title.png"
+                alt="Solo Leveling System Notice"
+                fill
+                priority
+                className="object-contain filter brightness-125 drop-shadow-[0_0_16px_rgba(139,92,246,0.9)]"
               />
-              <span
-                className={`font-orbitron text-xs sm:text-sm tracking-system uppercase font-bold ${
-                  rejectCount > 0 ? "text-red-400" : "text-system-cyan"
-                }`}
-              >
-                {rejectCount > 0 ? "[ EMERGENCY DIRECTIVE // LIFE THREAT ]" : "[ SYSTEM NOTIFICATION // PROTOCOL 00 ]"}
+            </div>
+            <div className="w-full flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span
+                  className={`w-2.5 h-2.5 rounded-full animate-ping ${
+                    rejectCount > 0 ? "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,1)]" : "bg-system-cyan shadow-[0_0_12px_rgba(56,189,248,1)]"
+                  }`}
+                />
+                <span
+                  className={`font-orbitron text-xs sm:text-sm tracking-system uppercase font-bold ${
+                    rejectCount > 0 ? "text-red-400" : "text-system-cyan"
+                  }`}
+                >
+                  {rejectCount > 0 ? "[ EMERGENCY DIRECTIVE // LIFE THREAT ]" : "[ SYSTEM NOTIFICATION // PROTOCOL 00 ]"}
+                </span>
+              </div>
+              <span className="font-mono text-[10px] tracking-wider text-system-muted">
+                HUNTER CANDIDATE #7849
               </span>
             </div>
-            <span className="font-mono text-[10px] tracking-wider text-system-muted">
-              HUNTER CANDIDATE #7849
-            </span>
           </div>
 
           {/* Solo Leveling Title & Awakening Narrative */}
