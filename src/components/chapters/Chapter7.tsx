@@ -116,6 +116,19 @@ export function Chapter7() {
     spawnCombatNumber("+500 HUNTER XP!", undefined, undefined, "xp");
   };
 
+  const advanceToNextRank = () => {
+    const currentIndex = RANK_TIERS.findIndex((t) => t.rank === selectedRank.rank);
+    if (currentIndex < RANK_TIERS.length - 1) {
+      const nextTier = RANK_TIERS[currentIndex + 1];
+      handleRankSelect(nextTier);
+      sfx.playRankUp();
+      spawnCombatNumber(`RANK UP! PROMOTED TO RANK ${nextTier.rank}`, undefined, undefined, "stat");
+    } else {
+      sfx.playRankAscent();
+      spawnCombatNumber("MAX RANK S+ ACHIEVED // MONARCH STATUS", undefined, undefined, "mana");
+    }
+  };
+
   return (
     <section
       id="chapter-7"
@@ -207,6 +220,9 @@ export function Chapter7() {
               {/* Soft Bottom-Only Fade so character's head and eyes are 100% visible */}
               <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none" />
 
+              {/* Laser Sweep Scanner Line across Rank Card */}
+              <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-white/80 to-transparent opacity-50 animate-laser-sweep pointer-events-none" />
+
               {/* Glowing Eye Glint on S-Rank / A-Rank */}
               {(selectedRank.rank === "S" || selectedRank.rank === "A") && (
                 <div
@@ -264,7 +280,7 @@ export function Chapter7() {
           >
             <div className="system-window corner-brackets p-6 sm:p-8 rounded space-y-6">
               
-              {/* Header with XP Simulator */}
+              {/* Header with XP Simulator & Rank Ascension */}
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-system-accent/15 pb-4">
                 <div>
                   <span className="font-mono text-[10px] uppercase tracking-wideSystem text-system-accent">
@@ -274,14 +290,46 @@ export function Chapter7() {
                     RANK {selectedRank.rank}: {selectedRank.title}
                   </h3>
                 </div>
-                <button
-                  onClick={handleSimulateXP}
-                  onMouseEnter={() => sfx.playHover()}
-                  className="px-3 py-1.5 rounded text-xs font-mono font-bold uppercase border bg-system-accent/15 hover:bg-system-accent/30 text-system-glow border-system-accent/40 transition-colors flex items-center gap-1.5"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>SIMULATE +500 XP {bonusXP > 0 && `(+${bonusXP})`}</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleSimulateXP}
+                    onMouseEnter={() => sfx.playHover()}
+                    className="px-3 py-1.5 rounded text-xs font-mono font-bold uppercase border bg-system-accent/15 hover:bg-system-accent/30 text-system-glow border-system-accent/40 transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>+500 XP {bonusXP > 0 && `(+${bonusXP})`}</span>
+                  </button>
+                  <button
+                    onClick={advanceToNextRank}
+                    onMouseEnter={() => sfx.playHover()}
+                    className="px-3 py-1.5 rounded text-xs font-mono font-bold uppercase border bg-system-gold/20 hover:bg-system-gold hover:text-black text-system-gold border-system-gold/50 shadow-[0_0_12px_rgba(245,197,66,0.4)] transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Award className="w-3.5 h-3.5" />
+                    <span>[ ASCEND RANK ]</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Physical Compound 1RM Projections */}
+              <div className="p-3 bg-black/60 border border-system-accent/20 rounded-lg">
+                <div className="font-mono text-[10px] text-system-muted uppercase tracking-wider mb-2 flex justify-between">
+                  <span>ESTIMATED REAL-WORLD COMPOUND 1RM</span>
+                  <span className="text-system-gold font-bold">CALIBRATED</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center font-mono">
+                  <div className="p-1.5 bg-black/50 border border-white/5 rounded">
+                    <div className="text-[9px] text-system-muted">BENCH PRESS</div>
+                    <div className="text-white font-bold text-xs">{Math.round(selectedRank.stats.str * 1.4)} KG</div>
+                  </div>
+                  <div className="p-1.5 bg-black/50 border border-white/5 rounded">
+                    <div className="text-[9px] text-system-muted">BARBELL SQUAT</div>
+                    <div className="text-cyan-300 font-bold text-xs">{Math.round(selectedRank.stats.str * 1.8)} KG</div>
+                  </div>
+                  <div className="p-1.5 bg-black/50 border border-white/5 rounded">
+                    <div className="text-[9px] text-system-muted">CONVENTIONAL DL</div>
+                    <div className="text-yellow-400 font-bold text-xs">{Math.round(selectedRank.stats.str * 2.2)} KG</div>
+                  </div>
+                </div>
               </div>
 
               {/* Stat Gauges (STR, VIT, AGI, DISCIPLINE) */}
