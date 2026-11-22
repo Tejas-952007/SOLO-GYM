@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX, Disc3 } from "lucide-react";
+import { sfx } from "@/lib/audio-sfx";
+import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 
 interface AudioContextType {
   isPlaying: boolean;
@@ -36,23 +38,30 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const playAudio = () => {
+    sfx.startAmbientDrone();
     if (audioRef.current) {
       audioRef.current.play().then(() => {
         setIsPlaying(true);
+        spawnCombatNumber("DARK ARIA AUDIO: ACTIVE", undefined, undefined, "mana");
       }).catch((e) => {
         console.warn("Autoplay was prevented by browser policy:", e);
+        setIsPlaying(true);
+        spawnCombatNumber("AMBIENT SYNTH DRONE: ON", undefined, undefined, "mana");
       });
     }
   };
 
   const pauseAudio = () => {
+    sfx.stopAmbientDrone();
     if (audioRef.current) {
       audioRef.current.pause();
       setIsPlaying(false);
+      spawnCombatNumber("AUDIO SYSTEM: MUTED", undefined, undefined, "alert");
     }
   };
 
   const toggleAudio = () => {
+    sfx.playClick();
     if (isPlaying) {
       pauseAudio();
     } else {
