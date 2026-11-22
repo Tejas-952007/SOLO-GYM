@@ -419,19 +419,31 @@ export function Chapter8() {
               </div>
             </div>
 
-            <div className="p-4 bg-black/60 border border-system-accent/30 rounded-lg space-y-2">
-              <span className="font-mono text-[10px] text-system-gold uppercase tracking-wider">
-                VERIFIED AUTHENTIC SUPPLEMENTS
-              </span>
-              <div className="font-cinzel text-lg font-bold text-system-gold">
-                {currentGym.suppStore}
+            <div className="p-4 bg-black/60 border border-system-accent/30 rounded-lg space-y-2 flex flex-col justify-between">
+              <div>
+                <span className="font-mono text-[10px] text-system-gold uppercase tracking-wider">
+                  VERIFIED AUTHENTIC SUPPLEMENTS
+                </span>
+                <div className="font-cinzel text-lg font-bold text-system-gold">
+                  {currentGym.suppStore}
+                </div>
+                <div className="text-[11px] font-mono text-system-glow">
+                  ZERO COUNTERFEIT GUARANTEE
+                </div>
+                <div className="text-xs font-inter text-system-muted">
+                  Batch-tested whey, creatine monohydrate & essential micronutrients.
+                </div>
               </div>
-              <div className="text-[11px] font-mono text-system-glow">
-                ZERO COUNTERFEIT GUARANTEE
-              </div>
-              <div className="text-xs font-inter text-system-muted">
-                Batch-tested whey, creatine monohydrate & essential micronutrients.
-              </div>
+              <button
+                onClick={() => {
+                  sfx.playStatPointAlloc();
+                  spawnCombatNumber("BATCH #IND-9941 LAB VERIFIED // 100% PURE", undefined, undefined, "stat");
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className="mt-2 py-1 px-3 bg-system-gold/20 hover:bg-system-gold hover:text-black border border-system-gold/50 rounded text-[10px] font-mono text-system-gold uppercase font-bold tracking-wider transition-all cursor-pointer w-fit"
+              >
+                [ CHECK LABDOOR TEST CERTIFICATE ]
+              </button>
             </div>
           </div>
         </div>
