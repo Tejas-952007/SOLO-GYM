@@ -15,6 +15,7 @@ import { SpatialDungeonPerspective } from "@/components/effects/SpatialDungeonPe
 import { CinematicOverlay } from "@/components/CinematicOverlay";
 import { HunterStatusConsole } from "@/components/HunterStatusConsole";
 import { HunterCommandPalette } from "@/components/ui/HunterCommandPalette";
+import { KeyboardShortcutsModal } from "@/components/ui/KeyboardShortcutsModal";
 import { BladeSlashDivider } from "@/components/ui/BladeSlashDivider";
 import { StoryTimelineHUD } from "@/components/StoryTimelineHUD";
 import { Chapter1 } from "@/components/chapters/Chapter1";
@@ -65,6 +66,9 @@ export default function Home() {
 
         {/* Global Hunter RPG Status Console & Hotkey (C) */}
         <HunterStatusConsole />
+
+        {/* Global Hunter Keyboard Shortcuts Modal (?) & Bottom-Left Dock */}
+        <KeyboardShortcutsModal />
 
         {/* Global Dimensional Command Palette (K / Cmd+K) */}
         <HunterCommandPalette
