@@ -9,6 +9,7 @@ import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { DesiMealCombinator } from "@/components/ui/DesiMealCombinator";
 import { ManaBrewFormulator } from "@/components/ui/ManaBrewFormulator";
+import { HydrationChamber } from "@/components/ui/HydrationChamber";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -446,6 +447,11 @@ export function Chapter5() {
           {/* Pre-Workout Mana Brew Formulator & Caffeine Half-Life Alchemy */}
           <div className="w-full mt-8">
             <ManaBrewFormulator />
+          </div>
+
+          {/* Intra-Cellular Hydration & Creatine Reservoir */}
+          <div className="w-full mt-8">
+            <HydrationChamber />
           </div>
         </div>
       </div>
