@@ -7,6 +7,7 @@ import { CheckCircle2, Flame, Sparkles, Trophy, Zap } from "lucide-react";
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { CartenonCommandments } from "@/components/ui/CartenonCommandments";
 import { sfx } from "@/lib/audio-sfx";
 
 export function Chapter2() {
@@ -501,6 +502,11 @@ export function Chapter2() {
             </div>
             </AnimeTiltCard>
           </div>
+        </div>
+
+        {/* Cartenon Temple Three Iron Commandments Trial Matrix */}
+        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10">
+          <CartenonCommandments />
         </div>
       </div>
     </section>
