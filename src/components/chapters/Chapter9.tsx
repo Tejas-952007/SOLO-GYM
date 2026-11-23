@@ -9,72 +9,16 @@ import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { ShadowExtractionRitual } from "@/components/effects/ShadowExtractionRitual";
 import { ShadowBarracks } from "@/components/ui/ShadowBarracks";
 import { HunterAscensionCertificate } from "@/components/ui/HunterAscensionCertificate";
+import { ThreeCharacterShowcase } from "@/components/ThreeCharacterShowcase";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
-
-const SHADOW_CORPS = [
-  {
-    name: "IGRIS",
-    role: "COMMANDER // RED BLOOD KNIGHT",
-    buff: "+35% COMPOUND 1RM STRENGTH",
-    stat: "STR 99",
-    border: "border-red-500/50 hover:border-red-400",
-    color: "text-red-400",
-    bg: "bg-red-950/30",
-  },
-  {
-    name: "BERU",
-    role: "MARSHAL // PREDATOR KING",
-    buff: "+45g HIGH-LEUCINE BIOAVAILABILITY",
-    stat: "AGI 99",
-    border: "border-purple-500/50 hover:border-purple-400",
-    color: "text-purple-400",
-    bg: "bg-purple-950/30",
-  },
-  {
-    name: "IRON",
-    role: "VANGUARD // SHIELD FORTRESS",
-    buff: "+50% JOINT & TENDON RESILIENCE",
-    stat: "VIT 99",
-    border: "border-cyan-500/50 hover:border-cyan-400",
-    color: "text-cyan-400",
-    bg: "bg-cyan-950/30",
-  },
-  {
-    name: "TANK",
-    role: "TITAN // FROST BEAST",
-    buff: "+40% LEG HYPERTROPHY VOLUME",
-    stat: "DISC 99",
-    border: "border-yellow-500/50 hover:border-yellow-400",
-    color: "text-yellow-400",
-    bg: "bg-yellow-950/30",
-  },
-];
 
 export function Chapter9() {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [ritualOpen, setRitualOpen] = useState(false);
   const [ticketId] = useState(() => Math.floor(Math.random() * 8999 + 1000));
-  const [monarchTab, setMonarchTab] = useState<'certificate' | 'barracks'>('certificate');
-  const [summonedArmy, setSummonedArmy] = useState<Record<string, boolean>>({
-    IGRIS: true,
-  });
-
-  const toggleSummon = (name: string, buff: string) => {
-    sfx.playBladeSlash();
-    setSummonedArmy((prev) => {
-      const nextState = !prev[name];
-      if (nextState) {
-        spawnCombatNumber(`${name} SUMMONED! [${buff}]`, undefined, undefined, "stat");
-      } else {
-        spawnCombatNumber(`${name} RETRACTED TO SHADOW`, undefined, undefined, "mana");
-      }
-      return { ...prev, [name]: nextState };
-    });
-  };
-
-  const activeSummonCount = Object.values(summonedArmy).filter(Boolean).length;
+  const [monarchTab, setMonarchTab] = useState<'3d-roster' | 'certificate' | 'barracks'>('3d-roster');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,7 +56,7 @@ export function Chapter9() {
       </div>
 
       <div className="relative z-10 w-full max-w-4xl mx-auto my-auto text-center space-y-8">
-        
+
         {/* Phase Pill */}
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-system-gold/20 border border-system-gold/40 rounded text-xs font-mono tracking-wideSystem text-system-gold uppercase">
           <Zap className="w-3.5 h-3.5" />
@@ -170,106 +114,57 @@ export function Chapter9() {
           className="max-w-md mx-auto w-full"
         >
           <div className="w-full system-window corner-brackets p-6 rounded relative">
-          {isSubmitted ? (
-            <div className="py-4 space-y-3 font-mono text-center">
-              <div className="w-12 h-12 rounded-full bg-system-gold/20 border border-system-gold/40 mx-auto flex items-center justify-center text-system-gold">
-                <CheckCircle2 className="w-6 h-6" />
+            {isSubmitted ? (
+              <div className="py-4 space-y-3 font-mono text-center">
+                <div className="w-12 h-12 rounded-full bg-system-gold/20 border border-system-gold/40 mx-auto flex items-center justify-center text-system-gold">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <div className="text-sm font-bold text-system-gold uppercase tracking-wider">
+                  [ HUNTER IDENTITY ENCRYPTED ]
+                </div>
+                <p className="font-inter text-xs text-system-muted">
+                  Your credentials have been added to the Sovereign Registry. You will receive your activation code before the app launches publicly.
+                </p>
+                <div className="text-[10px] text-system-accent">
+                  REGISTRY TICKET: #LVL-{ticketId}
+                </div>
               </div>
-              <div className="text-sm font-bold text-system-gold uppercase tracking-wider">
-                [ HUNTER IDENTITY ENCRYPTED ]
-              </div>
-              <p className="font-inter text-xs text-system-muted">
-                Your credentials have been added to the Sovereign Registry. You will receive your activation code before the app launches publicly.
-              </p>
-              <div className="text-[10px] text-system-accent">
-                REGISTRY TICKET: #LVL-{ticketId}
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4 text-left">
-              <div className="space-y-1">
-                <label className="font-mono text-[10px] text-system-muted uppercase tracking-wider">
-                  ENTER HUNTER TRANSMISSION ADDRESS (EMAIL)
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="hunter@levelup.app"
-                  className="w-full px-4 py-3 bg-black/60 border border-system-accent/30 rounded text-system-text font-mono text-xs focus:outline-none focus:border-system-gold transition-colors placeholder:text-system-muted/50"
-                />
-              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4 text-left">
+                <div className="space-y-1">
+                  <label className="font-mono text-[10px] text-system-muted uppercase tracking-wider">
+                    ENTER HUNTER TRANSMISSION ADDRESS (EMAIL)
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="hunter@levelup.app"
+                    className="w-full px-4 py-3 bg-black/60 border border-system-accent/30 rounded text-system-text font-mono text-xs focus:outline-none focus:border-system-gold transition-colors placeholder:text-system-muted/50"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                onMouseEnter={() => sfx.playHover()}
-                className="w-full py-3.5 px-6 rounded font-cinzel text-sm font-bold uppercase tracking-wider bg-system-gold text-black hover:bg-yellow-400 transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(245,197,66,0.5)] group"
-              >
-                <span>BECOME A HUNTER [CLAIM INVITE]</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <div className="flex items-center justify-between text-[10px] font-mono text-system-muted pt-2 border-t border-system-accent/10">
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                  <span>EARLY ACCESS FREE</span>
-                </span>
-                <span>BATCH 01 // 85% FULL</span>
-              </div>
-            </form>
-          )}
-        </div>
-        </AnimeTiltCard>
-
-        {/* Interactive Shadow Corps Roster */}
-        <div className="pt-4 space-y-3 max-w-3xl mx-auto w-full">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-2 gap-1">
-            <span className="font-mono text-[11px] text-system-gold uppercase tracking-wider flex items-center gap-1.5">
-              <Crown className="w-3.5 h-3.5" />
-              THE MONARCH&apos;S SHADOW CORPS (CLICK TO TOGGLE SUMMON):
-            </span>
-            <span className="font-mono text-[10px] text-cyan-400 font-bold">
-              [ {activeSummonCount}/4 ACTIVE IN DOMAIN ]
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {SHADOW_CORPS.map((soldier) => {
-              const isSummoned = !!summonedArmy[soldier.name];
-              return (
                 <button
-                  key={soldier.name}
-                  onClick={() => toggleSummon(soldier.name, soldier.buff)}
+                  type="submit"
                   onMouseEnter={() => sfx.playHover()}
-                  className={`p-3 rounded-xl border flex flex-col justify-between text-left transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md ${
-                    isSummoned
-                      ? `${soldier.border} ${soldier.bg} ring-2 ring-system-gold/60 shadow-[0_0_15px_rgba(245,197,66,0.3)]`
-                      : "border-white/10 bg-black/40 opacity-60 hover:opacity-100"
-                  }`}
+                  className="w-full py-3.5 px-6 rounded font-cinzel text-sm font-bold uppercase tracking-wider bg-system-gold text-black hover:bg-yellow-400 transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(245,197,66,0.5)] group"
                 >
-                  <div>
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="font-cinzel font-black text-sm text-white">{soldier.name}</span>
-                      <span className={`text-[9px] font-mono font-bold ${soldier.color}`}>{soldier.stat}</span>
-                    </div>
-                    <div className="text-[9px] font-mono text-system-muted leading-tight mb-2">{soldier.role}</div>
-                  </div>
-                  <div className={`text-[10px] font-mono font-bold ${soldier.color} border-t border-white/10 pt-1.5 leading-tight`}>
-                    {soldier.buff}
-                  </div>
-                  <div className="text-[9px] font-mono mt-2 pt-1 border-t border-white/5 text-right font-bold">
-                    {isSummoned ? (
-                      <span className="text-emerald-400">[ ACTIVE ]</span>
-                    ) : (
-                      <span className="text-system-muted">[ SUMMON ]</span>
-                    )}
-                  </div>
+                  <span>BECOME A HUNTER [CLAIM INVITE]</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
-              );
-            })}
+
+                <div className="flex items-center justify-between text-[10px] font-mono text-system-muted pt-2 border-t border-system-accent/10">
+                  <span className="flex items-center gap-1">
+                    <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                    <span>EARLY ACCESS FREE</span>
+                  </span>
+                  <span>BATCH 01 // 85% FULL</span>
+                </div>
+              </form>
+            )}
           </div>
-        </div>
+        </AnimeTiltCard>
 
         {/* Shadow Monarch Ascension & Army Barracks Hub */}
         <div className="w-full max-w-4xl mx-auto my-6 font-mono">
@@ -281,7 +176,22 @@ export function Chapter9() {
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setMonarchTab('3d-roster');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  monarchTab === '3d-roster'
+                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                }`}
+              >
+                👑 3D SHADOW ROSTER
+              </button>
+
               <button
                 onClick={() => {
                   sfx.playClick();
@@ -294,7 +204,7 @@ export function Chapter9() {
                     : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-yellow-500/30'
                 }`}
               >
-                📜 S-RANK ASCENSION CREDENTIAL
+                📜 S-RANK CREDENTIAL
               </button>
 
               <button
@@ -309,13 +219,14 @@ export function Chapter9() {
                     : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
                 }`}
               >
-                🛡️ SHADOW ARMY BARRACKS
+                🛡️ SHADOW BARRACKS
               </button>
             </div>
           </div>
 
           {/* Active Module View */}
           <div className="w-full">
+            {monarchTab === '3d-roster' && <ThreeCharacterShowcase />}
             {monarchTab === 'certificate' && <HunterAscensionCertificate />}
             {monarchTab === 'barracks' && <ShadowBarracks />}
           </div>
