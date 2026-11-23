@@ -311,7 +311,7 @@ export function ThreeCharacterShowcase() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
         
         {/* LEFT COLUMN: Clean Minimalist Monolith Controller */}
-        <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-6 border-b lg:border-b-0 lg:border-r border-white/[0.08] bg-[#07060F]/90 z-20">
+        <div className="lg:col-span-6 xl:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-6 border-b lg:border-b-0 lg:border-r border-white/[0.08] bg-[#07060F]/90 z-20">
           
           {/* Identity & Lore */}
           <div className="space-y-3">
@@ -328,7 +328,7 @@ export function ThreeCharacterShowcase() {
               </span>
             </div>
 
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-cinzel font-black text-white tracking-wider uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.4)]">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-cinzel font-black text-white tracking-wider uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.4)] whitespace-nowrap">
               {activeChar.name}
             </h3>
 
@@ -509,7 +509,7 @@ export function ThreeCharacterShowcase() {
           ref={cinemaStageRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="lg:col-span-7 relative min-h-[480px] sm:min-h-[580px] md:min-h-[660px] bg-gradient-to-b from-[#090814] via-[#05050A] to-[#040408] flex items-center justify-center overflow-hidden"
+          className="lg:col-span-6 xl:col-span-7 relative min-h-[480px] sm:min-h-[580px] md:min-h-[660px] bg-gradient-to-b from-[#090814] via-[#05050A] to-[#040408] flex items-center justify-center overflow-hidden"
           style={{ perspective: '1200px' }}
         >
           {/* Ambient Volumetric Backlight */}
