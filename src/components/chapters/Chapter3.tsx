@@ -69,6 +69,7 @@ export function Chapter3() {
     "[SYSTEM EVENT] Dungeon Boss: Titan of Inertia has appeared on Floor 04!",
   ]);
   const [shakeCrit, setShakeCrit] = useState(false);
+  const [mobileCh3Tab, setMobileCh3Tab] = useState<'gauntlet' | 'boss'>('gauntlet');
 
   const strikeBoss = (type: "heavy" | "protein" | "shadow") => {
     if (bossHp <= 0) return;
@@ -244,8 +245,38 @@ export function Chapter3() {
           </div>
         </div>
 
-        {/* Centerpiece Visual Canvas (Desktop: Stacked Crossfade; Mobile: Vertical Scroll) */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto my-6 sm:my-8 flex-1 flex flex-col justify-center">
+        {/* Mobile Segmented Gauntlet vs Boss Switcher */}
+        <div className="flex md:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-xs w-full max-w-md mx-auto relative z-20">
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh3Tab('gauntlet');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh3Tab === 'gauntlet'
+                ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🏰 GAUNTLET FLOORS
+          </button>
+          <button
+            onClick={() => {
+              sfx.playDemonRoar();
+              setMobileCh3Tab('boss');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh3Tab === 'boss'
+                ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            ⚔️ BOSS RAID
+          </button>
+        </div>
+
+        {/* Centerpiece Visual Canvas (Desktop: Stacked Crossfade; Mobile: Active Stage Only) */}
+        <div className={`relative z-10 w-full max-w-6xl mx-auto my-4 sm:my-8 flex-1 flex flex-col justify-center ${mobileCh3Tab === 'gauntlet' ? 'block' : 'hidden md:block'}`}>
           {/* Desktop Stacked Frames (Hidden on Mobile) */}
           <div
             ref={imagesContainerRef}
@@ -305,44 +336,41 @@ export function Chapter3() {
             </div>
           </div>
 
-          {/* Mobile Vertical Flow (Rendered < 768px) */}
-          <div className="block md:hidden space-y-6 w-full">
-            {STAGES.map((stage) => (
-              <div
-                key={stage.id}
-                className="system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 shadow-system-glow"
-              >
-                <div className="relative w-full h-56 overflow-hidden">
-                  <Image
-                    src={stage.image}
-                    alt={stage.floor}
-                    fill
-                    sizes="100vw"
-                    className={`object-cover ${
-                      stage.cropTopWatermark
-                        ? "object-bottom scale-110"
-                        : "object-center"
-                    }`}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
-                </div>
-                <div className="p-4 space-y-1">
-                  <div className="font-mono text-[10px] text-system-cyan">
-                    {stage.counter}
-                  </div>
-                  <div className="font-orbitron text-sm font-bold text-system-text uppercase">
-                    {stage.floor}
-                  </div>
-                  <div className="font-inter text-xs text-system-muted">
-                    {stage.subtitle}
-                  </div>
+          {/* Mobile Active Floor Stage (< 768px: Single interactive card) */}
+          <div className="block md:hidden w-full">
+            <div className="system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 shadow-system-glow">
+              <div className="relative w-full h-56 overflow-hidden">
+                <Image
+                  src={STAGES[activeStage].image}
+                  alt={STAGES[activeStage].floor}
+                  fill
+                  priority
+                  sizes="100vw"
+                  className={`object-cover ${
+                    STAGES[activeStage].cropTopWatermark
+                      ? "object-bottom scale-110"
+                      : "object-center"
+                  }`}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
+                <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/85 border border-purple-500/40 text-purple-300 font-mono text-[10px] font-bold">
+                  {STAGES[activeStage].counter}
                 </div>
               </div>
-            ))}
+              <div className="p-4 space-y-1">
+                <div className="font-orbitron text-sm font-bold text-system-text uppercase">
+                  {STAGES[activeStage].floor}
+                </div>
+                <div className="font-inter text-xs text-system-muted">
+                  {STAGES[activeStage].subtitle}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Live Interactive Dungeon Boss Raid Encounter Mini-Game with 3D AnimeTiltCard */}
+        <div className={mobileCh3Tab === 'boss' ? 'block' : 'hidden md:block'}>
         <AnimeTiltCard
           maxTilt={5}
           glowColor="rgba(239, 68, 68, 0.35)"
@@ -470,6 +498,7 @@ export function Chapter3() {
             </div>
           </div>
         </AnimeTiltCard>
+        </div>
 
         {/* Tactical Dungeon Terminal & 3D Shadow Armory Switcher */}
         <div className="relative z-20 w-full max-w-6xl mx-auto my-6 font-mono">

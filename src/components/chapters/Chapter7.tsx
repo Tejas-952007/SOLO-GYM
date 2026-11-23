@@ -102,6 +102,7 @@ export function Chapter7() {
   const [selectedRank, setSelectedRank] = useState<RankTier>(RANK_TIERS[0]);
   const [bonusXP, setBonusXP] = useState<number>(0);
   const [ascensionTab, setAscensionTab] = useState<'radar' | 'leaderboard' | 'plateau'>('radar');
+  const [mobileCh7Tab, setMobileCh7Tab] = useState<'rank' | 'radar' | 'leaderboard'>('rank');
 
   const handleRankSelect = (tier: RankTier) => {
     if (tier.rank === "S" || tier.rank === "A") {
@@ -168,6 +169,53 @@ export function Chapter7() {
           </p>
         </div>
 
+        {/* Mobile Segmented Module Switcher */}
+        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-xs w-full max-w-md mx-auto relative z-20">
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh7Tab('rank');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh7Tab === 'rank'
+                ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            👑 RANK
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh7Tab('radar');
+              setAscensionTab('radar');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh7Tab === 'radar'
+                ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            📈 1RM RADAR
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh7Tab('leaderboard');
+              setAscensionTab('leaderboard');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh7Tab === 'leaderboard'
+                ? 'bg-yellow-500 text-black shadow-[0_0_12px_rgba(245,197,66,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🏆 GUILD
+          </button>
+        </div>
+
+        {/* Section 1: Rank Ascension Showcase (Desktop: Normal, Mobile: when rank tab active) */}
+        <div className={`space-y-8 ${mobileCh7Tab === 'rank' ? 'block' : 'hidden lg:block'}`}>
         {/* Rank Selection Tabs */}
         <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 p-2 bg-system-panel/60 border border-system-accent/20 rounded-lg max-w-3xl mx-auto backdrop-blur-md">
           {RANK_TIERS.map((tier) => {
@@ -438,9 +486,10 @@ export function Chapter7() {
           </AnimeTiltCard>
 
         </div>
+        </div>
 
         {/* National Indian Hunter Ascension & Powerlifting Terminal */}
-        <div className="w-full max-w-6xl mx-auto mt-10 font-mono">
+        <div className={`w-full max-w-6xl mx-auto mt-10 font-mono ${mobileCh7Tab === 'radar' || mobileCh7Tab === 'leaderboard' ? 'block' : 'hidden lg:block'}`}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-system-gold animate-pulse" />

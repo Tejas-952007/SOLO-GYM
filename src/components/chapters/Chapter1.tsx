@@ -23,8 +23,8 @@ export function Chapter1() {
   const [completedQuests, setCompletedQuests] = useState<Record<number, boolean>>({});
   const [bonusXP, setBonusXP] = useState(0);
 
-  // Interactive Hunter Stat Allocator (5 AP)
-  const [activeHeroTab, setActiveHeroTab] = useState<"quests" | "stats">("quests");
+  // Interactive Hunter Stat Allocator (5 AP) & Mobile Tab Switcher
+  const [activeHeroTab, setActiveHeroTab] = useState<"quests" | "stats" | "visage">("quests");
   const [availableAP, setAvailableAP] = useState(5);
   const [stats, setStats] = useState({
     str: 10,
@@ -249,20 +249,20 @@ export function Chapter1() {
           <div className="w-full max-w-lg p-4 sm:p-5 rounded-xl border border-system-cyan/30 bg-[#0B1021]/80 backdrop-blur-md shadow-[0_0_25px_rgba(14,165,233,0.15)] space-y-3.5">
             {/* Tab Switches */}
             <div className="flex items-center justify-between border-b border-system-cyan/20 pb-2.5">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={() => {
                     sfx.playClick();
                     setActiveHeroTab("quests");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1 rounded text-xs font-mono tracking-wider transition-all ${
+                  className={`px-2.5 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all ${
                     activeHeroTab === "quests"
                       ? "bg-system-cyan/20 border border-system-cyan text-white shadow-[0_0_12px_rgba(56,189,248,0.5)] font-bold"
                       : "text-system-muted hover:text-white"
                   }`}
                 >
-                  [ QUEST LOG ]
+                  [ QUESTS ]
                 </button>
                 <button
                   onClick={() => {
@@ -270,18 +270,33 @@ export function Chapter1() {
                     setActiveHeroTab("stats");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1.5 ${
+                  className={`px-2.5 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
                     activeHeroTab === "stats"
                       ? "bg-yellow-500/20 border border-yellow-500 text-yellow-300 shadow-[0_0_12px_rgba(234,179,8,0.5)] font-bold"
                       : "text-system-muted hover:text-white"
                   }`}
                 >
                   <Award className="w-3.5 h-3.5" />
-                  <span>STATS [{availableAP} AP]</span>
+                  <span>STATS [{availableAP}]</span>
+                </button>
+                {/* Mobile-Only Hunter Visage Tab */}
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setActiveHeroTab("visage");
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`lg:hidden px-2.5 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
+                    activeHeroTab === "visage"
+                      ? "bg-purple-600/30 border border-purple-400 text-purple-200 shadow-[0_0_12px_rgba(168,85,247,0.5)] font-bold"
+                      : "text-system-muted hover:text-white"
+                  }`}
+                >
+                  <span>HUNTER</span>
                 </button>
               </div>
-              <span className="text-yellow-400 font-mono text-xs font-bold">
-                {activeHeroTab === "quests" ? `XP: +${bonusXP}/500` : `AP: ${availableAP} REMAINING`}
+              <span className="text-yellow-400 font-mono text-[11px] sm:text-xs font-bold">
+                {activeHeroTab === "quests" ? `+${bonusXP}/500 XP` : activeHeroTab === "stats" ? `${availableAP} AP` : "CLASS-E"}
               </span>
             </div>
 
@@ -412,6 +427,49 @@ export function Chapter1() {
                 </div>
               </div>
             )}
+
+            {/* View 3: Mobile Hunter Visage */}
+            {activeHeroTab === "visage" && (
+              <div className="lg:hidden space-y-3">
+                <div className="relative w-full h-[300px] rounded-xl overflow-hidden border border-cyan-500/40 bg-black/80">
+                  <Image
+                    src="/assets/01-weak/weak-hunter.webp"
+                    alt="Rank E Hunter Visage"
+                    fill
+                    priority
+                    className="object-cover object-[center_25%] filter brightness-110 contrast-125"
+                  />
+                  <div className="absolute top-2 left-2 bg-black/80 px-2 py-0.5 rounded text-[9px] font-mono text-cyan-400 border border-cyan-500/30">
+                    KHA-0091 // CLASS-E
+                  </div>
+                  <div className="absolute top-2 right-2 bg-black/80 px-2 py-0.5 rounded text-[9px] font-mono text-emerald-400 border border-emerald-500/30">
+                    HP: 120/120 • 84% FATIGUE
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-black/70 to-transparent" />
+                  <div className="absolute bottom-2 inset-x-2 flex justify-between items-center text-[10px] font-mono text-white">
+                    <span>AURA: {auraConfigs[hunterAura].name}</span>
+                    <span className="text-yellow-400 font-bold">WEAKEST HUNTER</span>
+                  </div>
+                </div>
+
+                {/* Mobile Aura Switcher */}
+                <div className="flex gap-1.5 justify-center">
+                  {(["cyan", "crimson", "violet"] as const).map((aura) => (
+                    <button
+                      key={aura}
+                      onClick={() => switchAura(aura)}
+                      className={`px-3 py-1 rounded text-[10px] font-mono border transition-all ${
+                        hunterAura === aura
+                          ? auraConfigs[aura].btnActive
+                          : "bg-black/50 border-white/10 text-gray-400"
+                      }`}
+                    >
+                      {aura.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Interactive CTA Buttons */}
@@ -433,8 +491,8 @@ export function Chapter1() {
           </div>
         </div>
 
-        {/* Right Column: Hero Hunter Character with 3D Anime Tilt & Glowing Eye */}
-        <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
+        {/* Right Column: Hero Hunter Character with 3D Anime Tilt & Glowing Eye (Desktop Only) */}
+        <div className="hidden lg:flex lg:col-span-5 flex-col items-center justify-center relative">
           <AnimeTiltCard
             maxTilt={12}
             glowColor={auraConfigs[hunterAura].glowColor}

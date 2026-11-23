@@ -29,6 +29,7 @@ export function Chapter2() {
   const [templeReverence, setTempleReverence] = useState(false);
   const [claimedReward, setClaimedReward] = useState(false);
   const [cartenonTab, setCartenonTab] = useState<'commandments' | 'edc'>('commandments');
+  const [mobileTab, setMobileTab] = useState<'entity' | 'quest' | 'commandments'>('entity');
   const fullTitle = "DAILY QUEST: PREPARATION FOR STRENGTH";
 
   const triggerReverence = () => {
@@ -185,10 +186,53 @@ export function Chapter2() {
           </p>
         </div>
 
+        {/* Mobile Segmented Module Switcher */}
+        <div className="flex md:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl mb-6 font-mono text-xs w-full max-w-md mx-auto relative z-20">
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileTab('entity');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileTab === 'entity'
+                ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🗿 ENTITY
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileTab('quest');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileTab === 'quest'
+                ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            📜 QUESTS
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileTab('commandments');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileTab === 'commandments'
+                ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            ⚔️ COMMANDS
+          </button>
+        </div>
+
         {/* Dual-Column Interactive Composition */}
         <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           {/* Left: Interactive Visual Stage with 3 Iconic Anime States Wrapped in 3D AnimeTiltCard */}
-          <div className="md:col-span-6 flex flex-col justify-center items-center relative space-y-3">
+          <div className={`md:col-span-6 flex flex-col justify-center items-center relative space-y-3 ${mobileTab === 'entity' ? 'flex' : 'hidden md:flex'}`}>
             <AnimeTiltCard
               maxTilt={10}
               glowColor={activeVisual === 0 || activeVisual === 2 ? "rgba(239, 68, 68, 0.4)" : "rgba(56, 189, 248, 0.4)"}
@@ -350,7 +394,7 @@ export function Chapter2() {
           </div>
 
           {/* Right: Live Interactive HTML System Window with 3D AnimeTiltCard */}
-          <div className="md:col-span-6 w-full flex justify-center">
+          <div className={`md:col-span-6 w-full flex justify-center ${mobileTab === 'quest' ? 'flex' : 'hidden md:flex'}`}>
             <AnimeTiltCard
               maxTilt={8}
               glowColor="rgba(139, 92, 246, 0.35)"
@@ -507,7 +551,7 @@ export function Chapter2() {
         </div>
 
         {/* Cartenon Temple Awakening & EDC Gear Terminal */}
-        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10 font-mono">
+        <div className={`w-full max-w-6xl mx-auto mt-10 relative z-10 font-mono ${mobileTab === 'commandments' ? 'block' : 'hidden md:block'}`}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />

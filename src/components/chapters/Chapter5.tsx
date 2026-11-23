@@ -70,6 +70,7 @@ export function Chapter5() {
   const [weightKg, setWeightKg] = useState<number>(68);
   const [goal, setGoal] = useState<"bulk" | "cut">("bulk");
   const [nutritionTab, setNutritionTab] = useState<'combinator' | 'budget' | 'prep' | 'brew' | 'swapper' | 'metabolic'>('combinator');
+  const [mobileCh5Tab, setMobileCh5Tab] = useState<'plates' | 'calibrator' | 'combinator'>('plates');
 
   // Interactive Plate Builder Tray
   const [plateItems, setPlateItems] = useState<{ name: string; protein: number; cal: number }[]>([
@@ -121,6 +122,51 @@ export function Chapter5() {
           </p>
         </div>
 
+        {/* Mobile Segmented Nutrition Module Switcher */}
+        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-xs w-full max-w-md mx-auto relative z-20">
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh5Tab('plates');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh5Tab === 'plates'
+                ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🍱 4 PLATES
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh5Tab('calibrator');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh5Tab === 'calibrator'
+                ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            ⚖️ MACROS
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh5Tab('combinator');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh5Tab === 'combinator'
+                ? 'bg-emerald-600 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🍛 COMBINATOR
+          </button>
+        </div>
+
+        {/* Section 1: Calibrator & Carbs Hero (Desktop: Normal, Mobile: when calibrator tab active) */}
+        <div className={`space-y-12 sm:space-y-16 ${mobileCh5Tab === 'calibrator' ? 'block' : 'hidden lg:block'}`}>
         {/* Central Anchor: "Needs Carbs" Hero Banner + Floating Sticker Wrapped in 3D AnimeTiltCard */}
         <AnimeTiltCard
           maxTilt={8}
@@ -293,7 +339,10 @@ export function Chapter5() {
             </div>
           </div>
         </AnimeTiltCard>
+        </div>
 
+        {/* Section 2: 4 Interactive Food Weapon Cards (Desktop: Normal, Mobile: when plates tab active) */}
+        <div className={`space-y-8 ${mobileCh5Tab === 'plates' ? 'block' : 'hidden lg:block'}`}>
         {/* 4 Interactive Food Weapon Cards with Real-time Nutritional Scanner */}
         <div className="space-y-4">
           <div className="flex flex-wrap justify-between items-center text-xs font-mono text-system-muted gap-2">
@@ -328,7 +377,65 @@ export function Chapter5() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Mobile Plate Selector Pills (Mobile Only) */}
+          <div className="flex sm:hidden items-center justify-between gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-lg font-mono text-[11px]">
+            {NUTRITION_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  sfx.playBladeSheathe();
+                  setActiveFood(item.id);
+                  spawnCombatNumber(`${item.protein}! [LEUCINE SCAN]`, undefined, undefined, "stat");
+                }}
+                className={`flex-1 py-1.5 rounded font-bold transition-all text-center truncate ${
+                  activeFood === item.id
+                    ? "bg-system-cyan text-black shadow-[0_0_10px_rgba(56,189,248,0.5)]"
+                    : "text-system-muted hover:text-white"
+                }`}
+              >
+                {item.id === "chicken-plate" ? "🍗 CHICKEN" : item.id === "sprout-chaat" ? "🥗 SPROUTS" : item.id === "rice-beans" ? "🍛 RAJMA" : "🧀 PANEER"}
+              </button>
+            ))}
+          </div>
+
+          {/* Mobile Single Active Dish Card (Mobile Only) */}
+          <div className="block sm:hidden">
+            {(() => {
+              const item = NUTRITION_ITEMS.find((f) => f.id === activeFood) || NUTRITION_ITEMS[0];
+              return (
+                <div className="system-window corner-brackets p-4 rounded-lg border border-system-cyan shadow-[0_0_20px_rgba(56,189,248,0.4)]">
+                  <div className="relative h-56 w-full rounded-lg overflow-hidden mb-3 bg-black/80">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      fill
+                      priority
+                      sizes="100vw"
+                      className="object-cover object-center filter brightness-95 contrast-105"
+                    />
+                    <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-system-cyan to-transparent opacity-80 animate-laser-sweep pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded bg-black/85 border border-system-gold/40 text-system-gold font-mono text-xs font-bold">
+                      {item.protein}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-sm font-cinzel font-bold text-system-text uppercase">
+                      {item.name}
+                    </div>
+                    <div className="text-xs font-mono text-system-muted flex justify-between">
+                      <span>{item.calories}</span>
+                      <span className="text-system-cyan font-semibold">VERIFIED HIGH-PROTEIN</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Desktop/Tablet 4-Card Grid */}
+          <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {NUTRITION_ITEMS.map((item) => (
               <motion.div
                 key={item.id}
@@ -445,9 +552,10 @@ export function Chapter5() {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Unified Desi Nutrition Grimoire Terminal */}
-          <div className="w-full mt-10 font-mono">
+        {/* Section 3: Unified Desi Nutrition Grimoire Terminal (Desktop: Normal, Mobile: when combinator tab active) */}
+        <div className={`w-full mt-10 font-mono ${mobileCh5Tab === 'combinator' ? 'block' : 'hidden lg:block'}`}>
             {/* Terminal Header & Tab Bar */}
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-emerald-500/25 pb-3 mb-6 gap-3">
               <div className="flex items-center gap-2">

@@ -141,6 +141,7 @@ export function Chapter8() {
   const [coachTab, setCoachTab] = useState<'voice' | 'vision'>('voice');
   const [customQuery, setCustomQuery] = useState("");
   const [activeQuickMeal, setActiveQuickMeal] = useState<(typeof QUICK_MACROS)[0] | null>(null);
+  const [mobileCh8Tab, setMobileCh8Tab] = useState<'advisor' | 'dungeons' | 'telemetry'>('advisor');
 
   const currentGym = CITY_GYMS.find((g) => g.city === selectedCity) || CITY_GYMS[0];
 
@@ -189,7 +190,51 @@ export function Chapter8() {
           </p>
         </div>
 
+        {/* Mobile Segmented Module Switcher */}
+        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-xs w-full max-w-md mx-auto relative z-20">
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh8Tab('advisor');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh8Tab === 'advisor'
+                ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🤖 ADVISOR
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh8Tab('dungeons');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh8Tab === 'dungeons'
+                ? 'bg-yellow-500 text-black shadow-[0_0_12px_rgba(245,197,66,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            📍 DUNGEONS
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh8Tab('telemetry');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh8Tab === 'telemetry'
+                ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🎙️ AI COACH
+          </button>
+        </div>
+
         {/* Dynamic Simulated AI Chat Window with Scenario Selectors Wrapped in 3D AnimeTiltCard */}
+        <div className={mobileCh8Tab === 'advisor' ? 'block' : 'hidden lg:block'}>
         <AnimeTiltCard
           maxTilt={6}
           glowColor="rgba(139, 92, 246, 0.35)"
@@ -364,8 +409,10 @@ export function Chapter8() {
           </div>
         </div>
         </AnimeTiltCard>
+        </div>
 
         {/* Interactive Dungeon & Supp Radar for Indian Cities Wrapped in 3D AnimeTiltCard */}
+        <div className={mobileCh8Tab === 'dungeons' ? 'block' : 'hidden lg:block'}>
         <AnimeTiltCard
           maxTilt={6}
           glowColor="rgba(245, 197, 66, 0.25)"
@@ -451,9 +498,10 @@ export function Chapter8() {
           </div>
         </div>
         </AnimeTiltCard>
+        </div>
 
         {/* AI Guild Coach & Computer Vision Form Check Terminal */}
-        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10 font-mono">
+        <div className={`w-full max-w-6xl mx-auto mt-10 relative z-10 font-mono ${mobileCh8Tab === 'telemetry' ? 'block' : 'hidden lg:block'}`}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
