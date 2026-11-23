@@ -34,7 +34,7 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE SHADOW MONARCH',
     koreanName: '성진우 // 그림자 군주',
     rank: 'SHADOW MONARCH',
-    thumbnail: '/assets/09-arise/jinwoo4.jpg',
+    thumbnail: '/assets/09-arise/jinwoo-stage.png',
     bodyColor: 0x080814,
     visorColor: 0x38bdf8, // Piercing Neon Blue Visor / Eyes
     auraColor: 0x8b5cf6, // Shadow Monarch Purple
@@ -51,7 +51,7 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE BLOOD-RED KNIGHT',
     koreanName: '핏빛의 기사단장 이그리트',
     rank: 'COMMANDER',
-    thumbnail: '/assets/09-arise/igris22.jpeg',
+    thumbnail: '/assets/09-arise/igris-stage.png',
     bodyColor: 0x22050b,
     visorColor: 0xef4444, // Blood Crimson Flare
     auraColor: 0xef4444, // Blood Knight Red
@@ -68,7 +68,7 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE PREDATOR KING',
     koreanName: '포식자 군단장 베르',
     rank: 'MARSHAL',
-    thumbnail: '/assets/09-arise/beru0.jpg',
+    thumbnail: '/assets/09-arise/beru-stage.png',
     bodyColor: 0x160829,
     visorColor: 0xe879f9, // Royal Violet Core
     auraColor: 0xa855f7, // Royal Purple
@@ -85,7 +85,7 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE FORTRESS TITAN',
     koreanName: '철벽의 거인 아이언',
     rank: 'VANGUARD',
-    thumbnail: '/assets/09-arise/iron_3.jpeg',
+    thumbnail: '/assets/09-arise/iron-stage.png',
     bodyColor: 0x24201c,
     visorColor: 0xf59e0b, // Radiant Amber Visor
     auraColor: 0xf59e0b, // Golden Amber
@@ -296,21 +296,26 @@ export function ThreeCharacterShowcase() {
     controlsRef.current = controls;
 
     // 3. Cinematic Anime Lighting
-    const ambientLight = new THREE.AmbientLight(0x0e0e1a, 2.0);
+    const ambientLight = new THREE.AmbientLight(0x222238, 2.5);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 3.0);
-    keyLight.position.set(3, 4, 3);
-    keyLight.castShadow = true;
-    keyLight.shadow.mapSize.width = 1024;
-    keyLight.shadow.mapSize.height = 1024;
-    scene.add(keyLight);
+    // Front Key Light illuminating chest, eyes, and weapons
+    const frontKeyLight = new THREE.DirectionalLight(0xffffff, 4.0);
+    frontKeyLight.position.set(0, 2.5, 4.0);
+    frontKeyLight.castShadow = true;
+    frontKeyLight.shadow.mapSize.width = 1024;
+    frontKeyLight.shadow.mapSize.height = 1024;
+    scene.add(frontKeyLight);
 
-    const rimLight = new THREE.DirectionalLight(activeChar.auraColor, 5.0);
+    const rimLight = new THREE.DirectionalLight(activeChar.auraColor, 5.5);
     rimLight.position.set(-3, 3, -2.5);
     scene.add(rimLight);
 
-    const eyeLight = new THREE.PointLight(activeChar.visorColor, 3.5, 4.0);
+    const fillLight = new THREE.DirectionalLight(0x38bdf8, 2.0);
+    fillLight.position.set(3, 1.5, 2.5);
+    scene.add(fillLight);
+
+    const eyeLight = new THREE.PointLight(activeChar.visorColor, 4.0, 5.0);
     eyeLight.position.set(0, 1.7, 0.4);
     scene.add(eyeLight);
     eyeLightRef.current = eyeLight;
@@ -411,6 +416,7 @@ export function ThreeCharacterShowcase() {
       '/models/Soldier.glb',
       (gltf) => {
         const model = gltf.scene;
+        model.rotation.y = Math.PI; // Face forward towards user
         characterModelRef.current = model;
         scene.add(model);
 
@@ -751,13 +757,12 @@ export function ThreeCharacterShowcase() {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-white/15 shrink-0 bg-black">
-                        <Image
+                      <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-white/20 shrink-0 bg-black">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
                           src={c.thumbnail}
                           alt={c.name}
-                          fill
-                          className="object-cover object-top"
-                          sizes="40px"
+                          className="w-full h-full object-cover object-top"
                         />
                       </div>
                       <div>
