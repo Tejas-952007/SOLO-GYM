@@ -138,6 +138,7 @@ const QUICK_MACROS = [
 export function Chapter8() {
   const [activeScenario, setActiveScenario] = useState<ChatScenario>(CHAT_SCENARIOS[0]);
   const [selectedCity, setSelectedCity] = useState<string>("Mumbai");
+  const [coachTab, setCoachTab] = useState<'voice' | 'vision'>('voice');
   const [customQuery, setCustomQuery] = useState("");
   const [activeQuickMeal, setActiveQuickMeal] = useState<(typeof QUICK_MACROS)[0] | null>(null);
 
@@ -451,14 +452,54 @@ export function Chapter8() {
         </div>
         </AnimeTiltCard>
 
-        {/* AI Guild Coach Neural Voice Telemetry & Tactical Inquiry Panel */}
-        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10">
-          <GuildCoachTelemetry />
-        </div>
+        {/* AI Guild Coach & Computer Vision Form Check Terminal */}
+        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10 font-mono">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">
+                [ AI GUILD COACH & COMPUTER VISION LAB ]
+              </span>
+            </div>
 
-        {/* AI Computer Vision & Kinematic Form Check Scanner */}
-        <div className="w-full max-w-6xl mx-auto mt-6 relative z-10">
-          <FormCheckAI />
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setCoachTab('voice');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  coachTab === 'voice'
+                    ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
+                }`}
+              >
+                🎙️ NEURAL VOICE AI COACH
+              </button>
+
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setCoachTab('vision');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  coachTab === 'vision'
+                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                }`}
+              >
+                👁️ KINEMATIC FORM CHECK CV
+              </button>
+            </div>
+          </div>
+
+          {/* Active Module View */}
+          <div className="w-full">
+            {coachTab === 'voice' && <GuildCoachTelemetry />}
+            {coachTab === 'vision' && <FormCheckAI />}
+          </div>
         </div>
       </div>
     </section>

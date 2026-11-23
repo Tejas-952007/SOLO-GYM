@@ -56,6 +56,7 @@ export function Chapter9() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [ritualOpen, setRitualOpen] = useState(false);
   const [ticketId] = useState(() => Math.floor(Math.random() * 8999 + 1000));
+  const [monarchTab, setMonarchTab] = useState<'certificate' | 'barracks'>('certificate');
   const [summonedArmy, setSummonedArmy] = useState<Record<string, boolean>>({
     IGRIS: true,
   });
@@ -270,14 +271,54 @@ export function Chapter9() {
           </div>
         </div>
 
-        {/* Shadow Army Barracks Roster with Rank Evolution */}
-        <div className="w-full max-w-4xl mx-auto my-6">
-          <ShadowBarracks />
-        </div>
+        {/* Shadow Monarch Ascension & Army Barracks Hub */}
+        <div className="w-full max-w-4xl mx-auto my-6 font-mono">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-system-gold animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider text-yellow-300">
+                [ SHADOW MONARCH DOMAIN // ASCENSION & ROSTER ]
+              </span>
+            </div>
 
-        {/* Century Landmark — Official S-Rank Shadow Monarch Fitness Ascension Certificate */}
-        <div className="w-full max-w-4xl mx-auto my-6">
-          <HunterAscensionCertificate />
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setMonarchTab('certificate');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  monarchTab === 'certificate'
+                    ? 'bg-yellow-600 text-white border-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-yellow-500/30'
+                }`}
+              >
+                📜 S-RANK ASCENSION CREDENTIAL
+              </button>
+
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setMonarchTab('barracks');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  monarchTab === 'barracks'
+                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                }`}
+              >
+                🛡️ SHADOW ARMY BARRACKS
+              </button>
+            </div>
+          </div>
+
+          {/* Active Module View */}
+          <div className="w-full">
+            {monarchTab === 'certificate' && <HunterAscensionCertificate />}
+            {monarchTab === 'barracks' && <ShadowBarracks />}
+          </div>
         </div>
 
         {/* Store Badges Preview */}

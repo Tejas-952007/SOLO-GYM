@@ -28,6 +28,7 @@ export function Chapter2() {
   const [activeVisual, setActiveVisual] = useState(0);
   const [templeReverence, setTempleReverence] = useState(false);
   const [claimedReward, setClaimedReward] = useState(false);
+  const [cartenonTab, setCartenonTab] = useState<'commandments' | 'edc'>('commandments');
   const fullTitle = "DAILY QUEST: PREPARATION FOR STRENGTH";
 
   const triggerReverence = () => {
@@ -505,14 +506,54 @@ export function Chapter2() {
           </div>
         </div>
 
-        {/* Cartenon Temple Three Iron Commandments Trial Matrix */}
-        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10">
-          <CartenonCommandments />
-        </div>
+        {/* Cartenon Temple Awakening & EDC Gear Terminal */}
+        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10 font-mono">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider text-red-300">
+                [ CARTENON SANCTUARY TRIAL & EDC GEAR MATRIX ]
+              </span>
+            </div>
 
-        {/* Hunter Everyday Carry Gym Bag Armory Loadout */}
-        <div className="w-full max-w-6xl mx-auto mt-6 relative z-10">
-          <GymBagLoadout />
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setCartenonTab('commandments');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  cartenonTab === 'commandments'
+                    ? 'bg-red-600 text-white border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-red-500/30'
+                }`}
+              >
+                📜 3 IRON COMMANDMENTS
+              </button>
+
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setCartenonTab('edc');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  cartenonTab === 'edc'
+                    ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
+                }`}
+              >
+                🎒 EDC GYM BAG LOADOUT
+              </button>
+            </div>
+          </div>
+
+          {/* Active Module View */}
+          <div className="w-full">
+            {cartenonTab === 'commandments' && <CartenonCommandments />}
+            {cartenonTab === 'edc' && <GymBagLoadout />}
+          </div>
         </div>
       </div>
     </section>
