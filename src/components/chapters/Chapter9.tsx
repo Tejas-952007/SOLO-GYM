@@ -183,11 +183,10 @@ export function Chapter9() {
                   setMonarchTab('3d-roster');
                 }}
                 onMouseEnter={() => sfx.playHover()}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                  monarchTab === '3d-roster'
-                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${monarchTab === '3d-roster'
+                  ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                  : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                  }`}
               >
                 👑 3D SHADOW ROSTER
               </button>

@@ -2,9 +2,11 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import Image from 'next/image';
 import { sfx } from '@/lib/audio-sfx';
-import { RotateCw, Zap, Eye, Flame, Shield, Swords, Sparkles, Check } from 'lucide-react';
+import { RotateCw, Zap, Eye, Swords, Shield, Sparkles, Play, Pause, Activity } from 'lucide-react';
 import { spawnCombatNumber } from '@/components/effects/FloatingDamageNumbers';
 
 export interface HunterCharacter {
@@ -13,12 +15,13 @@ export interface HunterCharacter {
   title: string;
   koreanName: string;
   rank: 'SHADOW MONARCH' | 'COMMANDER' | 'MARSHAL' | 'VANGUARD';
-  image: string;
+  thumbnail: string;
+  bodyColor: number;
+  visorColor: number;
   auraColor: number;
-  rimColor: number;
-  eyeColor: number;
   quote: string;
   buff: string;
+  weaponName: string;
   statStr: number;
   statAgi: number;
   statVit: number;
@@ -31,12 +34,13 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE SHADOW MONARCH',
     koreanName: '성진우 // 그림자 군주',
     rank: 'SHADOW MONARCH',
-    image: '/assets/09-arise/jinwoo-srank-stage.png',
-    auraColor: 0x8b5cf6,
-    rimColor: 0x38bdf8,
-    eyeColor: 0x38bdf8,
+    thumbnail: '/assets/09-arise/jinwoo4.jpg',
+    bodyColor: 0x080814,
+    visorColor: 0x38bdf8, // Piercing Neon Blue Visor / Eyes
+    auraColor: 0x8b5cf6, // Shadow Monarch Purple
     quote: '"I am the hunter who conquered death itself. Arise."',
     buff: '+50% COMPOUND 1RM // MAXIMUM AMINO RETENTION',
+    weaponName: "DUAL SHADOW DAGGERS [KAMISH'S WRATH & KNIGHT KILLER]",
     statStr: 99,
     statAgi: 99,
     statVit: 98,
@@ -47,12 +51,13 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE BLOOD-RED KNIGHT',
     koreanName: '핏빛의 기사단장 이그리트',
     rank: 'COMMANDER',
-    image: '/assets/09-arise/igris-stage.png',
-    auraColor: 0xef4444,
-    rimColor: 0xf87171,
-    eyeColor: 0xef4444,
+    thumbnail: '/assets/09-arise/igris22.jpeg',
+    bodyColor: 0x22050b,
+    visorColor: 0xef4444, // Blood Crimson Flare
+    auraColor: 0xef4444, // Blood Knight Red
     quote: '"My blade exists solely to cleave your enemies."',
     buff: '+35% BARBELL SQUAT INTENSITY // ZERO PLATEAU',
+    weaponName: 'TWO-HANDED BLOOD DEMONIC GREATSWORD',
     statStr: 94,
     statAgi: 88,
     statVit: 92,
@@ -63,12 +68,13 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE PREDATOR KING',
     koreanName: '포식자 군단장 베르',
     rank: 'MARSHAL',
-    image: '/assets/09-arise/beru-stage.png',
-    auraColor: 0xa855f7,
-    rimColor: 0xe879f9,
-    eyeColor: 0xe879f9,
+    thumbnail: '/assets/09-arise/beru0.jpg',
+    bodyColor: 0x160829,
+    visorColor: 0xe879f9, // Royal Violet Core
+    auraColor: 0xa855f7, // Royal Purple
     quote: '"My king, permit me to feast upon your weakness."',
     buff: '+45g RAPID LEUCINE METABOLISM // REPAIR BURST',
+    weaponName: 'TWIN PREDATORY CHITIN SCYTHES',
     statStr: 91,
     statAgi: 98,
     statVit: 89,
@@ -79,12 +85,13 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE FORTRESS TITAN',
     koreanName: '철벽의 거인 아이언',
     rank: 'VANGUARD',
-    image: '/assets/09-arise/iron-stage.png',
-    auraColor: 0xf59e0b,
-    rimColor: 0xfbbf24,
-    eyeColor: 0xf59e0b,
+    thumbnail: '/assets/09-arise/iron_3.jpeg',
+    bodyColor: 0x24201c,
+    visorColor: 0xf59e0b, // Radiant Amber Visor
+    auraColor: 0xf59e0b, // Golden Amber
     quote: '"A shield that never shatters under 200kg load."',
     buff: '+40% SPINAL INTEGRITY & CNS TANK PROTECTION',
+    weaponName: 'AEGIS TOWER SHIELD & TITAN CLEAVER',
     statStr: 97,
     statAgi: 72,
     statVit: 99,
@@ -95,20 +102,160 @@ export function ThreeCharacterShowcase() {
   const mountRef = useRef<HTMLDivElement>(null);
   const [activeChar, setActiveChar] = useState<HunterCharacter>(CHARACTERS[0]);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const [activeAnimation, setActiveAnimation] = useState<'Idle' | 'Walk' | 'Run'>('Idle');
+  const [isLoading, setIsLoading] = useState(true);
   const [isPoweringUp, setIsPoweringUp] = useState(false);
-  const [textureLoaded, setTextureLoaded] = useState(false);
 
-  // Three.js object references for dynamic animation
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const stageGroupRef = useRef<THREE.Group | null>(null);
-  const characterCardRef = useRef<THREE.Mesh | null>(null);
-  const auraParticlesRef = useRef<THREE.Points | null>(null);
+  // References for Three.js instance
+  const controlsRef = useRef<OrbitControls | null>(null);
+  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
+  const actionsRef = useRef<{ [key: string]: THREE.AnimationAction }>({});
+  const characterModelRef = useRef<THREE.Group | null>(null);
+  const particlesRef = useRef<THREE.Points | null>(null);
   const shockwaveRef = useRef<THREE.Mesh | null>(null);
-  const auraPillarRef = useRef<THREE.Mesh | null>(null);
-  const innerRingRef = useRef<THREE.Mesh | null>(null);
-  const outerRingRef = useRef<THREE.Mesh | null>(null);
   const eyeLightRef = useRef<THREE.PointLight | null>(null);
-  const rimLightRef = useRef<THREE.DirectionalLight | null>(null);
+  const weaponGroupRef = useRef<THREE.Group | null>(null);
+
+  // Helper to build character weapons
+  const createWeaponForChar = (charId: string) => {
+    const group = new THREE.Group();
+
+    if (charId === 'jinwoo') {
+      // Dagger 1: Kamish's Wrath (Right Hand)
+      const blade1Geo = new THREE.ConeGeometry(0.04, 0.45, 4);
+      blade1Geo.scale(1, 1, 0.25);
+      const blade1Mat = new THREE.MeshStandardMaterial({
+        color: 0x8b5cf6,
+        emissive: 0x8b5cf6,
+        emissiveIntensity: 1.5,
+        metalness: 0.9,
+        roughness: 0.1,
+      });
+      const blade1 = new THREE.Mesh(blade1Geo, blade1Mat);
+      blade1.position.set(0, 0.22, 0);
+
+      const hilt1 = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.015, 0.015, 0.15, 8),
+        new THREE.MeshStandardMaterial({ color: 0x111116 })
+      );
+      hilt1.position.set(0, -0.05, 0);
+
+      const rDagger = new THREE.Group();
+      rDagger.add(blade1);
+      rDagger.add(hilt1);
+      rDagger.name = 'rightWeapon';
+      rDagger.position.set(0.04, -0.05, 0.05);
+      rDagger.rotation.x = Math.PI / 2;
+      group.add(rDagger);
+
+      // Dagger 2: Knight Killer (Left Hand)
+      const blade2Geo = new THREE.ConeGeometry(0.04, 0.42, 4);
+      blade2Geo.scale(1, 1, 0.25);
+      const blade2Mat = new THREE.MeshStandardMaterial({
+        color: 0x38bdf8,
+        emissive: 0x38bdf8,
+        emissiveIntensity: 1.5,
+        metalness: 0.9,
+        roughness: 0.1,
+      });
+      const blade2 = new THREE.Mesh(blade2Geo, blade2Mat);
+      blade2.position.set(0, 0.2, 0);
+
+      const hilt2 = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.015, 0.015, 0.14, 8),
+        new THREE.MeshStandardMaterial({ color: 0x111116 })
+      );
+      hilt2.position.set(0, -0.05, 0);
+
+      const lDagger = new THREE.Group();
+      lDagger.add(blade2);
+      lDagger.add(hilt2);
+      lDagger.name = 'leftWeapon';
+      lDagger.position.set(-0.04, -0.05, 0.05);
+      lDagger.rotation.x = Math.PI / 2;
+      group.add(lDagger);
+    } else if (charId === 'igris') {
+      // Massive 2-Handed Blood Greatsword
+      const bladeGeo = new THREE.BoxGeometry(0.08, 1.1, 0.02);
+      const bladeMat = new THREE.MeshStandardMaterial({
+        color: 0xd4d4d8,
+        emissive: 0xef4444,
+        emissiveIntensity: 0.8,
+        metalness: 0.95,
+        roughness: 0.15,
+      });
+      const blade = new THREE.Mesh(bladeGeo, bladeMat);
+      blade.position.set(0, 0.55, 0);
+
+      const guard = new THREE.Mesh(
+        new THREE.BoxGeometry(0.24, 0.03, 0.04),
+        new THREE.MeshStandardMaterial({ color: 0xef4444, metalness: 0.8 })
+      );
+      guard.position.set(0, 0.01, 0);
+
+      const hilt = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.02, 0.02, 0.3, 8),
+        new THREE.MeshStandardMaterial({ color: 0x09090b })
+      );
+      hilt.position.set(0, -0.15, 0);
+
+      const sword = new THREE.Group();
+      sword.add(blade);
+      sword.add(guard);
+      sword.add(hilt);
+      sword.name = 'rightWeapon';
+      sword.position.set(0.05, -0.1, 0.1);
+      sword.rotation.x = Math.PI / 3;
+      group.add(sword);
+    } else if (charId === 'beru') {
+      // Twin Chitin Curved Scythes
+      const scytheGeo = new THREE.TorusGeometry(0.25, 0.025, 6, 16, Math.PI * 0.9);
+      const scytheMat = new THREE.MeshStandardMaterial({
+        color: 0xa855f7,
+        emissive: 0xa855f7,
+        emissiveIntensity: 1.2,
+        metalness: 0.85,
+      });
+      const rScythe = new THREE.Mesh(scytheGeo, scytheMat);
+      rScythe.name = 'rightWeapon';
+      rScythe.position.set(0.08, 0.1, 0.05);
+      rScythe.rotation.z = Math.PI / 4;
+      group.add(rScythe);
+
+      const lScythe = new THREE.Mesh(scytheGeo, scytheMat);
+      lScythe.name = 'leftWeapon';
+      lScythe.position.set(-0.08, 0.1, 0.05);
+      lScythe.rotation.z = -Math.PI / 4;
+      group.add(lScythe);
+    } else if (charId === 'iron') {
+      // Massive Fortress Tower Shield (Left Hand)
+      const shieldGeo = new THREE.BoxGeometry(0.38, 0.75, 0.04);
+      const shieldMat = new THREE.MeshStandardMaterial({
+        color: 0x262626,
+        emissive: 0xf59e0b,
+        emissiveIntensity: 0.3,
+        metalness: 0.9,
+        roughness: 0.2,
+      });
+      const shield = new THREE.Mesh(shieldGeo, shieldMat);
+      shield.name = 'leftWeapon';
+      shield.position.set(-0.15, 0.05, 0.15);
+      shield.rotation.y = Math.PI / 6;
+      group.add(shield);
+
+      // Cleaver (Right Hand)
+      const cleaver = new THREE.Mesh(
+        new THREE.BoxGeometry(0.1, 0.5, 0.02),
+        new THREE.MeshStandardMaterial({ color: 0x737373, metalness: 0.9 })
+      );
+      cleaver.name = 'rightWeapon';
+      cleaver.position.set(0.08, 0, 0.1);
+      cleaver.rotation.x = Math.PI / 4;
+      group.add(cleaver);
+    }
+
+    return group;
+  };
 
   useEffect(() => {
     const container = mountRef.current;
@@ -119,10 +266,8 @@ export function ThreeCharacterShowcase() {
 
     // 1. Scene, Camera & WebGL Renderer
     const scene = new THREE.Scene();
-    sceneRef.current = scene;
-
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(0, 0.2, 4.4);
+    camera.position.set(0, 1.4, 3.8);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -131,140 +276,88 @@ export function ThreeCharacterShowcase() {
     });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ReinhardToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.35;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // 2. Cinematic Volumetric Lighting
-    const ambientLight = new THREE.AmbientLight(0x0e0e1a, 2.2);
+    // 2. Interactive OrbitControls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.target.set(0, 0.95, 0);
+    controls.minDistance = 1.8;
+    controls.maxDistance = 5.5;
+    controls.maxPolarAngle = Math.PI / 2 + 0.1;
+    controls.autoRotate = isAutoRotating;
+    controls.autoRotateSpeed = 1.5;
+    controlsRef.current = controls;
+
+    // 3. Cinematic Anime Lighting
+    const ambientLight = new THREE.AmbientLight(0x0e0e1a, 2.0);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
-    keyLight.position.set(2, 3, 4);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.0);
+    keyLight.position.set(3, 4, 3);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 1024;
+    keyLight.shadow.mapSize.height = 1024;
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(activeChar.auraColor, 4.8);
-    rimLight.position.set(-3, 3, -2);
+    const rimLight = new THREE.DirectionalLight(activeChar.auraColor, 5.0);
+    rimLight.position.set(-3, 3, -2.5);
     scene.add(rimLight);
-    rimLightRef.current = rimLight;
 
-    const eyeLight = new THREE.PointLight(activeChar.eyeColor, 4.0, 5.0);
-    eyeLight.position.set(0, 0.6, 0.6);
+    const eyeLight = new THREE.PointLight(activeChar.visorColor, 3.5, 4.0);
+    eyeLight.position.set(0, 1.7, 0.4);
     scene.add(eyeLight);
     eyeLightRef.current = eyeLight;
 
-    // 3. Stage Container Group
-    const stageGroup = new THREE.Group();
-    stageGroupRef.current = stageGroup;
-    scene.add(stageGroup);
+    // 4. Ground Pedestal Runic Circles
+    const ringGroup = new THREE.Group();
+    scene.add(ringGroup);
 
-    // 4. Pedestal Runic Circles
-    const ringMatInner = new THREE.MeshBasicMaterial({
+    const innerRingGeo = new THREE.RingGeometry(0.75, 0.85, 48);
+    innerRingGeo.rotateX(-Math.PI / 2);
+    const innerRingMat = new THREE.MeshBasicMaterial({
       color: activeChar.auraColor,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.65,
       blending: THREE.AdditiveBlending,
     });
-    const ringInnerGeo = new THREE.RingGeometry(0.85, 0.95, 48);
-    ringInnerGeo.rotateX(-Math.PI / 2);
-    const innerRing = new THREE.Mesh(ringInnerGeo, ringMatInner);
-    innerRing.position.y = -1.45;
-    stageGroup.add(innerRing);
-    innerRingRef.current = innerRing;
+    const innerRing = new THREE.Mesh(innerRingGeo, innerRingMat);
+    ringGroup.add(innerRing);
 
-    const ringMatOuter = new THREE.MeshBasicMaterial({
-      color: activeChar.rimColor,
+    const outerRingGeo = new THREE.RingGeometry(1.1, 1.25, 48);
+    outerRingGeo.rotateX(-Math.PI / 2);
+    const outerRingMat = new THREE.MeshBasicMaterial({
+      color: activeChar.visorColor,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.4,
       blending: THREE.AdditiveBlending,
     });
-    const ringOuterGeo = new THREE.RingGeometry(1.2, 1.35, 48);
-    ringOuterGeo.rotateX(-Math.PI / 2);
-    const outerRing = new THREE.Mesh(ringOuterGeo, ringMatOuter);
-    outerRing.position.y = -1.47;
-    stageGroup.add(outerRing);
-    outerRingRef.current = outerRing;
+    const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
+    ringGroup.add(outerRing);
 
-    // Ground Shadow Disc
-    const groundDiscGeo = new THREE.CircleGeometry(1.5, 32);
-    groundDiscGeo.rotateX(-Math.PI / 2);
-    const groundDiscMat = new THREE.MeshBasicMaterial({
-      color: 0x030307,
-      transparent: true,
-      opacity: 0.85,
+    // Dark Pedestal Base Disc
+    const discGeo = new THREE.CircleGeometry(1.4, 32);
+    discGeo.rotateX(-Math.PI / 2);
+    const discMat = new THREE.MeshStandardMaterial({
+      color: 0x05050d,
+      roughness: 0.8,
+      metalness: 0.2,
     });
-    const groundDisc = new THREE.Mesh(groundDiscGeo, groundDiscMat);
-    groundDisc.position.y = -1.49;
-    stageGroup.add(groundDisc);
+    const disc = new THREE.Mesh(discGeo, discMat);
+    disc.position.y = -0.01;
+    disc.receiveShadow = true;
+    ringGroup.add(disc);
 
-    // 5. Cylindrical Volumetric Aura Pillar
-    const pillarGeo = new THREE.CylinderGeometry(0.9, 1.3, 3.4, 32, 1, true);
-    const pillarMat = new THREE.MeshBasicMaterial({
-      color: activeChar.auraColor,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.12,
-      blending: THREE.AdditiveBlending,
-    });
-    const auraPillar = new THREE.Mesh(pillarGeo, pillarMat);
-    auraPillar.position.y = 0.1;
-    stageGroup.add(auraPillar);
-    auraPillarRef.current = auraPillar;
-
-    // 6. 4K Authentic Anime Holographic Character Card (Curved 3D Plane)
-    const textureLoader = new THREE.TextureLoader();
-    setTextureLoaded(false);
-
-    textureLoader.load(activeChar.image, (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.generateMipmaps = true;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-
-      // Curved plane geometry for high-fidelity 3D anime perspective
-      const cardGeo = new THREE.PlaneGeometry(2.1, 2.8, 32, 32);
-      const posAttr = cardGeo.attributes.position;
-      for (let i = 0; i < posAttr.count; i++) {
-        const x = posAttr.getX(i);
-        // Subtle concave IMAX curvature
-        posAttr.setZ(i, -(x * x) * 0.08);
-      }
-      cardGeo.computeVertexNormals();
-
-      const cardMat = new THREE.MeshStandardMaterial({
-        map: texture,
-        transparent: true,
-        roughness: 0.25,
-        metalness: 0.1,
-        emissive: new THREE.Color(activeChar.auraColor),
-        emissiveIntensity: 0.15,
-        side: THREE.DoubleSide,
-      });
-
-      const characterCard = new THREE.Mesh(cardGeo, cardMat);
-      characterCard.position.y = 0.05;
-      stageGroup.add(characterCard);
-      characterCardRef.current = characterCard;
-
-      // Glowing Neon Framing Outline
-      const frameGeo = new THREE.EdgesGeometry(cardGeo);
-      const frameMat = new THREE.LineBasicMaterial({
-        color: activeChar.rimColor,
-        transparent: true,
-        opacity: 0.5,
-        blending: THREE.AdditiveBlending,
-      });
-      const frameWire = new THREE.LineSegments(frameGeo, frameMat);
-      characterCard.add(frameWire);
-
-      setTextureLoaded(true);
-    });
-
-    // 7. Summoning Shockwave Ring (For "ARISE" activation)
-    const shockwaveGeo = new THREE.RingGeometry(0.1, 0.4, 48);
+    // 5. Summoning Shockwave Ring
+    const shockwaveGeo = new THREE.RingGeometry(0.2, 0.5, 48);
     shockwaveGeo.rotateX(-Math.PI / 2);
     const shockwaveMat = new THREE.MeshBasicMaterial({
       color: activeChar.auraColor,
@@ -274,142 +367,166 @@ export function ThreeCharacterShowcase() {
       blending: THREE.AdditiveBlending,
     });
     const shockwave = new THREE.Mesh(shockwaveGeo, shockwaveMat);
-    shockwave.position.y = -1.43;
-    stageGroup.add(shockwave);
+    shockwave.position.y = 0.02;
+    scene.add(shockwave);
     shockwaveRef.current = shockwave;
 
-    // 8. Volumetric 3D Shadow Monarch Particles
-    const particleCount = 550;
+    // 6. Volumetric 3D Shadow Monarch Particles
+    const pCount = 500;
     const pGeo = new THREE.BufferGeometry();
-    const pPos = new Float32Array(particleCount * 3);
-    const pVel = new Float32Array(particleCount * 3);
+    const pPos = new Float32Array(pCount * 3);
+    const pVel = new Float32Array(pCount * 3);
 
-    for (let i = 0; i < particleCount; i++) {
-      const radius = 0.4 + Math.random() * 1.6;
+    for (let i = 0; i < pCount; i++) {
+      const radius = 0.3 + Math.random() * 1.5;
       const angle = Math.random() * Math.PI * 2;
-      const y = -1.45 + Math.random() * 3.4;
+      const y = Math.random() * 2.8;
 
       pPos[i * 3] = Math.cos(angle) * radius;
       pPos[i * 3 + 1] = y;
       pPos[i * 3 + 2] = Math.sin(angle) * radius;
 
-      pVel[i * 3] = (Math.random() - 0.5) * 0.012;
-      pVel[i * 3 + 1] = 0.015 + Math.random() * 0.035; // Vertical dark smoke tendril ascent
-      pVel[i * 3 + 2] = (Math.random() - 0.5) * 0.012;
+      pVel[i * 3] = (Math.random() - 0.5) * 0.01;
+      pVel[i * 3 + 1] = 0.012 + Math.random() * 0.028; // Upward drift
+      pVel[i * 3 + 2] = (Math.random() - 0.5) * 0.01;
     }
 
     pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
     const pMat = new THREE.PointsMaterial({
       color: activeChar.auraColor,
-      size: 0.045,
+      size: 0.04,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.8,
       blending: THREE.AdditiveBlending,
     });
     const particles = new THREE.Points(pGeo, pMat);
-    auraParticlesRef.current = particles;
-    stageGroup.add(particles);
+    scene.add(particles);
+    particlesRef.current = particles;
 
-    // 9. Interactive Touch & Mouse Orbit / Tilt Handling
-    let isDragging = false;
-    let prevX = 0;
-    let prevY = 0;
-    let targetRotY = 0;
-    let targetRotX = 0;
+    // 7. Load Real 3D Rigged Model (.glb)
+    setIsLoading(true);
+    const loader = new GLTFLoader();
 
-    const onPointerDown = (e: MouseEvent | TouchEvent) => {
-      isDragging = true;
-      const cx = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const cy = 'touches' in e ? e.touches[0].clientY : e.clientY;
-      prevX = cx;
-      prevY = cy;
-    };
+    loader.load(
+      '/models/Soldier.glb',
+      (gltf) => {
+        const model = gltf.scene;
+        characterModelRef.current = model;
+        scene.add(model);
 
-    const onPointerMove = (e: MouseEvent | TouchEvent) => {
-      if (!stageGroupRef.current) return;
-      const cx = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const cy = 'touches' in e ? e.touches[0].clientY : e.clientY;
+        // Customize Shaders & Materials to Match Shadow Monarch Archetype
+        model.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
 
-      if (isDragging) {
-        const dx = cx - prevX;
-        const dy = cy - prevY;
-        targetRotY += dx * 0.01;
-        targetRotX += dy * 0.006;
-        targetRotX = Math.max(-0.35, Math.min(0.35, targetRotX));
-        prevX = cx;
-        prevY = cy;
-      } else {
-        // Parallax mouse tilt
-        const rect = container.getBoundingClientRect();
-        const normX = ((cx - rect.left) / rect.width) * 2 - 1;
-        const normY = -(((cy - rect.top) / rect.height) * 2 - 1);
-        targetRotY = normX * 0.35;
-        targetRotX = normY * 0.2;
+            if (child.name.toLowerCase().includes('visor')) {
+              // Glowing Visor / Piercing Anime Eye Mask
+              child.material = new THREE.MeshStandardMaterial({
+                color: activeChar.visorColor,
+                emissive: new THREE.Color(activeChar.visorColor),
+                emissiveIntensity: 3.5,
+                roughness: 0.1,
+                metalness: 0.9,
+              });
+            } else {
+              // Deep Obsidian Armor with Signature Rim Glint
+              child.material = new THREE.MeshStandardMaterial({
+                color: activeChar.bodyColor,
+                emissive: new THREE.Color(activeChar.auraColor),
+                emissiveIntensity: 0.2,
+                roughness: 0.25,
+                metalness: 0.85,
+              });
+            }
+          }
+        });
+
+        // Attach Weapons to Rigged Hand Bones
+        const rightHand =
+          model.getObjectByName('mixamorig:RightHand') ||
+          model.getObjectByName('mixamorigRightHand');
+        const leftHand =
+          model.getObjectByName('mixamorig:LeftHand') ||
+          model.getObjectByName('mixamorigLeftHand');
+
+        const weaponGroup = createWeaponForChar(activeChar.id);
+        weaponGroupRef.current = weaponGroup;
+
+        const rWeapon = weaponGroup.getObjectByName('rightWeapon');
+        if (rWeapon && rightHand) {
+          rightHand.add(rWeapon);
+        }
+
+        const lWeapon = weaponGroup.getObjectByName('leftWeapon');
+        if (lWeapon && leftHand) {
+          leftHand.add(lWeapon);
+        }
+
+        // Setup AnimationMixer & Actions
+        const mixer = new THREE.AnimationMixer(model);
+        mixerRef.current = mixer;
+
+        gltf.animations.forEach((clip) => {
+          actionsRef.current[clip.name] = mixer.clipAction(clip);
+        });
+
+        // Start Default Idle Animation
+        const defaultAction = actionsRef.current[activeAnimation] || actionsRef.current['Idle'];
+        if (defaultAction) {
+          defaultAction.play();
+        }
+
+        setIsLoading(false);
+      },
+      undefined,
+      (error) => {
+        console.error('Error loading 3D GLB model:', error);
+        setIsLoading(false);
       }
-    };
+    );
 
-    const onPointerUp = () => {
-      isDragging = false;
-    };
-
-    const dom = renderer.domElement;
-    dom.addEventListener('mousedown', onPointerDown);
-    dom.addEventListener('mousemove', onPointerMove);
-    window.addEventListener('mouseup', onPointerUp);
-    dom.addEventListener('touchstart', onPointerDown, { passive: true });
-    dom.addEventListener('touchmove', onPointerMove, { passive: true });
-    window.addEventListener('touchend', onPointerUp);
-
-    // 10. Animation Render Loop
+    // 8. Animation Render Loop
     let animId: number;
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
+      const delta = clock.getDelta();
       const elapsed = clock.getElapsedTime();
 
-      // Smooth Stage Inertia & Bobbing
-      if (stageGroupRef.current) {
-        if (isAutoRotating && !isDragging) {
-          targetRotY += 0.005;
-        }
-        stageGroupRef.current.rotation.y += (targetRotY - stageGroupRef.current.rotation.y) * 0.08;
-        stageGroupRef.current.rotation.x += (targetRotX - stageGroupRef.current.rotation.x) * 0.08;
-        stageGroupRef.current.position.y = Math.sin(elapsed * 1.8) * 0.04;
+      // Update Skeletal Animations
+      if (mixerRef.current) {
+        mixerRef.current.update(delta);
       }
 
-      // Pedestal Ring Counter-Rotations
-      if (innerRingRef.current) {
-        innerRingRef.current.rotation.z += 0.012;
-      }
-      if (outerRingRef.current) {
-        outerRingRef.current.rotation.z -= 0.008;
+      // Update Controls
+      if (controlsRef.current) {
+        controlsRef.current.update();
       }
 
-      // Aura Pillar Breath Pulse
-      if (auraPillarRef.current) {
-        const pMat = auraPillarRef.current.material as THREE.MeshBasicMaterial;
-        pMat.opacity = 0.12 + Math.sin(elapsed * 3) * 0.06;
-      }
+      // Rotate Runic Rings
+      innerRing.rotation.z += 0.01;
+      outerRing.rotation.z -= 0.007;
 
       // Swirling Upward Particle Tendrils
-      if (auraParticlesRef.current) {
-        const pos = auraParticlesRef.current.geometry.attributes.position.array as Float32Array;
-        for (let i = 0; i < particleCount; i++) {
+      if (particlesRef.current) {
+        const pos = particlesRef.current.geometry.attributes.position.array as Float32Array;
+        for (let i = 0; i < pCount; i++) {
           pos[i * 3 + 1] += pVel[i * 3 + 1];
-          pos[i * 3] += Math.sin(elapsed * 1.5 + i) * 0.002;
-          pos[i * 3 + 2] += Math.cos(elapsed * 1.5 + i) * 0.002;
+          pos[i * 3] += Math.sin(elapsed * 2 + i) * 0.0015;
+          pos[i * 3 + 2] += Math.cos(elapsed * 2 + i) * 0.0015;
 
-          if (pos[i * 3 + 1] > 2.2) {
-            pos[i * 3 + 1] = -1.45;
+          if (pos[i * 3 + 1] > 2.8) {
+            pos[i * 3 + 1] = 0.05;
           }
         }
-        auraParticlesRef.current.geometry.attributes.position.needsUpdate = true;
+        particlesRef.current.geometry.attributes.position.needsUpdate = true;
       }
 
-      // Eye light pulse intensity
+      // Eye flare light pulse
       if (eyeLightRef.current) {
-        eyeLightRef.current.intensity = 3.5 + Math.sin(elapsed * 4.5) * 1.5;
+        eyeLightRef.current.intensity = 3.0 + Math.sin(elapsed * 4.5) * 1.5;
       }
 
       renderer.render(scene, camera);
@@ -417,7 +534,7 @@ export function ThreeCharacterShowcase() {
 
     animate();
 
-    // 11. Viewport Resize Handler
+    // 9. Resize Handling
     const handleResize = () => {
       if (!container) return;
       const nw = container.clientWidth;
@@ -431,47 +548,81 @@ export function ThreeCharacterShowcase() {
 
     return () => {
       cancelAnimationFrame(animId);
-      dom.removeEventListener('mousedown', onPointerDown);
-      dom.removeEventListener('mousemove', onPointerMove);
-      window.removeEventListener('mouseup', onPointerUp);
-      dom.removeEventListener('touchstart', onPointerDown);
-      dom.removeEventListener('touchmove', onPointerMove);
-      window.removeEventListener('touchend', onPointerUp);
       window.removeEventListener('resize', handleResize);
       renderer.dispose();
     };
-  }, [activeChar, isAutoRotating]);
+  }, [activeChar]);
 
+  // Handle Animation Change with Smooth Crossfade
+  const switchAnimation = (animName: 'Idle' | 'Walk' | 'Run') => {
+    if (activeAnimation === animName || !mixerRef.current) return;
+    sfx.playClick();
+
+    const prevAction = actionsRef.current[activeAnimation];
+    const newAction = actionsRef.current[animName];
+
+    if (newAction) {
+      if (prevAction) {
+        prevAction.fadeOut(0.35);
+      }
+      newAction.reset().fadeIn(0.35).play();
+      setActiveAnimation(animName);
+    }
+  };
+
+  // Toggle Auto-Orbit
+  const toggleOrbit = () => {
+    sfx.playHover();
+    setIsAutoRotating((prev) => {
+      const next = !prev;
+      if (controlsRef.current) {
+        controlsRef.current.autoRotate = next;
+      }
+      return next;
+    });
+  };
+
+  // Switch Character Roster
   const selectCharacter = (c: HunterCharacter) => {
     sfx.playBladeSlash();
     setActiveChar(c);
     spawnCombatNumber(`SHADOW AWAKENING: ${c.name}`, undefined, undefined, 'stat');
   };
 
+  // Trigger "ARISE" Summoning Surge
   const triggerPowerUp = () => {
-    if (isPoweringUp || !shockwaveRef.current || !eyeLightRef.current) return;
+    if (isPoweringUp || !shockwaveRef.current || !characterModelRef.current) return;
     setIsPoweringUp(true);
     sfx.playDemonRoar();
     spawnCombatNumber('ARISE // DOMAIN EXPANDED', undefined, undefined, 'mana');
 
+    // Crossfade to Run/Battle Stance temporarily
+    if (actionsRef.current['Run']) {
+      actionsRef.current[activeAnimation]?.fadeOut(0.2);
+      actionsRef.current['Run'].reset().fadeIn(0.2).play();
+    }
+
     const wave = shockwaveRef.current;
-    const light = eyeLightRef.current;
     const waveMat = wave.material as THREE.MeshBasicMaterial;
     const startTime = performance.now();
 
     const doExpand = (now: number) => {
-      const progress = (now - startTime) / 900;
+      const progress = (now - startTime) / 1000;
       if (progress < 1) {
-        const scale = 1 + progress * 5.5;
+        const scale = 1 + progress * 6;
         wave.scale.set(scale, scale, scale);
-        waveMat.opacity = (1 - progress) * 0.9;
-        light.intensity = 4.0 + (1 - progress) * 8.0;
+        waveMat.opacity = (1 - progress) * 0.95;
         requestAnimationFrame(doExpand);
       } else {
         wave.scale.set(1, 1, 1);
         waveMat.opacity = 0;
-        light.intensity = 4.0;
         setIsPoweringUp(false);
+        // Crossfade back to Idle
+        if (actionsRef.current['Idle']) {
+          actionsRef.current['Run']?.fadeOut(0.4);
+          actionsRef.current['Idle'].reset().fadeIn(0.4).play();
+          setActiveAnimation('Idle');
+        }
       }
     };
 
@@ -480,13 +631,13 @@ export function ThreeCharacterShowcase() {
 
   return (
     <div className="w-full rounded-2xl bg-[#05050A] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.85)] font-mono overflow-hidden">
-      {/* Cinematic Top Header */}
+      {/* 3D Model Top Control Console */}
       <div className="p-4 sm:p-6 border-b border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-purple-950/25 via-black to-slate-950/25">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-system-cyan animate-pulse shadow-[0_0_10px_#38bdf8]" />
             <span className="text-[10px] text-system-muted font-bold tracking-widest uppercase">
-              4K ANIME MONARCH & S-RANK ROSTER
+              3D GLTF SKELETAL CHARACTER MODEL
             </span>
             <span className="text-[9px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300">
               {activeChar.koreanName}
@@ -497,11 +648,28 @@ export function ThreeCharacterShowcase() {
           </h2>
         </div>
 
-        {/* Interactive Controls */}
+        {/* Dynamic Animation & Action Controls */}
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Animation Stance Toggles */}
+          <div className="flex items-center p-0.5 rounded-lg bg-black/60 border border-white/10">
+            {(['Idle', 'Walk', 'Run'] as const).map((anim) => (
+              <button
+                key={anim}
+                onClick={() => switchAnimation(anim)}
+                className={`px-2.5 py-1 text-[11px] font-bold rounded transition-all ${
+                  activeAnimation === anim
+                    ? 'bg-purple-600 text-white shadow-[0_0_10px_rgba(168,85,247,0.5)]'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {anim === 'Idle' ? 'STANCE' : anim === 'Walk' ? 'PATROL' : 'COMBAT'}
+              </button>
+            ))}
+          </div>
+
+          {/* Auto Orbit Toggle */}
           <button
-            onClick={() => setIsAutoRotating((prev) => !prev)}
-            onMouseEnter={() => sfx.playHover()}
+            onClick={toggleOrbit}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all flex items-center gap-1.5 ${
               isAutoRotating
                 ? 'bg-purple-950/70 border-purple-400 text-purple-200 shadow-[0_0_15px_rgba(168,85,247,0.3)]'
@@ -509,9 +677,10 @@ export function ThreeCharacterShowcase() {
             }`}
           >
             <RotateCw className={`w-3.5 h-3.5 ${isAutoRotating ? 'animate-spin' : ''}`} />
-            <span>{isAutoRotating ? 'ORBIT [ON]' : 'ORBIT [OFF]'}</span>
+            <span>360° ORBIT</span>
           </button>
 
+          {/* Arise Summoning Surge */}
           <button
             onClick={triggerPowerUp}
             disabled={isPoweringUp}
@@ -519,30 +688,36 @@ export function ThreeCharacterShowcase() {
             className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-[0_0_25px_rgba(168,85,247,0.5)] active:scale-95 transition-all flex items-center gap-2"
           >
             <Zap className="w-4 h-4 text-yellow-300 animate-pulse" />
-            <span>ARISE [SUMMON AURA]</span>
+            <span>ARISE [SHOCKWAVE]</span>
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-        {/* 3D Holographic Character Stage */}
-        <div className="lg:col-span-8 relative h-[380px] sm:h-[460px] md:h-[520px] bg-radial from-purple-950/20 via-[#05050A] to-[#020205] flex items-center justify-center overflow-hidden">
+        {/* Real 3D WebGL Canvas */}
+        <div className="lg:col-span-8 relative h-[400px] sm:h-[480px] md:h-[540px] bg-radial from-purple-950/20 via-[#05050A] to-[#020205] flex items-center justify-center overflow-hidden">
           <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
           {/* Loading Indicator */}
-          {!textureLoaded && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/60 backdrop-blur-sm pointer-events-none">
+          {isLoading && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/75 backdrop-blur-sm pointer-events-none">
               <span className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
               <span className="text-xs text-purple-300 font-bold tracking-widest uppercase">
-                SYNCHRONIZING 4K VISUAL MATRIX...
+                LOADING 3D GLTF SKELETON & TEXTURES...
               </span>
             </div>
           )}
 
-          {/* Interactive Hint */}
+          {/* Orbit Navigation Hint */}
           <div className="absolute bottom-4 left-4 text-[10px] text-system-muted flex items-center gap-2 bg-black/70 px-3.5 py-1.5 rounded-full border border-white/10 pointer-events-none backdrop-blur-sm">
             <Eye className="w-3.5 h-3.5 text-system-cyan animate-pulse" />
-            <span>TOUCH / DRAG TO TILT 3D HOLOGRAPHIC STAGE</span>
+            <span>DRAG / PINCH TO ROTATE 3D SKELETAL MODEL 360°</span>
+          </div>
+
+          {/* Active Weapon Indicator */}
+          <div className="absolute top-4 left-4 text-[10px] text-purple-300 font-bold bg-purple-950/60 px-3 py-1 rounded-full border border-purple-500/40 backdrop-blur-sm flex items-center gap-1.5">
+            <Swords className="w-3 h-3 text-purple-400" />
+            <span>{activeChar.weaponName}</span>
           </div>
 
           {/* Rank Badge */}
@@ -551,14 +726,14 @@ export function ThreeCharacterShowcase() {
           </div>
         </div>
 
-        {/* Character Selector & Biometric Terminal */}
-        <div className="lg:col-span-4 p-4 sm:p-6 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#07060F]/60 flex flex-col justify-between space-y-5">
+        {/* Character Roster Deck & Biometrics */}
+        <div className="lg:col-span-4 p-4 sm:p-6 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#07060F]/70 flex flex-col justify-between space-y-5">
           <div>
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] text-system-muted font-bold tracking-wider uppercase">
-                COMMANDER DECK // SELECT HUNTER:
+                SHADOW COMMANDER ROSTER:
               </span>
-              <span className="text-[9px] text-purple-400 font-mono">4 S-RANKS ONLINE</span>
+              <span className="text-[9px] text-purple-400 font-mono">SELECT 3D AVATAR</span>
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-1 gap-2.5">
@@ -578,7 +753,7 @@ export function ThreeCharacterShowcase() {
                     <div className="flex items-center gap-3">
                       <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-white/15 shrink-0 bg-black">
                         <Image
-                          src={c.image}
+                          src={c.thumbnail}
                           alt={c.name}
                           fill
                           className="object-cover object-top"
@@ -606,7 +781,7 @@ export function ThreeCharacterShowcase() {
             </div>
           </div>
 
-          {/* Biometrics & Buff Details */}
+          {/* Manhwa Quote & RPG Stat Matrix */}
           <div className="space-y-3.5">
             <p className="text-xs text-gray-300 font-sans italic border-l-2 border-purple-500/60 pl-3 py-1 bg-purple-950/15 rounded-r">
               {activeChar.quote}
