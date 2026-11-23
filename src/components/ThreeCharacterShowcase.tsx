@@ -212,25 +212,25 @@ export function ThreeCharacterShowcase() {
           )}
 
           {/* Active Weapon Indicator */}
-          <div className="absolute top-4 left-4 text-[10px] text-purple-300 font-bold bg-black/80 px-3.5 py-1.5 rounded-full border border-purple-500/40 backdrop-blur-md flex items-center gap-1.5 z-30 pointer-events-none">
-            <Swords className="w-3.5 h-3.5 text-purple-400" />
-            <span>{activeChar.weaponName}</span>
+          <div className="absolute top-3 left-3 sm:top-4 sm:left-4 max-w-[55%] truncate text-[9px] sm:text-[10px] text-purple-300 font-bold bg-black/85 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-purple-500/40 backdrop-blur-md flex items-center gap-1.5 z-30 pointer-events-none">
+            <Swords className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-400 shrink-0" />
+            <span className="truncate">{activeChar.weaponName}</span>
           </div>
 
           {/* Rank Badge */}
-          <div className="absolute top-4 right-4 text-[10px] text-yellow-300 font-bold bg-yellow-950/70 px-3.5 py-1.5 rounded-full border border-yellow-500/40 shadow-[0_0_15px_rgba(234,179,8,0.3)] backdrop-blur-md z-30 pointer-events-none">
+          <div className="absolute top-3 right-3 sm:top-4 sm:right-4 text-[9px] sm:text-[10px] text-yellow-300 font-bold bg-yellow-950/80 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-yellow-500/40 shadow-[0_0_15px_rgba(234,179,8,0.3)] backdrop-blur-md z-30 pointer-events-none">
             ⭐ {activeChar.rank}
           </div>
 
           {/* Orbit Navigation Hint */}
-          <div className="absolute bottom-4 left-4 text-[10px] text-system-muted flex items-center gap-2 bg-black/80 px-3.5 py-1.5 rounded-full border border-white/10 pointer-events-none backdrop-blur-md z-30">
-            <Eye className="w-3.5 h-3.5 text-system-cyan animate-pulse" />
-            <span>DRAG WITH MOUSE / FINGER TO ROTATE 3D CHARACTER 360°</span>
+          <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:bottom-4 sm:left-4 text-[9px] sm:text-[10px] text-system-muted flex items-center justify-center sm:justify-start gap-2 bg-black/85 px-3 py-1.5 rounded-full border border-white/10 pointer-events-none backdrop-blur-md z-30">
+            <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-system-cyan animate-pulse shrink-0" />
+            <span className="truncate">DRAG WITH MOUSE / FINGER TO ROTATE 360°</span>
           </div>
         </div>
 
         {/* Character Roster Deck & RPG Stat Terminal */}
-        <div className="lg:col-span-4 p-4 sm:p-6 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#07060F]/80 flex flex-col justify-between space-y-5">
+        <div className="lg:col-span-4 p-3.5 sm:p-6 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#07060F]/80 flex flex-col justify-between space-y-4 sm:space-y-5">
           <div>
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] text-system-muted font-bold tracking-wider uppercase">
@@ -239,7 +239,7 @@ export function ThreeCharacterShowcase() {
               <span className="text-[9px] text-purple-400 font-mono">SELECT CHARACTER</span>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 sm:gap-2.5">
               {CHARACTERS.map((c) => {
                 const isSelected = c.id === activeChar.id;
                 return (
