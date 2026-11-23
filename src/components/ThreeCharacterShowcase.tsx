@@ -2,8 +2,9 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import Image from 'next/image';
 import { sfx } from '@/lib/audio-sfx';
-import { Crown, Sparkles, RotateCw, Shield, Swords, Zap, Eye, Flame } from 'lucide-react';
+import { RotateCw, Zap, Eye, Flame, Shield, Swords, Sparkles, Check } from 'lucide-react';
 import { spawnCombatNumber } from '@/components/effects/FloatingDamageNumbers';
 
 export interface HunterCharacter {
@@ -12,8 +13,9 @@ export interface HunterCharacter {
   title: string;
   koreanName: string;
   rank: 'SHADOW MONARCH' | 'COMMANDER' | 'MARSHAL' | 'VANGUARD';
+  image: string;
   auraColor: number;
-  armorColor: number;
+  rimColor: number;
   eyeColor: number;
   quote: string;
   buff: string;
@@ -29,8 +31,9 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE SHADOW MONARCH',
     koreanName: '성진우 // 그림자 군주',
     rank: 'SHADOW MONARCH',
+    image: '/assets/09-arise/jinwoo-srank-stage.png',
     auraColor: 0x8b5cf6,
-    armorColor: 0x090915,
+    rimColor: 0x38bdf8,
     eyeColor: 0x38bdf8,
     quote: '"I am the hunter who conquered death itself. Arise."',
     buff: '+50% COMPOUND 1RM // MAXIMUM AMINO RETENTION',
@@ -41,11 +44,12 @@ const CHARACTERS: HunterCharacter[] = [
   {
     id: 'igris',
     name: 'COMMANDER IGRIS',
-    title: 'THE RED BLOOD KNIGHT',
+    title: 'THE BLOOD-RED KNIGHT',
     koreanName: '핏빛의 기사단장 이그리트',
     rank: 'COMMANDER',
+    image: '/assets/09-arise/igris-stage.png',
     auraColor: 0xef4444,
-    armorColor: 0x1e1b2e,
+    rimColor: 0xf87171,
     eyeColor: 0xef4444,
     quote: '"My blade exists solely to cleave your enemies."',
     buff: '+35% BARBELL SQUAT INTENSITY // ZERO PLATEAU',
@@ -59,8 +63,9 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE PREDATOR KING',
     koreanName: '포식자 군단장 베르',
     rank: 'MARSHAL',
+    image: '/assets/09-arise/beru-stage.png',
     auraColor: 0xa855f7,
-    armorColor: 0x140f28,
+    rimColor: 0xe879f9,
     eyeColor: 0xe879f9,
     quote: '"My king, permit me to feast upon your weakness."',
     buff: '+45g RAPID LEUCINE METABOLISM // REPAIR BURST',
@@ -74,8 +79,9 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE FORTRESS TITAN',
     koreanName: '철벽의 거인 아이언',
     rank: 'VANGUARD',
+    image: '/assets/09-arise/iron-stage.png',
     auraColor: 0xf59e0b,
-    armorColor: 0x1c1917,
+    rimColor: 0xfbbf24,
     eyeColor: 0xf59e0b,
     quote: '"A shield that never shatters under 200kg load."',
     buff: '+40% SPINAL INTEGRITY & CNS TANK PROTECTION',
@@ -90,10 +96,17 @@ export function ThreeCharacterShowcase() {
   const [activeChar, setActiveChar] = useState<HunterCharacter>(CHARACTERS[0]);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
   const [isPoweringUp, setIsPoweringUp] = useState(false);
+  const [textureLoaded, setTextureLoaded] = useState(false);
 
+  // Three.js object references for dynamic animation
   const sceneRef = useRef<THREE.Scene | null>(null);
-  const characterGroupRef = useRef<THREE.Group | null>(null);
+  const stageGroupRef = useRef<THREE.Group | null>(null);
+  const characterCardRef = useRef<THREE.Mesh | null>(null);
   const auraParticlesRef = useRef<THREE.Points | null>(null);
+  const shockwaveRef = useRef<THREE.Mesh | null>(null);
+  const auraPillarRef = useRef<THREE.Mesh | null>(null);
+  const innerRingRef = useRef<THREE.Mesh | null>(null);
+  const outerRingRef = useRef<THREE.Mesh | null>(null);
   const eyeLightRef = useRef<THREE.PointLight | null>(null);
   const rimLightRef = useRef<THREE.DirectionalLight | null>(null);
 
@@ -104,12 +117,12 @@ export function ThreeCharacterShowcase() {
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // 1. Scene, Camera & Renderer
+    // 1. Scene, Camera & WebGL Renderer
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(0, 1.2, 5.0);
+    camera.position.set(0, 0.2, 4.4);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -119,214 +132,190 @@ export function ThreeCharacterShowcase() {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = 1.2;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // 2. Cinematic Minimalist Lighting
-    const ambientLight = new THREE.AmbientLight(0x0f0f1c, 2.0);
+    // 2. Cinematic Volumetric Lighting
+    const ambientLight = new THREE.AmbientLight(0x0e0e1a, 2.2);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0x38bdf8, 2.8);
-    keyLight.position.set(3, 4, 3);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    keyLight.position.set(2, 3, 4);
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(activeChar.auraColor, 5.0);
-    rimLight.position.set(-3, 3, -3);
+    const rimLight = new THREE.DirectionalLight(activeChar.auraColor, 4.8);
+    rimLight.position.set(-3, 3, -2);
     scene.add(rimLight);
     rimLightRef.current = rimLight;
 
-    const eyeLight = new THREE.PointLight(activeChar.eyeColor, 3.5, 3);
-    eyeLight.position.set(0, 1.9, 0.4);
+    const eyeLight = new THREE.PointLight(activeChar.eyeColor, 4.0, 5.0);
+    eyeLight.position.set(0, 0.6, 0.6);
     scene.add(eyeLight);
     eyeLightRef.current = eyeLight;
 
-    // Pedestal Ground Ring
-    const ringGeo = new THREE.RingGeometry(0.8, 1.2, 32);
-    ringGeo.rotateX(-Math.PI / 2);
-    const ringMat = new THREE.MeshBasicMaterial({
+    // 3. Stage Container Group
+    const stageGroup = new THREE.Group();
+    stageGroupRef.current = stageGroup;
+    scene.add(stageGroup);
+
+    // 4. Pedestal Runic Circles
+    const ringMatInner = new THREE.MeshBasicMaterial({
       color: activeChar.auraColor,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending,
     });
-    const pedestalRing = new THREE.Mesh(ringGeo, ringMat);
-    pedestalRing.position.y = -1.2;
-    scene.add(pedestalRing);
+    const ringInnerGeo = new THREE.RingGeometry(0.85, 0.95, 48);
+    ringInnerGeo.rotateX(-Math.PI / 2);
+    const innerRing = new THREE.Mesh(ringInnerGeo, ringMatInner);
+    innerRing.position.y = -1.45;
+    stageGroup.add(innerRing);
+    innerRingRef.current = innerRing;
 
-    // 3. Procedural Stylized 3D Character Model
-    const charGroup = new THREE.Group();
-    characterGroupRef.current = charGroup;
-    scene.add(charGroup);
-
-    // Character Base Material (Deep Obsidian Armor)
-    const armorMat = new THREE.MeshStandardMaterial({
-      color: activeChar.armorColor,
-      metalness: 0.8,
-      roughness: 0.25,
+    const ringMatOuter = new THREE.MeshBasicMaterial({
+      color: activeChar.rimColor,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.45,
+      blending: THREE.AdditiveBlending,
     });
+    const ringOuterGeo = new THREE.RingGeometry(1.2, 1.35, 48);
+    ringOuterGeo.rotateX(-Math.PI / 2);
+    const outerRing = new THREE.Mesh(ringOuterGeo, ringMatOuter);
+    outerRing.position.y = -1.47;
+    stageGroup.add(outerRing);
+    outerRingRef.current = outerRing;
 
-    const glowAccentMat = new THREE.MeshBasicMaterial({
-      color: activeChar.eyeColor,
+    // Ground Shadow Disc
+    const groundDiscGeo = new THREE.CircleGeometry(1.5, 32);
+    groundDiscGeo.rotateX(-Math.PI / 2);
+    const groundDiscMat = new THREE.MeshBasicMaterial({
+      color: 0x030307,
+      transparent: true,
+      opacity: 0.85,
     });
+    const groundDisc = new THREE.Mesh(groundDiscGeo, groundDiscMat);
+    groundDisc.position.y = -1.49;
+    stageGroup.add(groundDisc);
 
-    // Torso / Athletic Chest V-Taper
-    const torsoGeo = new THREE.CylinderGeometry(0.38, 0.26, 0.95, 8);
-    const torso = new THREE.Mesh(torsoGeo, armorMat);
-    torso.position.y = 0.55;
-    charGroup.add(torso);
+    // 5. Cylindrical Volumetric Aura Pillar
+    const pillarGeo = new THREE.CylinderGeometry(0.9, 1.3, 3.4, 32, 1, true);
+    const pillarMat = new THREE.MeshBasicMaterial({
+      color: activeChar.auraColor,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.12,
+      blending: THREE.AdditiveBlending,
+    });
+    const auraPillar = new THREE.Mesh(pillarGeo, pillarMat);
+    auraPillar.position.y = 0.1;
+    stageGroup.add(auraPillar);
+    auraPillarRef.current = auraPillar;
 
-    // Shoulders / Pauldrons
-    const lPauldron = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.35, 6), armorMat);
-    lPauldron.position.set(-0.46, 0.95, 0);
-    lPauldron.rotation.z = Math.PI / 3;
-    charGroup.add(lPauldron);
+    // 6. 4K Authentic Anime Holographic Character Card (Curved 3D Plane)
+    const textureLoader = new THREE.TextureLoader();
+    setTextureLoaded(false);
 
-    const rPauldron = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.35, 6), armorMat);
-    rPauldron.position.set(0.46, 0.95, 0);
-    rPauldron.rotation.z = -Math.PI / 3;
-    charGroup.add(rPauldron);
+    textureLoader.load(activeChar.image, (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
 
-    // Head / Face Mask / Helmet
-    let headGeo: THREE.BufferGeometry = new THREE.DodecahedronGeometry(0.25, 1);
-    if (activeChar.id === 'igris') {
-      headGeo = new THREE.ConeGeometry(0.26, 0.55, 6);
-    } else if (activeChar.id === 'beru') {
-      headGeo = new THREE.OctahedronGeometry(0.28, 1);
-    }
-    const head = new THREE.Mesh(headGeo, armorMat);
-    head.position.y = 1.35;
-    charGroup.add(head);
+      // Curved plane geometry for high-fidelity 3D anime perspective
+      const cardGeo = new THREE.PlaneGeometry(2.1, 2.8, 32, 32);
+      const posAttr = cardGeo.attributes.position;
+      for (let i = 0; i < posAttr.count; i++) {
+        const x = posAttr.getX(i);
+        // Subtle concave IMAX curvature
+        posAttr.setZ(i, -(x * x) * 0.08);
+      }
+      cardGeo.computeVertexNormals();
 
-    // Glowing Eyes Flare (Jin-Woo / Monarch signature)
-    const lEye = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 8), glowAccentMat);
-    lEye.position.set(-0.09, 1.38, 0.24);
-    charGroup.add(lEye);
-
-    const rEye = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 8), glowAccentMat);
-    rEye.position.set(0.09, 1.38, 0.24);
-    charGroup.add(rEye);
-
-    // Character Specific Accessories:
-    if (activeChar.id === 'jinwoo') {
-      // Flowing Trenchcoat Tails
-      const coatGeo = new THREE.PlaneGeometry(0.7, 1.5, 4, 8);
-      const coatMat = new THREE.MeshStandardMaterial({
-        color: 0x05050e,
+      const cardMat = new THREE.MeshStandardMaterial({
+        map: texture,
+        transparent: true,
+        roughness: 0.25,
+        metalness: 0.1,
+        emissive: new THREE.Color(activeChar.auraColor),
+        emissiveIntensity: 0.15,
         side: THREE.DoubleSide,
-        roughness: 0.9,
       });
-      const coat = new THREE.Mesh(coatGeo, coatMat);
-      coat.position.set(0, -0.2, -0.22);
-      coat.rotation.x = 0.15;
-      charGroup.add(coat);
 
-      // Dual Daggers in Hands
-      const daggerMat = new THREE.MeshStandardMaterial({
-        color: 0x38bdf8,
-        emissive: 0x8b5cf6,
-        emissiveIntensity: 0.8,
+      const characterCard = new THREE.Mesh(cardGeo, cardMat);
+      characterCard.position.y = 0.05;
+      stageGroup.add(characterCard);
+      characterCardRef.current = characterCard;
+
+      // Glowing Neon Framing Outline
+      const frameGeo = new THREE.EdgesGeometry(cardGeo);
+      const frameMat = new THREE.LineBasicMaterial({
+        color: activeChar.rimColor,
+        transparent: true,
+        opacity: 0.5,
+        blending: THREE.AdditiveBlending,
       });
-      const lDagger = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.65, 0.08), daggerMat);
-      lDagger.position.set(-0.55, 0.35, 0.25);
-      lDagger.rotation.x = Math.PI / 4;
-      charGroup.add(lDagger);
+      const frameWire = new THREE.LineSegments(frameGeo, frameMat);
+      characterCard.add(frameWire);
 
-      const rDagger = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.65, 0.08), daggerMat);
-      rDagger.position.set(0.55, 0.35, 0.25);
-      rDagger.rotation.x = -Math.PI / 4;
-      charGroup.add(rDagger);
-    } else if (activeChar.id === 'igris') {
-      // Crimson Knight Plume
-      const plumeGeo = new THREE.CylinderGeometry(0.05, 0.18, 0.9, 6);
-      const plumeMat = new THREE.MeshStandardMaterial({
-        color: 0xef4444,
-        roughness: 0.7,
-      });
-      const plume = new THREE.Mesh(plumeGeo, plumeMat);
-      plume.position.set(0, 1.8, -0.2);
-      plume.rotation.x = -0.4;
-      charGroup.add(plume);
+      setTextureLoaded(true);
+    });
 
-      // Massive Greatsword Plunged Into Ground
-      const swordMat = new THREE.MeshStandardMaterial({
-        color: 0xd4d4d8,
-        metalness: 0.95,
-        roughness: 0.1,
-      });
-      const sword = new THREE.Mesh(new THREE.BoxGeometry(0.12, 2.2, 0.06), swordMat);
-      sword.position.set(0, -0.1, 0.4);
-      charGroup.add(sword);
-    } else if (activeChar.id === 'beru') {
-      // Insectoid Scythe Arms
-      const scytheMat = new THREE.MeshStandardMaterial({
-        color: 0xa855f7,
-        metalness: 0.8,
-      });
-      const lScythe = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.05, 6, 12, Math.PI), scytheMat);
-      lScythe.position.set(-0.6, 0.6, 0.2);
-      lScythe.rotation.z = Math.PI / 3;
-      charGroup.add(lScythe);
+    // 7. Summoning Shockwave Ring (For "ARISE" activation)
+    const shockwaveGeo = new THREE.RingGeometry(0.1, 0.4, 48);
+    shockwaveGeo.rotateX(-Math.PI / 2);
+    const shockwaveMat = new THREE.MeshBasicMaterial({
+      color: activeChar.auraColor,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+    });
+    const shockwave = new THREE.Mesh(shockwaveGeo, shockwaveMat);
+    shockwave.position.y = -1.43;
+    stageGroup.add(shockwave);
+    shockwaveRef.current = shockwave;
 
-      const rScythe = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.05, 6, 12, Math.PI), scytheMat);
-      rScythe.position.set(0.6, 0.6, 0.2);
-      rScythe.rotation.z = -Math.PI / 3;
-      charGroup.add(rScythe);
-    } else if (activeChar.id === 'iron') {
-      // Giant Tower Fortress Shield
-      const shieldMat = new THREE.MeshStandardMaterial({
-        color: 0x44403c,
-        metalness: 0.9,
-      });
-      const shield = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.4, 0.12), shieldMat);
-      shield.position.set(0, 0.2, 0.45);
-      charGroup.add(shield);
-    }
-
-    // Legs / Greaves
-    const lLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.09, 1.1, 8), armorMat);
-    lLeg.position.set(-0.2, -0.5, 0);
-    charGroup.add(lLeg);
-
-    const rLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.09, 1.1, 8), armorMat);
-    rLeg.position.set(0.2, -0.5, 0);
-    charGroup.add(rLeg);
-
-    // 4. Shadow Aura Particle Vortex System
-    const particleCount = 450;
+    // 8. Volumetric 3D Shadow Monarch Particles
+    const particleCount = 550;
     const pGeo = new THREE.BufferGeometry();
     const pPos = new Float32Array(particleCount * 3);
     const pVel = new Float32Array(particleCount * 3);
 
     for (let i = 0; i < particleCount; i++) {
-      const radius = 0.3 + Math.random() * 1.4;
+      const radius = 0.4 + Math.random() * 1.6;
       const angle = Math.random() * Math.PI * 2;
-      const y = -1.2 + Math.random() * 3.2;
+      const y = -1.45 + Math.random() * 3.4;
 
       pPos[i * 3] = Math.cos(angle) * radius;
       pPos[i * 3 + 1] = y;
       pPos[i * 3 + 2] = Math.sin(angle) * radius;
 
-      pVel[i * 3] = (Math.random() - 0.5) * 0.015;
-      pVel[i * 3 + 1] = 0.012 + Math.random() * 0.025; // Drift upwards
-      pVel[i * 3 + 2] = (Math.random() - 0.5) * 0.015;
+      pVel[i * 3] = (Math.random() - 0.5) * 0.012;
+      pVel[i * 3 + 1] = 0.015 + Math.random() * 0.035; // Vertical dark smoke tendril ascent
+      pVel[i * 3 + 2] = (Math.random() - 0.5) * 0.012;
     }
 
     pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
     const pMat = new THREE.PointsMaterial({
       color: activeChar.auraColor,
-      size: 0.05,
+      size: 0.045,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85,
       blending: THREE.AdditiveBlending,
     });
     const particles = new THREE.Points(pGeo, pMat);
     auraParticlesRef.current = particles;
-    scene.add(particles);
+    stageGroup.add(particles);
 
-    // 5. Mouse/Touch Orbit Handling
+    // 9. Interactive Touch & Mouse Orbit / Tilt Handling
     let isDragging = false;
     let prevX = 0;
     let prevY = 0;
+    let targetRotY = 0;
+    let targetRotX = 0;
 
     const onPointerDown = (e: MouseEvent | TouchEvent) => {
       isDragging = true;
@@ -337,18 +326,26 @@ export function ThreeCharacterShowcase() {
     };
 
     const onPointerMove = (e: MouseEvent | TouchEvent) => {
-      if (!isDragging || !characterGroupRef.current) return;
+      if (!stageGroupRef.current) return;
       const cx = 'touches' in e ? e.touches[0].clientX : e.clientX;
       const cy = 'touches' in e ? e.touches[0].clientY : e.clientY;
 
-      const dx = cx - prevX;
-      const dy = cy - prevY;
-
-      characterGroupRef.current.rotation.y += dx * 0.015;
-      characterGroupRef.current.rotation.x += dy * 0.01;
-
-      prevX = cx;
-      prevY = cy;
+      if (isDragging) {
+        const dx = cx - prevX;
+        const dy = cy - prevY;
+        targetRotY += dx * 0.01;
+        targetRotX += dy * 0.006;
+        targetRotX = Math.max(-0.35, Math.min(0.35, targetRotX));
+        prevX = cx;
+        prevY = cy;
+      } else {
+        // Parallax mouse tilt
+        const rect = container.getBoundingClientRect();
+        const normX = ((cx - rect.left) / rect.width) * 2 - 1;
+        const normY = -(((cy - rect.top) / rect.height) * 2 - 1);
+        targetRotY = normX * 0.35;
+        targetRotX = normY * 0.2;
+      }
     };
 
     const onPointerUp = () => {
@@ -363,7 +360,7 @@ export function ThreeCharacterShowcase() {
     dom.addEventListener('touchmove', onPointerMove, { passive: true });
     window.addEventListener('touchend', onPointerUp);
 
-    // 6. Animation Loop
+    // 10. Animation Render Loop
     let animId: number;
     let clock = new THREE.Clock();
 
@@ -371,30 +368,48 @@ export function ThreeCharacterShowcase() {
       animId = requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Idle breathing torso motion
-      if (characterGroupRef.current && isAutoRotating && !isDragging) {
-        characterGroupRef.current.rotation.y += 0.008;
-        characterGroupRef.current.position.y = Math.sin(elapsed * 1.5) * 0.04;
+      // Smooth Stage Inertia & Bobbing
+      if (stageGroupRef.current) {
+        if (isAutoRotating && !isDragging) {
+          targetRotY += 0.005;
+        }
+        stageGroupRef.current.rotation.y += (targetRotY - stageGroupRef.current.rotation.y) * 0.08;
+        stageGroupRef.current.rotation.x += (targetRotX - stageGroupRef.current.rotation.x) * 0.08;
+        stageGroupRef.current.position.y = Math.sin(elapsed * 1.8) * 0.04;
       }
 
-      // Swirling Shadow Aura Particles
+      // Pedestal Ring Counter-Rotations
+      if (innerRingRef.current) {
+        innerRingRef.current.rotation.z += 0.012;
+      }
+      if (outerRingRef.current) {
+        outerRingRef.current.rotation.z -= 0.008;
+      }
+
+      // Aura Pillar Breath Pulse
+      if (auraPillarRef.current) {
+        const pMat = auraPillarRef.current.material as THREE.MeshBasicMaterial;
+        pMat.opacity = 0.12 + Math.sin(elapsed * 3) * 0.06;
+      }
+
+      // Swirling Upward Particle Tendrils
       if (auraParticlesRef.current) {
         const pos = auraParticlesRef.current.geometry.attributes.position.array as Float32Array;
         for (let i = 0; i < particleCount; i++) {
           pos[i * 3 + 1] += pVel[i * 3 + 1];
-          pos[i * 3] += Math.sin(elapsed + i) * 0.002;
-          pos[i * 3 + 2] += Math.cos(elapsed + i) * 0.002;
+          pos[i * 3] += Math.sin(elapsed * 1.5 + i) * 0.002;
+          pos[i * 3 + 2] += Math.cos(elapsed * 1.5 + i) * 0.002;
 
           if (pos[i * 3 + 1] > 2.2) {
-            pos[i * 3 + 1] = -1.2;
+            pos[i * 3 + 1] = -1.45;
           }
         }
         auraParticlesRef.current.geometry.attributes.position.needsUpdate = true;
       }
 
-      // Eye flare pulsing
+      // Eye light pulse intensity
       if (eyeLightRef.current) {
-        eyeLightRef.current.intensity = 2.5 + Math.sin(elapsed * 5) * 1.5;
+        eyeLightRef.current.intensity = 3.5 + Math.sin(elapsed * 4.5) * 1.5;
       }
 
       renderer.render(scene, camera);
@@ -402,7 +417,7 @@ export function ThreeCharacterShowcase() {
 
     animate();
 
-    // 7. Resize handling
+    // 11. Viewport Resize Handler
     const handleResize = () => {
       if (!container) return;
       const nw = container.clientWidth;
@@ -434,98 +449,119 @@ export function ThreeCharacterShowcase() {
   };
 
   const triggerPowerUp = () => {
-    if (isPoweringUp || !characterGroupRef.current) return;
+    if (isPoweringUp || !shockwaveRef.current || !eyeLightRef.current) return;
     setIsPoweringUp(true);
     sfx.playDemonRoar();
     spawnCombatNumber('ARISE // DOMAIN EXPANDED', undefined, undefined, 'mana');
 
-    const group = characterGroupRef.current;
-    const startY = group.rotation.y;
+    const wave = shockwaveRef.current;
+    const light = eyeLightRef.current;
+    const waveMat = wave.material as THREE.MeshBasicMaterial;
     const startTime = performance.now();
 
-    const doSpin = (now: number) => {
-      const elapsed = (now - startTime) / 450;
-      if (elapsed < 1) {
-        group.rotation.y = startY + Math.PI * 4 * elapsed;
-        requestAnimationFrame(doSpin);
+    const doExpand = (now: number) => {
+      const progress = (now - startTime) / 900;
+      if (progress < 1) {
+        const scale = 1 + progress * 5.5;
+        wave.scale.set(scale, scale, scale);
+        waveMat.opacity = (1 - progress) * 0.9;
+        light.intensity = 4.0 + (1 - progress) * 8.0;
+        requestAnimationFrame(doExpand);
       } else {
-        group.rotation.y = startY;
+        wave.scale.set(1, 1, 1);
+        waveMat.opacity = 0;
+        light.intensity = 4.0;
         setIsPoweringUp(false);
       }
     };
 
-    requestAnimationFrame(doSpin);
+    requestAnimationFrame(doExpand);
   };
 
   return (
-    <div className="w-full rounded-2xl bg-[#05050A] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8)] font-mono overflow-hidden">
-      {/* Minimalist Top Header */}
-      <div className="p-4 sm:p-6 border-b border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-purple-950/20 via-black to-slate-950/20">
+    <div className="w-full rounded-2xl bg-[#05050A] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.85)] font-mono overflow-hidden">
+      {/* Cinematic Top Header */}
+      <div className="p-4 sm:p-6 border-b border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-purple-950/25 via-black to-slate-950/25">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full bg-system-cyan animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-system-cyan animate-pulse shadow-[0_0_10px_#38bdf8]" />
             <span className="text-[10px] text-system-muted font-bold tracking-widest uppercase">
-              3D SHADOW MONARCH & S-RANK ROSTER
+              4K ANIME MONARCH & S-RANK ROSTER
             </span>
-            <span className="text-[9px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-400">
+            <span className="text-[9px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300">
               {activeChar.koreanName}
             </span>
           </div>
-          <h2 className="text-lg sm:text-2xl font-cinzel font-bold text-white tracking-wider uppercase">
+          <h2 className="text-xl sm:text-3xl font-cinzel font-black text-white tracking-wider uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
             {activeChar.name}
           </h2>
         </div>
 
-        {/* Minimal Controls */}
-        <div className="flex items-center gap-2">
+        {/* Interactive Controls */}
+        <div className="flex items-center gap-2 flex-wrap">
           <button
-            onClick={() => setIsAutoRotating(prev => !prev)}
+            onClick={() => setIsAutoRotating((prev) => !prev)}
             onMouseEnter={() => sfx.playHover()}
-            className={`px-3 py-1.5 rounded text-xs font-bold border transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all flex items-center gap-1.5 ${
               isAutoRotating
-                ? 'bg-purple-950/60 border-purple-400 text-purple-200'
-                : 'bg-black/40 border-white/10 text-gray-400'
+                ? 'bg-purple-950/70 border-purple-400 text-purple-200 shadow-[0_0_15px_rgba(168,85,247,0.3)]'
+                : 'bg-black/50 border-white/10 text-gray-400 hover:text-white'
             }`}
           >
-            <RotateCw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">ORBIT</span>
+            <RotateCw className={`w-3.5 h-3.5 ${isAutoRotating ? 'animate-spin' : ''}`} />
+            <span>{isAutoRotating ? 'ORBIT [ON]' : 'ORBIT [OFF]'}</span>
           </button>
 
           <button
             onClick={triggerPowerUp}
             disabled={isPoweringUp}
             onMouseEnter={() => sfx.playHover()}
-            className="px-4 py-1.5 rounded bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-[0_0_20px_rgba(168,85,247,0.4)] active:scale-95 transition-all flex items-center gap-1.5"
+            className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-[0_0_25px_rgba(168,85,247,0.5)] active:scale-95 transition-all flex items-center gap-2"
           >
-            <Zap className="w-3.5 h-3.5 text-yellow-300" />
+            <Zap className="w-4 h-4 text-yellow-300 animate-pulse" />
             <span>ARISE [SUMMON AURA]</span>
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-        {/* 3D Character Canvas */}
-        <div className="lg:col-span-8 relative h-[360px] sm:h-[440px] md:h-[500px] bg-radial from-purple-950/15 via-black to-black flex items-center justify-center">
+        {/* 3D Holographic Character Stage */}
+        <div className="lg:col-span-8 relative h-[380px] sm:h-[460px] md:h-[520px] bg-radial from-purple-950/20 via-[#05050A] to-[#020205] flex items-center justify-center overflow-hidden">
           <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
-          {/* Minimal Drag Hint */}
-          <div className="absolute bottom-4 left-4 text-[10px] text-system-muted flex items-center gap-2 bg-black/60 px-3 py-1 rounded-full border border-white/10 pointer-events-none">
-            <Eye className="w-3 h-3 text-system-cyan" />
-            <span>TOUCH / DRAG TO ROTATE 3D CHARACTER</span>
+          {/* Loading Indicator */}
+          {!textureLoaded && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/60 backdrop-blur-sm pointer-events-none">
+              <span className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs text-purple-300 font-bold tracking-widest uppercase">
+                SYNCHRONIZING 4K VISUAL MATRIX...
+              </span>
+            </div>
+          )}
+
+          {/* Interactive Hint */}
+          <div className="absolute bottom-4 left-4 text-[10px] text-system-muted flex items-center gap-2 bg-black/70 px-3.5 py-1.5 rounded-full border border-white/10 pointer-events-none backdrop-blur-sm">
+            <Eye className="w-3.5 h-3.5 text-system-cyan animate-pulse" />
+            <span>TOUCH / DRAG TO TILT 3D HOLOGRAPHIC STAGE</span>
           </div>
 
-          <div className="absolute top-4 right-4 text-[10px] text-yellow-300 font-bold bg-yellow-950/40 px-2.5 py-1 rounded border border-yellow-500/30">
-            {activeChar.rank}
+          {/* Rank Badge */}
+          <div className="absolute top-4 right-4 text-[10px] text-yellow-300 font-bold bg-yellow-950/60 px-3 py-1 rounded-full border border-yellow-500/40 shadow-[0_0_15px_rgba(234,179,8,0.3)]">
+            ⭐ {activeChar.rank}
           </div>
         </div>
 
-        {/* Character Selector & Essential Biometrics */}
-        <div className="lg:col-span-4 p-4 sm:p-6 border-t lg:border-t-0 lg:border-l border-white/10 bg-black/40 flex flex-col justify-between space-y-4">
+        {/* Character Selector & Biometric Terminal */}
+        <div className="lg:col-span-4 p-4 sm:p-6 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#07060F]/60 flex flex-col justify-between space-y-5">
           <div>
-            <span className="text-[10px] text-system-muted font-bold tracking-wider uppercase block mb-2.5">
-              SELECT COMMANDER / S-RANK:
-            </span>
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] text-system-muted font-bold tracking-wider uppercase">
+                COMMANDER DECK // SELECT HUNTER:
+              </span>
+              <span className="text-[9px] text-purple-400 font-mono">4 S-RANKS ONLINE</span>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-2.5">
               {CHARACTERS.map((c) => {
                 const isSelected = c.id === activeChar.id;
                 return (
@@ -533,34 +569,55 @@ export function ThreeCharacterShowcase() {
                     key={c.id}
                     onClick={() => selectCharacter(c)}
                     onMouseEnter={() => sfx.playHover()}
-                    className={`p-3 rounded-lg text-left transition-all border flex items-center justify-between ${
+                    className={`p-2.5 sm:p-3 rounded-xl text-left transition-all border flex items-center justify-between group ${
                       isSelected
-                        ? 'bg-purple-950/50 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
-                        : 'bg-black/30 border-white/10 text-gray-400 hover:border-white/20 hover:text-gray-200'
+                        ? 'bg-purple-950/60 border-purple-400 text-white shadow-[0_0_20px_rgba(168,85,247,0.35)]'
+                        : 'bg-black/40 border-white/10 text-gray-400 hover:border-purple-500/40 hover:text-gray-200'
                     }`}
                   >
-                    <div>
-                      <div className="text-xs font-bold leading-tight">{c.name}</div>
-                      <div className="text-[9px] text-system-muted">{c.title}</div>
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-white/15 shrink-0 bg-black">
+                        <Image
+                          src={c.image}
+                          alt={c.name}
+                          fill
+                          className="object-cover object-top"
+                          sizes="40px"
+                        />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold leading-tight group-hover:text-white transition-colors">
+                          {c.name}
+                        </div>
+                        <div className="text-[9px] text-system-muted leading-tight mt-0.5">
+                          {c.title}
+                        </div>
+                      </div>
                     </div>
-                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300">
-                      {c.rank.split(' ')[0]}
-                    </span>
+
+                    <div className="flex flex-col items-end shrink-0 pl-2">
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-yellow-300/90 font-bold">
+                        {c.rank.split(' ')[0]}
+                      </span>
+                    </div>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Minimalist Stats & Bio Card */}
-          <div className="space-y-3">
-            <p className="text-xs text-gray-300 font-sans italic border-l border-purple-500/40 pl-3 py-1">
+          {/* Biometrics & Buff Details */}
+          <div className="space-y-3.5">
+            <p className="text-xs text-gray-300 font-sans italic border-l-2 border-purple-500/60 pl-3 py-1 bg-purple-950/15 rounded-r">
               {activeChar.quote}
             </p>
 
-            <div className="p-3 rounded-lg bg-black/60 border border-white/10 space-y-2">
+            <div className="p-3.5 rounded-xl bg-black/70 border border-white/10 space-y-2.5">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">STRENGTH [STR]:</span>
+                <span className="text-gray-400 flex items-center gap-1.5">
+                  <Swords className="w-3.5 h-3.5 text-system-cyan" />
+                  <span>STRENGTH [STR]:</span>
+                </span>
                 <span className="text-system-cyan font-bold">{activeChar.statStr} / 100</span>
               </div>
               <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
@@ -571,7 +628,10 @@ export function ThreeCharacterShowcase() {
               </div>
 
               <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">VITALITY [VIT]:</span>
+                <span className="text-gray-400 flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-purple-400" />
+                  <span>VITALITY [VIT]:</span>
+                </span>
                 <span className="text-purple-400 font-bold">{activeChar.statVit} / 100</span>
               </div>
               <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
@@ -582,7 +642,10 @@ export function ThreeCharacterShowcase() {
               </div>
 
               <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">AGILITY [AGI]:</span>
+                <span className="text-gray-400 flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-yellow-400" />
+                  <span>AGILITY [AGI]:</span>
+                </span>
                 <span className="text-yellow-400 font-bold">{activeChar.statAgi} / 100</span>
               </div>
               <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
@@ -593,8 +656,12 @@ export function ThreeCharacterShowcase() {
               </div>
             </div>
 
-            <div className="p-2.5 rounded bg-purple-950/30 border border-purple-500/20 text-[10px] text-purple-200">
-              <strong className="text-white">Active Army Buff:</strong> {activeChar.buff}
+            <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-500/30 text-[10px] text-purple-200 flex items-start gap-2 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+              <Sparkles className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-white block font-bold mb-0.5">ACTIVE SOVEREIGN BUFF:</strong>
+                <span>{activeChar.buff}</span>
+              </div>
             </div>
           </div>
         </div>

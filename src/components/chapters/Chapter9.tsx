@@ -6,10 +6,10 @@ import { Zap, CheckCircle2, ArrowRight, ShieldCheck, Github, Swords, Shield, Cro
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
 import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
+import { ThreeCharacterShowcase } from "@/components/ThreeCharacterShowcase";
 import { ShadowExtractionRitual } from "@/components/effects/ShadowExtractionRitual";
 import { ShadowBarracks } from "@/components/ui/ShadowBarracks";
 import { HunterAscensionCertificate } from "@/components/ui/HunterAscensionCertificate";
-import { ThreeCharacterShowcase } from "@/components/ThreeCharacterShowcase";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -198,11 +198,10 @@ export function Chapter9() {
                   setMonarchTab('certificate');
                 }}
                 onMouseEnter={() => sfx.playHover()}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                  monarchTab === 'certificate'
-                    ? 'bg-yellow-600 text-white border-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.4)]'
-                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-yellow-500/30'
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${monarchTab === 'certificate'
+                  ? 'bg-yellow-600 text-white border-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.4)]'
+                  : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-yellow-500/30'
+                  }`}
               >
                 📜 S-RANK CREDENTIAL
               </button>
@@ -213,11 +212,10 @@ export function Chapter9() {
                   setMonarchTab('barracks');
                 }}
                 onMouseEnter={() => sfx.playHover()}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                  monarchTab === 'barracks'
-                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${monarchTab === 'barracks'
+                  ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                  : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                  }`}
               >
                 🛡️ SHADOW BARRACKS
               </button>

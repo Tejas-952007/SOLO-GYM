@@ -149,9 +149,8 @@ export function Chapter4() {
                       alt={card.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 440px"
-                      className={`object-cover filter contrast-115 brightness-105 ${
-                        card.id === 3 ? "object-[center_25%]" : "object-center"
-                      }`}
+                      className={`object-cover filter contrast-115 brightness-105 ${card.id === 3 ? "object-[center_25%]" : "object-center"
+                        }`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#120F24] via-transparent to-transparent pointer-events-none" />
                     <div className="absolute top-3 left-3 bg-black/80 border border-system-accent/40 px-2.5 py-1 rounded text-[10px] font-mono text-system-cyan">
@@ -186,11 +185,10 @@ export function Chapter4() {
                     {/* Interactive Commitment Button */}
                     <button
                       onClick={() => toggleCommitment(card.id, card.title)}
-                      className={`w-full py-2 px-3 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                        committedCards[card.id]
-                          ? "bg-emerald-950/60 border border-emerald-500 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.3)]"
-                          : "bg-system-accent/15 hover:bg-system-accent/30 border border-system-accent/40 text-system-text"
-                      }`}
+                      className={`w-full py-2 px-3 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${committedCards[card.id]
+                        ? "bg-emerald-950/60 border border-emerald-500 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.3)]"
+                        : "bg-system-accent/15 hover:bg-system-accent/30 border border-system-accent/40 text-system-text"
+                        }`}
                     >
                       {committedCards[card.id] ? (
                         <>
