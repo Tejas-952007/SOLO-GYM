@@ -18,6 +18,7 @@ import { HunterCommandPalette } from "@/components/ui/HunterCommandPalette";
 import { KeyboardShortcutsModal } from "@/components/ui/KeyboardShortcutsModal";
 import { AriseAwakeningSequence } from "@/components/effects/AriseAwakeningSequence";
 import { BladeSlashDivider } from "@/components/ui/BladeSlashDivider";
+import { HunterCommandDock } from "@/components/ui/HunterCommandDock";
 import { StoryTimelineHUD } from "@/components/StoryTimelineHUD";
 import { Chapter1 } from "@/components/chapters/Chapter1";
 import { Chapter2 } from "@/components/chapters/Chapter2";
@@ -94,17 +95,8 @@ export default function Home() {
           onTriggerArise={() => setIsAriseOpen(true)}
         />
 
-        {/* Floating Quick Command Trigger Pill */}
-        <div className="fixed bottom-6 right-56 z-40 hidden md:block">
-          <button
-            onClick={() => setIsCommandOpen(true)}
-            className="px-3.5 py-3 rounded-xl bg-black/85 backdrop-blur-md border border-cyan-500/50 text-cyan-400 font-mono text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(0,240,255,0.3)] hover:shadow-[0_0_35px_rgba(0,240,255,0.6)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer"
-            title="Open Hunter Grimoire & Command Palette (Press K)"
-          >
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span>COMMAND [K]</span>
-          </button>
-        </div>
+        {/* Unified, Minimalist Hunter Command Deck (K, C, ?) */}
+        <HunterCommandDock onOpenCommand={() => setIsCommandOpen(true)} />
 
         {/* Desktop Interactive HUD Reticle */}
         <CinematicReticle />

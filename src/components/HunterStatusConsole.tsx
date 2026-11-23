@@ -116,25 +116,7 @@ export function HunterStatusConsole() {
 
   return (
     <>
-      {/* Persistent Floating Cybernetic HUD Toggle (Bottom-Right) */}
-      <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2">
-        <button
-          onClick={() => {
-            sfx.playRankAscent();
-            setIsOpen(true);
-          }}
-          onMouseEnter={() => sfx.playHover()}
-          className="relative group p-3.5 sm:px-5 sm:py-3 rounded-xl bg-black/85 backdrop-blur-md border border-system-gold/60 text-system-gold font-mono text-xs font-bold uppercase tracking-wider shadow-[0_0_25px_rgba(245,197,66,0.5)] hover:shadow-[0_0_40px_rgba(245,197,66,0.8)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer"
-          title="Open Hunter Character Sheet (Press C)"
-        >
-          <span className="w-2.5 h-2.5 rounded-full bg-system-gold animate-ping" />
-          <Award className="w-4 h-4 text-system-gold" />
-          <span className="hidden sm:inline">[ HUNTER CONSOLE ]</span>
-          <span className="px-1.5 py-0.5 rounded bg-system-gold/20 text-[10px] text-system-gold border border-system-gold/40">
-            KEY: C
-          </span>
-        </button>
-      </div>
+      {/* Floating trigger handled cleanly by unified HunterCommandDock */}
 
       {/* Cyberpunk Holographic Character Sheet Modal */}
       {isOpen && (

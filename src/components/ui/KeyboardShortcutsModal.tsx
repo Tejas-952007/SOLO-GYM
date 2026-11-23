@@ -35,8 +35,17 @@ export function KeyboardShortcutsModal() {
       }
     };
 
+    const handleCustomOpen = () => {
+      setIsOpen(true);
+      sfx.playMenuOpen();
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('open-keyboard-shortcuts', handleCustomOpen);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('open-keyboard-shortcuts', handleCustomOpen);
+    };
   }, [isOpen]);
 
   const shortcuts = [
@@ -50,21 +59,7 @@ export function KeyboardShortcutsModal() {
 
   return (
     <>
-      {/* Floating Mini Trigger Icon in Bottom-Left Dock */}
-      <div className="fixed bottom-6 left-6 z-40 hidden sm:block">
-        <button
-          onClick={() => {
-            sfx.playMenuOpen();
-            setIsOpen(true);
-          }}
-          className="p-3 rounded-xl bg-black/85 backdrop-blur-md border border-cyan-500/40 text-cyan-400 hover:text-white hover:border-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.2)] hover:shadow-[0_0_25px_rgba(0,240,255,0.5)] transition-all cursor-pointer flex items-center gap-2 font-mono text-xs"
-          title="Hunter Keyboard Shortcuts (Press ?)"
-        >
-          <Keyboard className="w-4 h-4" />
-          <span className="hidden lg:inline">[ HOTKEYS ]</span>
-          <span className="px-1.5 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/40 text-[10px]">?</span>
-        </button>
-      </div>
+      {/* Floating trigger handled cleanly by unified Hunter Command Deck */}
 
       <AnimatePresence>
         {isOpen && (

@@ -73,30 +73,12 @@ export function StoryTimelineHUD() {
       {/* 2. Desktop Right-Hand Vertical HUD Tracker */}
       <aside
         aria-label="Story Progression Timeline"
-        className="fixed right-6 top-1/2 -translate-y-1/2 z-30 hidden xl:flex flex-col items-end gap-3 select-none pointer-events-auto"
+        className="fixed right-3 top-1/2 -translate-y-1/2 z-30 hidden xl:flex flex-col items-center select-none pointer-events-auto"
       >
-        {/* Current Active Status Widget */}
-        <div className="system-window corner-brackets px-3 py-1.5 rounded text-right mb-2 backdrop-blur-md">
-          <div className="font-mono text-[9px] text-system-accent tracking-widest uppercase">
-            DUNGEON DEPTH: {scrollProgress.toFixed(0)}%
-          </div>
-          <div className="font-cinzel text-xs font-bold text-system-text uppercase tracking-wider flex items-center gap-1.5 justify-end">
-            <span
-              className={`w-1.5 h-1.5 rounded-full ${
-                currentChapter.rank === "S" ? "bg-system-gold animate-ping" : "bg-system-accent"
-              }`}
-            />
-            <span>CH {currentChapter.num}: {currentChapter.title}</span>
-          </div>
-          <div className="font-mono text-[9px] text-system-muted">
-            HUNTER POTENTIAL: <span className="text-system-gold font-bold">RANK {currentChapter.rank}</span>
-          </div>
-        </div>
-
-        {/* 9 Vertical Nodes */}
-        <div className="flex flex-col items-center gap-2 relative py-2">
+        {/* 9 Minimalist Vertical Chapter Nodes */}
+        <div className="flex flex-col items-center gap-2.5 relative py-2">
           {/* Vertical Connecting Line */}
-          <div className="absolute top-2 bottom-2 w-px bg-system-accent/20 -z-10" />
+          <div className="absolute top-2 bottom-2 w-px bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent -z-10" />
 
           {CHAPTERS.map((ch, idx) => {
             const isActive = activeChapterIndex === idx;
@@ -107,25 +89,31 @@ export function StoryTimelineHUD() {
                 key={ch.id}
                 onClick={() => scrollToChapter(ch.id)}
                 onMouseEnter={() => sfx.playHover()}
-                className="group flex items-center gap-2 text-right relative focus:outline-none"
+                className="group flex items-center justify-center relative focus:outline-none cursor-pointer"
+                aria-label={`Jump to Chapter ${ch.num}: ${ch.title}`}
               >
-                {/* Hover Tooltip Label */}
-                <span className="opacity-0 group-hover:opacity-100 transition-opacity font-mono text-[10px] text-system-text bg-system-panel px-2 py-0.5 rounded border border-system-accent/30 pointer-events-none shadow-lg">
-                  {ch.num}. {ch.title}
-                </span>
+                {/* Tactical Flyout Label on Hover Only */}
+                <div className="absolute right-6 px-2.5 py-1 rounded bg-black/90 backdrop-blur-md border border-cyan-500/40 text-right opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap shadow-2xl z-40">
+                  <div className="font-mono text-[9px] text-cyan-400 font-bold uppercase tracking-wider">
+                    CH {ch.num} // RANK {ch.rank}
+                  </div>
+                  <div className="font-cinzel text-[11px] text-white font-bold tracking-wide">
+                    {ch.title}
+                  </div>
+                </div>
 
                 {/* Node Pill */}
                 <div
-                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 border flex items-center justify-center ${
+                  className={`rounded-full transition-all duration-300 border flex items-center justify-center ${
                     isActive
-                      ? "w-4 h-4 bg-system-accent border-system-glow shadow-[0_0_12px_rgba(139,92,246,0.8)] scale-110"
+                      ? "w-4 h-4 bg-cyan-400 border-white shadow-[0_0_15px_rgba(0,240,255,0.9)] scale-110"
                       : isPassed
-                      ? "bg-system-accent/50 border-system-accent/40"
-                      : "bg-black/60 border-white/20 group-hover:border-system-accent"
+                      ? "w-2.5 h-2.5 bg-purple-500/60 border-purple-400/50 hover:scale-125 hover:bg-white"
+                      : "w-2 h-2 bg-black/60 border-white/25 hover:scale-125 hover:border-cyan-400"
                   }`}
                 >
                   {isActive && (
-                    <span className="w-1 h-1 rounded-full bg-white animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
                   )}
                 </div>
               </button>

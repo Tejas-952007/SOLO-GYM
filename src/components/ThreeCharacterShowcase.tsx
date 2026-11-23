@@ -87,7 +87,7 @@ const CHARACTERS: HunterCharacter[] = [
   },
   {
     id: 'arise_jinwoo',
-    name: 'JIN-WOO: "ARISE"',
+    name: 'SHADOW MONARCH',
     title: 'SOVEREIGN EXTRACTION',
     koreanName: '성진우 // 일어나라',
     rank: 'MONARCH',
@@ -207,7 +207,7 @@ const CHARACTERS: HunterCharacter[] = [
   },
   {
     id: 'iron',
-    name: 'IRON: HEAVY TANK',
+    name: 'VANGUARD IRON',
     title: 'THE SHIELD VANGUARD',
     koreanName: '철벽의 기사단 아이언',
     rank: 'ELITE',
@@ -296,9 +296,9 @@ export function ThreeCharacterShowcase() {
     sfx.playClick();
     if (containerRef.current) {
       if (!document.fullscreenElement) {
-        containerRef.current.requestFullscreen().catch(() => {});
+        containerRef.current.requestFullscreen().catch(() => { });
       } else {
-        document.exitFullscreen().catch(() => {});
+        document.exitFullscreen().catch(() => { });
       }
     }
   };
@@ -309,10 +309,10 @@ export function ThreeCharacterShowcase() {
       className="relative w-full rounded-3xl bg-[#05050A] border border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden font-mono transition-all duration-300"
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
-        
+
         {/* LEFT COLUMN: Clean Minimalist Monolith Controller */}
         <div className="lg:col-span-6 xl:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-6 border-b lg:border-b-0 lg:border-r border-white/[0.08] bg-[#07060F]/90 z-20">
-          
+
           {/* Identity & Lore */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 flex-wrap">
@@ -361,11 +361,10 @@ export function ThreeCharacterShowcase() {
                     onClick={() => selectCharacter(c)}
                     onMouseEnter={() => sfx.playHover()}
                     title={`${c.name} (${c.rank})`}
-                    className={`relative rounded-xl overflow-hidden aspect-square border transition-all duration-300 group cursor-pointer ${
-                      isSelected
-                        ? 'border-purple-400 ring-2 ring-purple-500/50 shadow-[0_0_20px_rgba(168,85,247,0.6)] scale-105'
-                        : 'border-white/10 opacity-60 hover:opacity-100 hover:border-white/30'
-                    }`}
+                    className={`relative rounded-xl overflow-hidden aspect-square border transition-all duration-300 group cursor-pointer ${isSelected
+                      ? 'border-purple-400 ring-2 ring-purple-500/50 shadow-[0_0_20px_rgba(168,85,247,0.6)] scale-105'
+                      : 'border-white/10 opacity-60 hover:opacity-100 hover:border-white/30'
+                      }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -374,8 +373,8 @@ export function ThreeCharacterShowcase() {
                       className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-300"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-1 inset-x-0 text-center text-[8px] font-bold text-white truncate px-0.5">
-                      {c.name.split(' ')[0]}
+                    <div className="absolute bottom-1 inset-x-0 text-center text-[8px] font-bold text-white tracking-wider px-0.5">
+                      {c.id === 'jinwoo' ? 'JIN-WOO' : c.id === 'arise_jinwoo' ? 'ARISE' : c.id === 'igris' ? 'IGRIS' : c.id === 'beru' ? 'BERU' : 'IRON'}
                     </div>
                   </button>
                 );
@@ -391,11 +390,10 @@ export function ThreeCharacterShowcase() {
                   sfx.playClick();
                   setInfoTab('skills');
                 }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  infoTab === 'skills'
-                    ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.4)]'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${infoTab === 'skills'
+                  ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.4)]'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <Flame className="w-3.5 h-3.5 text-amber-400" />
                 <span>SKILLS</span>
@@ -405,11 +403,10 @@ export function ThreeCharacterShowcase() {
                   sfx.playClick();
                   setInfoTab('stats');
                 }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  infoTab === 'stats'
-                    ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.4)]'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${infoTab === 'stats'
+                  ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 <span>STATS</span>
@@ -425,21 +422,20 @@ export function ThreeCharacterShowcase() {
                       key={skill.name}
                       onClick={() => executeSkill(skill, idx)}
                       onMouseEnter={() => sfx.playHover()}
-                      className={`w-full p-2.5 rounded-xl border text-left transition-all duration-200 flex items-center justify-between group cursor-pointer ${
-                        isFiring
-                          ? 'bg-purple-600 border-white text-white shadow-[0_0_20px_rgba(168,85,247,0.8)] scale-[1.02]'
-                          : 'bg-black/50 border-white/[0.08] hover:border-purple-500/40 hover:bg-black/80'
-                      }`}
+                      className={`w-full p-2.5 rounded-xl border text-left transition-all duration-200 flex items-center justify-between group cursor-pointer ${isFiring
+                        ? 'bg-purple-600 border-white text-white shadow-[0_0_20px_rgba(168,85,247,0.8)] scale-[1.02]'
+                        : 'bg-black/50 border-white/[0.08] hover:border-purple-500/40 hover:bg-black/80'
+                        }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-gray-400">
                           0{idx + 1}
                         </span>
-                        <div className="min-w-0">
-                          <div className="font-bold text-xs text-white group-hover:text-cyan-300 truncate">
+                        <div className="min-w-0 pr-1">
+                          <div className="font-bold text-xs text-white group-hover:text-cyan-300">
                             {skill.name}
                           </div>
-                          <div className="text-[9px] text-gray-400 truncate">
+                          <div className="text-[10px] text-gray-400 leading-tight pt-0.5">
                             {skill.effect}
                           </div>
                         </div>
@@ -495,9 +491,9 @@ export function ThreeCharacterShowcase() {
             )}
 
             {/* Buff Pill */}
-            <div className="p-2.5 rounded-xl bg-purple-950/30 border border-purple-500/20 text-[10px] text-purple-200 flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-              <span className="truncate">
+            <div className="p-2.5 rounded-xl bg-purple-950/30 border border-purple-500/20 text-[10px] text-purple-200 flex items-start gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
+              <span className="leading-tight">
                 <strong className="text-white">PASSIVE BUFF:</strong> {activeChar.buff}
               </span>
             </div>
@@ -532,11 +528,10 @@ export function ThreeCharacterShowcase() {
                   sfx.playClick();
                   setViewMode('cinema');
                 }}
-                className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  viewMode === 'cinema'
-                    ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.6)]'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1.5 ${viewMode === 'cinema'
+                  ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.6)]'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <Film className="w-3.5 h-3.5" />
                 <span>4K CINEMA</span>
@@ -546,11 +541,10 @@ export function ThreeCharacterShowcase() {
                   sfx.playClick();
                   setViewMode('3d');
                 }}
-                className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  viewMode === '3d'
-                    ? 'bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1.5 ${viewMode === '3d'
+                  ? 'bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <Box className="w-3.5 h-3.5" />
                 <span>3D MESH</span>
