@@ -264,3 +264,30 @@ html.lenis, html.lenis body {
   }
 }
 
+/* Mobile & Touch UX High-Performance Polish */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (max-width: 640px) {
+  /* Prevent horizontal accidental overflow on small screens */
+  html, body {
+    overflow-x: hidden;
+    touch-action: pan-y;
+  }
+
+  /* Compact button padding on tight viewports */
+  .system-window {
+    padding: 1rem !important;
+  }
+}
+
