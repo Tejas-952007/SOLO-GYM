@@ -69,6 +69,7 @@ export function Chapter5() {
   const [activeFood, setActiveFood] = useState<string>("chicken-plate");
   const [weightKg, setWeightKg] = useState<number>(68);
   const [goal, setGoal] = useState<"bulk" | "cut">("bulk");
+  const [nutritionTab, setNutritionTab] = useState<'combinator' | 'budget' | 'prep' | 'brew' | 'swapper' | 'metabolic'>('combinator');
 
   // Interactive Plate Builder Tray
   const [plateItems, setPlateItems] = useState<{ name: string; protein: number; cal: number }[]>([
@@ -443,39 +444,120 @@ export function Chapter5() {
             </div>
           </div>
 
-          {/* Interactive Desi Meal & Daily Budget Combinator */}
-          <div className="w-full mt-8">
-            <DesiMealCombinator />
-          </div>
+          {/* Unified Desi Nutrition Grimoire Terminal */}
+          <div className="w-full mt-10 font-mono">
+            {/* Terminal Header & Tab Bar */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-emerald-500/25 pb-3 mb-6 gap-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
+                  [ DESI NUTRITION TACTICAL TERMINAL // MACRO ALCHEMY ]
+                </span>
+              </div>
 
-          {/* Pre-Workout Mana Brew Formulator & Caffeine Half-Life Alchemy */}
-          <div className="w-full mt-8">
-            <ManaBrewFormulator />
-          </div>
+              {/* Mobile-Responsive Pill Tabs */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setNutritionTab('combinator');
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                    nutritionTab === 'combinator'
+                      ? 'bg-emerald-600 text-white border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
+                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30'
+                  }`}
+                >
+                  🍱 MEAL STACK
+                </button>
 
-          {/* Intra-Cellular Hydration & Creatine Reservoir */}
-          <div className="w-full mt-8">
-            <HydrationChamber />
-          </div>
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setNutritionTab('budget');
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                    nutritionTab === 'budget'
+                      ? 'bg-emerald-600 text-white border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
+                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30'
+                  }`}
+                >
+                  💰 RUPEE LEADERBOARD
+                </button>
 
-          {/* Macro Swapper & Ingredient Alchemy Matrix */}
-          <div className="w-full mt-8">
-            <MacroSwapper />
-          </div>
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setNutritionTab('prep');
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                    nutritionTab === 'prep'
+                      ? 'bg-emerald-600 text-white border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
+                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30'
+                  }`}
+                >
+                  🥗 SUNDAY BATCH PREP
+                </button>
 
-          {/* Metabolic Adaptation & Reverse Dieting Radar */}
-          <div className="w-full mt-8">
-            <MetabolicEngine />
-          </div>
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setNutritionTab('brew');
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                    nutritionTab === 'brew'
+                      ? 'bg-amber-600 text-white border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-amber-500/30'
+                  }`}
+                >
+                  ☕ PRE-WORKOUT
+                </button>
 
-          {/* Indian Protein Cost-Per-Gram Budget Leaderboard */}
-          <div className="w-full mt-8">
-            <DesiProteinBudgetRanker />
-          </div>
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setNutritionTab('swapper');
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                    nutritionTab === 'swapper'
+                      ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
+                  }`}
+                >
+                  🔄 MACRO SWAPPER
+                </button>
 
-          {/* Sunday Desi Meal Prep & Batch Cooking Protocol */}
-          <div className="w-full mt-8">
-            <SundayMealPrepChecklist />
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setNutritionTab('metabolic');
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                    nutritionTab === 'metabolic'
+                      ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                  }`}
+                >
+                  ⚡ REVERSE DIETING
+                </button>
+              </div>
+            </div>
+
+            {/* Active Terminal Panel View */}
+            <div className="w-full">
+              {nutritionTab === 'combinator' && <DesiMealCombinator />}
+              {nutritionTab === 'budget' && <DesiProteinBudgetRanker />}
+              {nutritionTab === 'prep' && <SundayMealPrepChecklist />}
+              {nutritionTab === 'brew' && <ManaBrewFormulator />}
+              {nutritionTab === 'swapper' && <MacroSwapper />}
+              {nutritionTab === 'metabolic' && <MetabolicEngine />}
+            </div>
           </div>
         </div>
       </div>
