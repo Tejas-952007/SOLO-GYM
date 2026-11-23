@@ -162,7 +162,7 @@ export function Chapter8() {
   return (
     <section
       id="chapter-8"
-      className="relative w-full bg-[#07060D] py-20 px-4 sm:px-8 overflow-hidden"
+      className="relative w-full bg-[#07060D] py-10 sm:py-20 px-3.5 sm:px-8 overflow-hidden"
     >
       {/* Seamless Volumetric Fog Portal Transition from Chapter 7 */}
       <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
@@ -170,10 +170,10 @@ export function Chapter8() {
       {/* Background Subtle Gradient */}
       <div className="absolute inset-0 bg-radial-gradient from-system-accent/5 via-transparent to-transparent pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto space-y-16">
+      <div className="relative z-10 w-full max-w-6xl mx-auto space-y-8 sm:space-y-16">
         
         {/* Section Header */}
-        <div className="text-center space-y-3 max-w-2xl mx-auto">
+        <div className="text-center space-y-2 sm:space-y-3 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-system-accent/20 border border-system-accent/40 rounded text-xs font-mono tracking-wideSystem text-system-accent uppercase">
             <Bot className="w-3.5 h-3.5" />
             <span><DecodeText text="PHASE 08 // AI HUNTER SYSTEM" /></span>
@@ -181,7 +181,7 @@ export function Chapter8() {
           <BladeSliceHeading
             as="h2"
             accentText="NUMERIC ADVICE ONLY."
-            className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
+            className="font-cinzel text-xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider text-system-text"
           >
             YOUR AI COACH.
           </BladeSliceHeading>
@@ -253,7 +253,7 @@ export function Chapter8() {
           glowColor="rgba(139, 92, 246, 0.35)"
           className="max-w-3xl mx-auto w-full"
         >
-          <div className="w-full system-window corner-brackets p-4 sm:p-6 md:p-8 rounded relative space-y-5">
+          <div className="w-full system-window corner-brackets p-3.5 sm:p-6 md:p-8 rounded relative space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-system-accent/20 pb-3">
             <div className="flex items-center gap-2 font-mono text-xs text-system-text">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />

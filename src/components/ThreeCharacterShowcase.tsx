@@ -251,6 +251,7 @@ export function ThreeCharacterShowcase() {
   const [activeChar, setActiveChar] = useState<HunterCharacter>(CHARACTERS[0]);
   const [viewMode, setViewMode] = useState<'3d' | 'cinema'>('cinema');
   const [infoTab, setInfoTab] = useState<'skills' | 'stats'>('skills');
+  const [mobileShowcaseTab, setMobileShowcaseTab] = useState<'visual' | 'skills'>('visual');
   const [modelLoaded, setModelLoaded] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [activeSkillIndex, setActiveSkillIndex] = useState<number | null>(null);
@@ -308,10 +309,42 @@ export function ThreeCharacterShowcase() {
       ref={containerRef}
       className="relative w-full rounded-3xl bg-[#05050A] border border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden font-mono transition-all duration-300"
     >
+      {/* Mobile Single-Tier Switcher */}
+      <div className="flex lg:hidden items-center justify-between gap-1 p-1 bg-black/90 border-b border-white/10 font-mono text-[11px] relative z-30">
+        <button
+          onClick={() => {
+            sfx.playClick();
+            setMobileShowcaseTab('visual');
+          }}
+          className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+            mobileShowcaseTab === 'visual'
+              ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+              : 'text-gray-400 hover:text-white'
+          }`}
+        >
+          🎬 4K MONARCH VISUAL
+        </button>
+        <button
+          onClick={() => {
+            sfx.playClick();
+            setMobileShowcaseTab('skills');
+          }}
+          className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+            mobileShowcaseTab === 'skills'
+              ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.5)]'
+              : 'text-gray-400 hover:text-white'
+          }`}
+        >
+          ⚔️ COMBAT SKILLS
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
 
         {/* LEFT COLUMN: Clean Minimalist Monolith Controller */}
-        <div className="lg:col-span-6 xl:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-6 border-b lg:border-b-0 lg:border-r border-white/[0.08] bg-[#07060F]/90 z-20">
+        <div className={`lg:col-span-6 xl:col-span-5 p-4 sm:p-8 flex flex-col justify-between space-y-4 sm:space-y-6 border-b lg:border-b-0 lg:border-r border-white/[0.08] bg-[#07060F]/90 z-20 ${
+          mobileShowcaseTab === 'skills' ? 'flex' : 'hidden lg:flex'
+        }`}>
 
           {/* Identity & Lore */}
           <div className="space-y-3">
@@ -505,7 +538,9 @@ export function ThreeCharacterShowcase() {
           ref={cinemaStageRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="lg:col-span-6 xl:col-span-7 relative min-h-[480px] sm:min-h-[580px] md:min-h-[660px] bg-gradient-to-b from-[#090814] via-[#05050A] to-[#040408] flex items-center justify-center overflow-hidden"
+          className={`lg:col-span-6 xl:col-span-7 relative h-[340px] sm:h-[480px] md:h-[660px] bg-gradient-to-b from-[#090814] via-[#05050A] to-[#040408] flex items-center justify-center overflow-hidden ${
+            mobileShowcaseTab === 'visual' ? 'flex' : 'hidden lg:flex'
+          }`}
           style={{ perspective: '1200px' }}
         >
           {/* Ambient Volumetric Backlight */}
@@ -614,6 +649,23 @@ export function ThreeCharacterShowcase() {
                 ? 'DRAG WITH CURSOR OR TOUCH TO ROTATE 360°'
                 : 'HOVER & MOVE CURSOR TO ACTIVATE 3D MANA PARALLAX TILT'}
             </span>
+          </div>
+
+          {/* Mobile Quick Roster Bar (Visual View) */}
+          <div className="flex lg:hidden absolute bottom-3 inset-x-3 z-30 justify-center gap-1.5 p-1 bg-black/85 backdrop-blur-md border border-white/10 rounded-xl">
+            {CHARACTERS.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => selectCharacter(c)}
+                className={`px-2 py-1 rounded-lg text-[9px] font-bold font-mono transition-all ${
+                  c.id === activeChar.id
+                    ? 'bg-system-accent text-white shadow-[0_0_10px_rgba(139,92,246,0.6)]'
+                    : 'text-gray-400'
+                }`}
+              >
+                {c.id === 'jinwoo' ? 'JIN-WOO' : c.id === 'arise_jinwoo' ? 'ARISE' : c.id === 'igris' ? 'IGRIS' : c.id === 'beru' ? 'BERU' : 'IRON'}
+              </button>
+            ))}
           </div>
         </div>
 

@@ -29,7 +29,7 @@ export function Chapter9() {
   return (
     <section
       id="chapter-9"
-      className="relative w-full min-h-[100svh] bg-[#07060D] py-20 px-4 sm:px-8 flex flex-col justify-between overflow-hidden"
+      className="relative w-full min-h-0 lg:min-h-[100svh] bg-[#07060D] py-10 sm:py-20 px-4 sm:px-8 flex flex-col justify-between overflow-hidden"
     >
       {/* Volumetric Fog Portal Transition */}
       <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
@@ -47,9 +47,9 @@ export function Chapter9() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-[#07060D]/70 to-[#07060D]/85" />
       </div>
 
-      <div className="relative z-10 w-full max-w-5xl mx-auto space-y-12 my-auto">
+      <div className="relative z-10 w-full max-w-5xl mx-auto space-y-6 sm:space-y-12 my-auto">
         {/* Chapter 9 Hero Heading */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-3 sm:space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-[11px] font-mono tracking-widest text-yellow-300 uppercase">
             <Zap className="w-3.5 h-3.5 text-yellow-400" />
             <span><DecodeText text="CHAPTER 09 // THE SOVEREIGN AWAKENING" /></span>
@@ -57,12 +57,12 @@ export function Chapter9() {
 
           <BladeSliceHeading
             as="h2"
-            className="font-cinzel text-5xl sm:text-7xl md:text-9xl font-black uppercase tracking-widest text-system-gold drop-shadow-[0_0_35px_rgba(245,197,66,0.6)]"
+            className="font-cinzel text-4xl sm:text-7xl md:text-9xl font-black uppercase tracking-widest text-system-gold drop-shadow-[0_0_35px_rgba(245,197,66,0.6)]"
           >
             ARISE.
           </BladeSliceHeading>
 
-          <p className="font-cinzel text-lg sm:text-2xl uppercase tracking-widest text-white font-bold max-w-2xl mx-auto">
+          <p className="font-cinzel text-sm sm:text-2xl uppercase tracking-widest text-white font-bold max-w-2xl mx-auto">
             THE GATE HAS OPENED. CLAIM YOUR SHADOW MONARCH SYSTEM.
           </p>
           <p className="font-inter text-xs sm:text-sm text-gray-400 max-w-lg mx-auto leading-relaxed">
@@ -88,11 +88,10 @@ export function Chapter9() {
                   setMonarchTab('3d-roster');
                 }}
                 onMouseEnter={() => sfx.playHover()}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
-                  monarchTab === '3d-roster'
-                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.5)]'
-                    : 'bg-black/60 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
-                }`}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${monarchTab === '3d-roster'
+                  ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+                  : 'bg-black/60 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                  }`}
               >
                 <Crown className="w-3.5 h-3.5" />
                 <span>3D & 4K ROSTER</span>
@@ -104,11 +103,10 @@ export function Chapter9() {
                   setMonarchTab('certificate');
                 }}
                 onMouseEnter={() => sfx.playHover()}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
-                  monarchTab === 'certificate'
-                    ? 'bg-yellow-600 text-white border-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.5)]'
-                    : 'bg-black/60 border-white/10 text-gray-400 hover:text-white hover:border-yellow-500/30'
-                }`}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${monarchTab === 'certificate'
+                  ? 'bg-yellow-600 text-white border-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.5)]'
+                  : 'bg-black/60 border-white/10 text-gray-400 hover:text-white hover:border-yellow-500/30'
+                  }`}
               >
                 <span>📜 S-RANK CREDENTIAL</span>
               </button>
@@ -119,11 +117,10 @@ export function Chapter9() {
                   setMonarchTab('barracks');
                 }}
                 onMouseEnter={() => sfx.playHover()}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
-                  monarchTab === 'barracks'
-                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.5)]'
-                    : 'bg-black/60 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
-                }`}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${monarchTab === 'barracks'
+                  ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+                  : 'bg-black/60 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                  }`}
               >
                 <span>🛡️ SHADOW BARRACKS</span>
               </button>
@@ -140,7 +137,7 @@ export function Chapter9() {
 
         {/* Sovereign Awakening Invite Box */}
         <div className="w-full max-w-xl mx-auto pt-4">
-          <div className="w-full rounded-2xl bg-black/75 border border-yellow-500/30 p-6 sm:p-8 backdrop-blur-xl shadow-[0_0_40px_rgba(245,197,66,0.15)] space-y-5">
+          <div className="w-full rounded-2xl bg-black/75 border border-yellow-500/30 p-4 sm:p-8 backdrop-blur-xl shadow-[0_0_40px_rgba(245,197,66,0.15)] space-y-4 sm:space-y-5">
             {isSubmitted ? (
               <div className="py-4 space-y-3 font-mono text-center">
                 <div className="w-12 h-12 rounded-full bg-yellow-500/20 border border-yellow-500/40 mx-auto flex items-center justify-center text-yellow-300">
@@ -221,7 +218,7 @@ export function Chapter9() {
       </div>
 
       {/* Footer */}
-      <footer className="relative z-10 w-full max-w-5xl mx-auto pt-16 pb-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-gray-500">
+      <footer className="relative z-10 w-full max-w-5xl mx-auto pt-8 pb-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-gray-500">
         <div className="flex items-center gap-3">
           <span className="font-cinzel font-bold text-white tracking-wider">LEVEL UP</span>
           <span>•</span>

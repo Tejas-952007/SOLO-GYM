@@ -161,7 +161,7 @@ export function Chapter2() {
 
       <div
         ref={pinTargetRef}
-        className="w-full min-h-[100svh] flex flex-col justify-center items-center px-4 sm:px-8 py-16 sm:py-20 overflow-hidden"
+        className="w-full min-h-[100svh] flex flex-col justify-center items-center px-4 sm:px-8 py-8 sm:py-20 overflow-hidden"
       >
         {/* Subtle Background Glow */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-25">
@@ -240,7 +240,7 @@ export function Chapter2() {
             >
               <div
                 ref={visualRef}
-                className={`relative w-full max-w-[480px] h-[360px] sm:h-[520px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer transition-transform duration-200 ${
+                className={`relative w-full max-w-[480px] h-[280px] sm:h-[520px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer transition-transform duration-200 ${
                   templeReverence ? "scale-95 ring-4 ring-red-600 animate-pulse" : ""
                 }`}
                 onClick={() => {

@@ -204,7 +204,7 @@ export function Chapter3() {
       {/* Main Pinned Stage Container */}
       <div
         ref={pinSectionRef}
-        className="w-full min-h-[100svh] flex flex-col justify-between px-4 sm:px-8 py-12 sm:py-16 overflow-hidden relative"
+        className="w-full min-h-[100svh] flex flex-col justify-between px-4 sm:px-8 py-8 sm:py-16 overflow-hidden relative"
       >
         {/* Header HUD */}
         <div className="relative z-20 w-full max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -374,7 +374,7 @@ export function Chapter3() {
             </div>
 
             <div className="system-window corner-brackets rounded-xl overflow-hidden border border-system-accent/40 shadow-system-glow bg-black/80">
-              <div className="relative w-full h-64 overflow-hidden">
+              <div className="relative w-full h-48 sm:h-64 overflow-hidden">
                 <Image
                   src={STAGES[activeStage].image}
                   alt={STAGES[activeStage].floor}

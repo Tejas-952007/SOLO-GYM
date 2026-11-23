@@ -57,7 +57,7 @@ export function Chapter6() {
     <section
       id="chapter-6"
       ref={containerRef}
-      className="relative w-full bg-[#07060D] py-20 px-4 sm:px-8 overflow-hidden"
+      className="relative w-full bg-[#07060D] py-10 sm:py-20 px-4 sm:px-8 overflow-hidden"
     >
       {/* Seamless Volumetric Fog Portal Transition from Chapter 5 */}
       <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
@@ -65,9 +65,9 @@ export function Chapter6() {
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-radial-gradient from-red-950/15 via-transparent to-transparent pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto space-y-12">
+      <div className="relative z-10 w-full max-w-6xl mx-auto space-y-6 sm:space-y-12">
         {/* Section Header */}
-        <div className="text-center space-y-3 max-w-2xl mx-auto">
+        <div className="text-center space-y-2 sm:space-y-3 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-950/40 border border-red-500/40 rounded text-xs font-mono tracking-wideSystem text-red-400 uppercase">
             <Skull className="w-3.5 h-3.5" />
             <span><DecodeText text="PHASE 06 // DUNGEON THREATS" /></span>
@@ -75,7 +75,7 @@ export function Chapter6() {
           <BladeSliceHeading
             as="h2"
             accentText="NO MERCY."
-            className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
+            className="font-cinzel text-2xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
           >
             THE ENEMIES YOU MUST SLAY.
           </BladeSliceHeading>
@@ -167,11 +167,11 @@ export function Chapter6() {
             <div
               ref={chainCardRef}
               onMouseEnter={() => sfx.playHover()}
-              className="system-window corner-brackets p-6 rounded flex flex-col justify-between relative overflow-hidden group border-red-500/30 hover:border-red-500/60 transition-colors h-full"
+              className="system-window corner-brackets p-4 sm:p-6 rounded flex flex-col justify-between relative overflow-hidden group border-red-500/30 hover:border-red-500/60 transition-colors h-full"
             >
               <div className="absolute -top-12 -right-12 w-36 h-36 bg-red-500/10 rounded-full blur-2xl pointer-events-none" />
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-mono tracking-wideSystem px-2.5 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded">
                     BOSS // GRAVITY OF COMFORT
@@ -180,7 +180,7 @@ export function Chapter6() {
                 </div>
 
                 {/* Struggling Hunter Face & Chains Clearly Visible */}
-                <div className="relative w-full h-64 sm:h-72 rounded overflow-hidden border border-red-500/30 bg-black/80">
+                <div className="relative w-full h-52 sm:h-72 rounded overflow-hidden border border-red-500/30 bg-black/80">
                   <Image
                     src="/assets/06-enemies/chained-distraction.webp"
                     alt="Hunter Struggling Against Chains of Distraction"
@@ -236,11 +236,11 @@ export function Chapter6() {
           >
             <div
               onMouseEnter={() => sfx.playHover()}
-              className="system-window corner-brackets p-6 rounded flex flex-col justify-between relative overflow-hidden group border-system-accent/30 hover:border-system-accent/60 transition-colors h-full"
+              className="system-window corner-brackets p-4 sm:p-6 rounded flex flex-col justify-between relative overflow-hidden group border-system-accent/30 hover:border-system-accent/60 transition-colors h-full"
             >
               <div className="absolute -top-12 -right-12 w-36 h-36 bg-system-accent/10 rounded-full blur-2xl pointer-events-none" />
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-mono tracking-wideSystem px-2.5 py-0.5 bg-system-accent/20 text-system-accent border border-system-accent/30 rounded">
                     SANCTUARY // RECOVERY CHAMBER
@@ -249,7 +249,7 @@ export function Chapter6() {
                 </div>
 
                 {/* Recovery Tank Visual */}
-                <div className="relative w-full h-64 sm:h-72 rounded overflow-hidden border border-system-accent/30 bg-black/80">
+                <div className="relative w-full h-52 sm:h-72 rounded overflow-hidden border border-system-accent/30 bg-black/80">
                   <Image
                     src="/assets/06-enemies/recovery-tank.webp"
                     alt="Hunter Healing in Recovery Chamber"
@@ -305,11 +305,11 @@ export function Chapter6() {
           >
             <div
               onMouseEnter={() => sfx.playHover()}
-              className="system-window corner-brackets p-6 rounded flex flex-col justify-between relative overflow-hidden group border-amber-500/30 hover:border-amber-500/60 transition-colors h-full"
+              className="system-window corner-brackets p-4 sm:p-6 rounded flex flex-col justify-between relative overflow-hidden group border-amber-500/30 hover:border-amber-500/60 transition-colors h-full"
             >
             <div className="absolute -top-12 -right-12 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono tracking-wideSystem px-2.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded">
                   AWAKENING // 30-DAY STREAK
@@ -318,7 +318,7 @@ export function Chapter6() {
               </div>
 
               {/* Hunter Berserk Face with Blazing Red Eyes Clearly Visible */}
-              <div className="relative w-full h-64 sm:h-72 rounded overflow-hidden border border-amber-500/30 bg-black/80">
+              <div className="relative w-full h-52 sm:h-72 rounded overflow-hidden border border-amber-500/30 bg-black/80">
                 <Image
                   src="/assets/06-enemies/rage-mindset.webp"
                   alt="Berserk Mindset with Burning Eyes"

@@ -24,7 +24,7 @@ export function Chapter1() {
   const [bonusXP, setBonusXP] = useState(0);
 
   // Interactive Hunter Stat Allocator (5 AP) & Mobile Tab Switcher
-  const [activeHeroTab, setActiveHeroTab] = useState<"quests" | "stats" | "visage">("quests");
+  const [activeHeroTab, setActiveHeroTab] = useState<"quests" | "stats" | "visage" | "training">("quests");
   const [availableAP, setAvailableAP] = useState(5);
   const [stats, setStats] = useState({
     str: 10,
@@ -165,7 +165,7 @@ export function Chapter1() {
     <section
       id="chapter-1"
       ref={containerRef}
-      className="relative min-h-[100svh] w-full flex flex-col justify-between items-center px-4 sm:px-8 lg:px-12 pt-20 pb-10 sm:pt-24 sm:pb-14 overflow-hidden bg-[#07060D]"
+      className="relative min-h-0 lg:min-h-[100svh] w-full flex flex-col justify-between items-center px-3.5 sm:px-8 lg:px-12 pt-8 pb-6 sm:pt-24 sm:pb-14 overflow-hidden bg-[#07060D]"
     >
       {/* 1. Abandoned Ruined Gym Background Texture */}
       <div
@@ -192,7 +192,7 @@ export function Chapter1() {
       />
 
       {/* 3. Top Chapter Status HUD */}
-      <div className="relative z-10 w-full max-w-7xl flex justify-between items-center text-xs font-mono tracking-widest text-system-muted mb-6">
+      <div className="relative z-10 w-full max-w-7xl flex justify-between items-center text-xs font-mono tracking-widest text-system-muted mb-3 sm:mb-6">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-system-cyan animate-pulse shadow-[0_0_12px_rgba(56,189,248,0.9)]" />
           <span className="font-orbitron text-system-cyan uppercase font-bold text-xs sm:text-sm">
@@ -212,7 +212,7 @@ export function Chapter1() {
       <div className="relative z-10 w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center my-auto">
         
         {/* Left Column: Gothic Solo Leveling Title & Story Narrative */}
-        <div ref={leftColRef} className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
+        <div ref={leftColRef} className="lg:col-span-7 flex flex-col items-start text-left space-y-3 sm:space-y-6">
           
           {/* System Protocol Tag */}
           <div className="hidden sm:flex items-center gap-2.5 px-3 py-1 bg-black/70 border border-system-cyan/40 rounded text-[11px] sm:text-xs font-mono text-system-cyan uppercase tracking-widest shadow-[0_0_15px_rgba(56,189,248,0.25)]">
@@ -236,27 +236,27 @@ export function Chapter1() {
             <BladeSliceHeading
               as="h1"
               accentText="RANK E."
-              className="font-cinzel text-3xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-system-text leading-tight"
+              className="font-cinzel text-2xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-system-text leading-tight"
             >
               THIS IS YOU.
             </BladeSliceHeading>
-            <p className="font-inter text-sm sm:text-base md:text-lg text-system-muted max-w-xl leading-relaxed pt-2">
+            <p className="font-inter text-xs sm:text-base md:text-lg text-system-muted max-w-xl leading-relaxed pt-1 sm:pt-2">
               The weakest hunter of mankind. Bruised physique, skipped meals, zero discipline. The gym felt like an impossible dungeon. But today, the System chooses you.
             </p>
           </div>
 
           {/* Interactive System HUD Box (Daily Quests & Stat Allocator) */}
-          <div className="w-full max-w-lg p-4 sm:p-5 rounded-xl border border-system-cyan/30 bg-[#0B1021]/80 backdrop-blur-md shadow-[0_0_25px_rgba(14,165,233,0.15)] space-y-3.5">
+          <div className="w-full max-w-lg p-3.5 sm:p-5 rounded-xl border border-system-cyan/30 bg-[#0B1021]/80 backdrop-blur-md shadow-[0_0_25px_rgba(14,165,233,0.15)] space-y-3 sm:space-y-3.5">
             {/* Tab Switches */}
-            <div className="flex items-center justify-between border-b border-system-cyan/20 pb-2.5">
-              <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center justify-between border-b border-system-cyan/20 pb-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 <button
                   onClick={() => {
                     sfx.playClick();
                     setActiveHeroTab("quests");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-2.5 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all ${
+                  className={`px-2 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all ${
                     activeHeroTab === "quests"
                       ? "bg-system-cyan/20 border border-system-cyan text-white shadow-[0_0_12px_rgba(56,189,248,0.5)] font-bold"
                       : "text-system-muted hover:text-white"
@@ -270,7 +270,7 @@ export function Chapter1() {
                     setActiveHeroTab("stats");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-2.5 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
+                  className={`px-2 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
                     activeHeroTab === "stats"
                       ? "bg-yellow-500/20 border border-yellow-500 text-yellow-300 shadow-[0_0_12px_rgba(234,179,8,0.5)] font-bold"
                       : "text-system-muted hover:text-white"
@@ -279,6 +279,21 @@ export function Chapter1() {
                   <Award className="w-3.5 h-3.5" />
                   <span>STATS [{availableAP}]</span>
                 </button>
+                {/* Mobile-Only Calisthenics Tab */}
+                <button
+                  onClick={() => {
+                    sfx.playClick();
+                    setActiveHeroTab("training");
+                  }}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`lg:hidden px-2 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
+                    activeHeroTab === "training"
+                      ? "bg-cyan-600/30 border border-cyan-400 text-cyan-200 shadow-[0_0_12px_rgba(6,182,212,0.5)] font-bold"
+                      : "text-system-muted hover:text-white"
+                  }`}
+                >
+                  <span>LADDER</span>
+                </button>
                 {/* Mobile-Only Hunter Visage Tab */}
                 <button
                   onClick={() => {
@@ -286,7 +301,7 @@ export function Chapter1() {
                     setActiveHeroTab("visage");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`lg:hidden px-2.5 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
+                  className={`lg:hidden px-2 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
                     activeHeroTab === "visage"
                       ? "bg-purple-600/30 border border-purple-400 text-purple-200 shadow-[0_0_12px_rgba(168,85,247,0.5)] font-bold"
                       : "text-system-muted hover:text-white"
@@ -295,7 +310,7 @@ export function Chapter1() {
                   <span>HUNTER</span>
                 </button>
               </div>
-              <span className="text-yellow-400 font-mono text-[11px] sm:text-xs font-bold">
+              <span className="text-yellow-400 font-mono text-[10px] sm:text-xs font-bold">
                 {activeHeroTab === "quests" ? `+${bonusXP}/500 XP` : activeHeroTab === "stats" ? `${availableAP} AP` : "CLASS-E"}
               </span>
             </div>
@@ -470,6 +485,36 @@ export function Chapter1() {
                 </div>
               </div>
             )}
+
+            {/* View 4: Mobile Calisthenics Pullup Ladder */}
+            {activeHeroTab === "training" && (
+              <div className="lg:hidden space-y-3 font-mono">
+                <div className="flex items-center gap-1.5 p-1 bg-black/60 border border-white/10 rounded-lg text-[10px]">
+                  <button
+                    onClick={() => {
+                      sfx.playClick();
+                      setTrainingTab('pullup');
+                    }}
+                    className={`flex-1 py-1 rounded font-bold ${trainingTab === 'pullup' ? 'bg-cyan-600 text-white' : 'text-gray-400'}`}
+                  >
+                    🪜 PULLUP LADDER
+                  </button>
+                  <button
+                    onClick={() => {
+                      sfx.playClick();
+                      setTrainingTab('velocity');
+                    }}
+                    className={`flex-1 py-1 rounded font-bold ${trainingTab === 'velocity' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
+                  >
+                    ⏱️ VELOCITY
+                  </button>
+                </div>
+                <div className="w-full">
+                  {trainingTab === 'pullup' && <PullupProgressionLadder />}
+                  {trainingTab === 'velocity' && <RepVelocityMeter />}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Interactive CTA Buttons */}
@@ -602,8 +647,8 @@ export function Chapter1() {
 
       </div>
 
-      {/* Rank-E Calisthenics & Velocity Module Terminal */}
-      <div className="w-full max-w-6xl mx-auto mt-10 relative z-10 px-4 font-mono">
+      {/* Rank-E Calisthenics & Velocity Module Terminal (Desktop Only, on Mobile it is in the Hero Tabs) */}
+      <div className="hidden lg:block w-full max-w-6xl mx-auto mt-10 relative z-10 px-4 font-mono">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-system-cyan animate-pulse" />

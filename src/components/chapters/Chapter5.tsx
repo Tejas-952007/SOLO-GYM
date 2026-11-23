@@ -98,14 +98,14 @@ export function Chapter5() {
   return (
     <section
       id="chapter-5"
-      className="relative w-full bg-[#07060D] py-16 sm:py-24 px-4 sm:px-8 overflow-hidden"
+      className="relative w-full bg-[#07060D] py-10 sm:py-24 px-4 sm:px-8 overflow-hidden"
     >
       {/* Seamless Volumetric Fog Portal Transition from Chapter 4 */}
       <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
 
-      <div className="max-w-6xl mx-auto space-y-12 sm:space-y-16">
+      <div className="max-w-6xl mx-auto space-y-6 sm:space-y-16">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-3">
+        <div className="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-system-blue/40 border border-system-accent/30 rounded text-xs font-mono tracking-wideSystem text-system-accent uppercase">
             <Utensils className="w-3.5 h-3.5" />
             <span><DecodeText text="PHASE 05 // NUTRITION GRIMOIRE" /></span>
@@ -113,11 +113,11 @@ export function Chapter5() {
           <BladeSliceHeading
             as="h2"
             accentText="NO STARVATION."
-            className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
+            className="font-cinzel text-2xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
           >
             FOOD IS YOUR WEAPON.
           </BladeSliceHeading>
-          <p className="font-inter text-sm sm:text-base text-system-muted max-w-xl mx-auto">
+          <p className="font-inter text-xs sm:text-base text-system-muted max-w-xl mx-auto">
             You cannot out-train a 40-gram protein deficit. Calibrate your Indian diet with mathematical precision.
           </p>
         </div>
@@ -409,8 +409,8 @@ export function Chapter5() {
               {(() => {
                 const item = NUTRITION_ITEMS.find((f) => f.id === activeFood) || NUTRITION_ITEMS[0];
                 return (
-                  <div className="system-window corner-brackets p-4 rounded-xl border border-system-cyan/50 shadow-[0_0_25px_rgba(56,189,248,0.3)] space-y-3 bg-black/80">
-                    <div className="relative h-64 w-full rounded-lg overflow-hidden bg-black">
+                  <div className="system-window corner-brackets p-3.5 rounded-xl border border-system-cyan/50 shadow-[0_0_25px_rgba(56,189,248,0.3)] space-y-2.5 bg-black/80">
+                    <div className="relative h-52 sm:h-64 w-full rounded-lg overflow-hidden bg-black">
                       <Image
                         src={item.image}
                         alt={item.name}

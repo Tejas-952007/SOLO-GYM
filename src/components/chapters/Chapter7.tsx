@@ -137,7 +137,7 @@ export function Chapter7() {
   return (
     <section
       id="chapter-7"
-      className="relative w-full bg-[#07060D] py-20 px-4 sm:px-8 overflow-hidden"
+      className="relative w-full bg-[#07060D] py-10 sm:py-20 px-3.5 sm:px-8 overflow-hidden"
     >
       {/* Seamless Volumetric Fog Portal Transition from Chapter 6 */}
       <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-[#07060D] via-[#07060D]/80 to-transparent pointer-events-none z-20" />
@@ -160,7 +160,7 @@ export function Chapter7() {
           <BladeSliceHeading
             as="h2"
             accentText="ASCENSION."
-            className="font-cinzel text-3xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
+            className="font-cinzel text-2xl sm:text-5xl font-black uppercase tracking-wider text-system-text"
           >
             RANK UP: FROM E TO S.
           </BladeSliceHeading>
@@ -269,7 +269,7 @@ export function Chapter7() {
             glowColor={selectedRank.glowColor}
             className={`lg:col-span-5 w-full flex justify-center ${mobileCh7Tab === 'avatar' ? 'block' : 'hidden lg:block'}`}
           >
-            <div className="relative w-full h-[460px] sm:h-[520px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
+            <div className="relative w-full h-[320px] sm:h-[520px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
               <Image
                 src={selectedRank.image}
                 alt={`Hunter Rank ${selectedRank.rank}`}
