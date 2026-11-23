@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Shield, Sparkles, RefreshCw } from "lucide-react";
+import { Shield, Sparkles, RefreshCw, Award } from "lucide-react";
 import { AudioEqualizerButton } from "@/components/AudioPlayer";
 import { SoundtrackSelector } from "@/components/ui/SoundtrackSelector";
 import { AudioVisualizerCanvas } from "@/components/effects/AudioVisualizerCanvas";
@@ -128,29 +128,44 @@ export function SystemHeader() {
       </div>
 
       {/* Right Controls: Audio + Re-Awaken + Action */}
-      <div className="flex items-center gap-2.5 sm:gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         {/* Real-time Frequency Spectrum Visualizer */}
         <AudioVisualizerCanvas className="hidden md:block" />
 
         {/* Dark Aria Audio Toggle */}
         <AudioEqualizerButton />
 
-        {/* Tactical Anime Soundtrack Selector */}
-        <SoundtrackSelector />
+        {/* Tactical Anime Soundtrack Selector - desktop only */}
+        <div className="hidden sm:block">
+          <SoundtrackSelector />
+        </div>
 
-        {/* Reset Awakening Session */}
+        {/* Reset Awakening Session - desktop only */}
         <button
           onClick={handleResetAwakening}
           title="Re-open System Awakening Modal"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/50 hover:bg-system-accent/20 border border-white/10 hover:border-system-accent/50 rounded text-[11px] font-mono text-system-muted hover:text-system-accent transition-all cursor-pointer"
+          className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 bg-black/50 hover:bg-system-accent/20 border border-white/10 hover:border-system-accent/50 rounded text-[11px] font-mono text-system-muted hover:text-system-accent transition-all cursor-pointer"
         >
           <RefreshCw className="w-3 h-3" />
           <span className="hidden md:inline">[ RE-AWAKEN ]</span>
         </button>
 
+        {/* Mobile Hunter Status Trigger */}
+        <button
+          onClick={() => {
+            sfx.playRankAscent();
+            window.dispatchEvent(new CustomEvent("open-hunter-console"));
+          }}
+          className="flex md:hidden items-center gap-1 px-2.5 py-1.5 rounded-lg bg-system-gold/15 border border-system-gold/40 text-system-gold text-xs font-mono font-bold active:scale-95 transition-all cursor-pointer"
+          title="Open Hunter Status"
+        >
+          <Award className="w-3.5 h-3.5 text-system-gold" />
+          <span>STATUS</span>
+        </button>
+
         <a
           href="#chapter-3"
-          className="px-3.5 py-1.5 bg-system-accent hover:bg-white text-black font-orbitron text-xs font-bold tracking-wider rounded transition-all duration-200 shadow-system-glow active:scale-95"
+          className="px-3 py-1.5 bg-system-accent hover:bg-white text-black font-orbitron text-xs font-bold tracking-wider rounded transition-all duration-200 shadow-system-glow active:scale-95"
         >
           DUNGEON
         </a>

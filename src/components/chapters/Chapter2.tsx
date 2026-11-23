@@ -196,7 +196,7 @@ export function Chapter2() {
             >
               <div
                 ref={visualRef}
-                className={`relative w-full max-w-[480px] h-[480px] sm:h-[560px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer transition-transform duration-200 ${
+                className={`relative w-full max-w-[480px] h-[360px] sm:h-[520px] md:h-[620px] rounded-lg overflow-hidden border border-system-accent/40 shadow-system-glow will-change-transform group cursor-pointer transition-transform duration-200 ${
                   templeReverence ? "scale-95 ring-4 ring-red-600 animate-pulse" : ""
                 }`}
                 onClick={() => {

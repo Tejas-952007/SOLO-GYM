@@ -207,7 +207,7 @@ export function Chapter7() {
             glowColor={selectedRank.glowColor}
             className="lg:col-span-5 w-full flex justify-center"
           >
-            <div className="relative w-full h-[480px] sm:h-[580px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
+            <div className="relative w-full h-[360px] sm:h-[520px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
               <Image
                 src={selectedRank.image}
                 alt={`Hunter Rank ${selectedRank.rank}`}

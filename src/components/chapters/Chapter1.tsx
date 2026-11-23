@@ -221,7 +221,7 @@ export function Chapter1() {
           </div>
 
           {/* Gothic Solo Leveling Calligraphy Art Overlay */}
-          <div className="relative w-full max-w-[320px] sm:max-w-[420px] h-20 sm:h-24 -mb-2">
+          <div className="relative w-full max-w-[220px] sm:max-w-[420px] h-11 sm:h-20 -mb-2">
             <Image
               src="/assets/logo/solo-leveling-gothic-title.png"
               alt="Solo Leveling Gothic Calligraphy Title"
@@ -236,7 +236,7 @@ export function Chapter1() {
             <BladeSliceHeading
               as="h1"
               accentText="RANK E."
-              className="font-cinzel text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-system-text leading-none"
+              className="font-cinzel text-3xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-system-text leading-tight"
             >
               THIS IS YOU.
             </BladeSliceHeading>

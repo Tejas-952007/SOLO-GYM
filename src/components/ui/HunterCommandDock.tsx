@@ -61,17 +61,6 @@ export function HunterCommandDock({ onOpenCommand }: HunterCommandDockProps) {
           <span className="text-[9px] px-1 py-0.2 rounded bg-system-gold/20 text-system-gold border border-system-gold/40">C</span>
         </button>
       </div>
-
-      {/* Mobile: Non-Intrusive, Micro-FAB Trigger */}
-      <div className="fixed bottom-4 right-4 z-40 flex md:hidden">
-        <button
-          onClick={handleOpenConsole}
-          className="w-10 h-10 rounded-full bg-black/85 backdrop-blur-md border border-system-gold/50 text-system-gold flex items-center justify-center shadow-[0_0_15px_rgba(245,197,66,0.4)] active:scale-95 transition-all cursor-pointer"
-          aria-label="Open Hunter Status"
-        >
-          <Award className="w-5 h-5 text-system-gold" />
-        </button>
-      </div>
     </>
   );
 }
