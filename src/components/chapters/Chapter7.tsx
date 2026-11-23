@@ -102,7 +102,7 @@ export function Chapter7() {
   const [selectedRank, setSelectedRank] = useState<RankTier>(RANK_TIERS[0]);
   const [bonusXP, setBonusXP] = useState<number>(0);
   const [ascensionTab, setAscensionTab] = useState<'radar' | 'leaderboard' | 'plateau'>('radar');
-  const [mobileCh7Tab, setMobileCh7Tab] = useState<'rank' | 'radar' | 'leaderboard'>('rank');
+  const [mobileCh7Tab, setMobileCh7Tab] = useState<'avatar' | 'stats' | 'radar' | 'leaderboard'>('avatar');
 
   const handleRankSelect = (tier: RankTier) => {
     if (tier.rank === "S" || tier.rank === "A") {
@@ -170,19 +170,32 @@ export function Chapter7() {
         </div>
 
         {/* Mobile Segmented Module Switcher */}
-        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-xs w-full max-w-md mx-auto relative z-20">
+        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-[11px] w-full max-w-md mx-auto relative z-20">
           <button
             onClick={() => {
               sfx.playClick();
-              setMobileCh7Tab('rank');
+              setMobileCh7Tab('avatar');
             }}
             className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
-              mobileCh7Tab === 'rank'
+              mobileCh7Tab === 'avatar'
                 ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.5)]'
                 : 'text-system-muted hover:text-white'
             }`}
           >
-            👑 RANK
+            👑 HUNTER
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh7Tab('stats');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh7Tab === 'stats'
+                ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(59,130,246,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            📊 STATS
           </button>
           <button
             onClick={() => {
@@ -214,8 +227,8 @@ export function Chapter7() {
           </button>
         </div>
 
-        {/* Section 1: Rank Ascension Showcase (Desktop: Normal, Mobile: when rank tab active) */}
-        <div className={`space-y-8 ${mobileCh7Tab === 'rank' ? 'block' : 'hidden lg:block'}`}>
+        {/* Section 1: Rank Ascension Showcase (Desktop: Normal, Mobile: when avatar or stats tab active) */}
+        <div className={`space-y-8 ${mobileCh7Tab === 'avatar' || mobileCh7Tab === 'stats' ? 'block' : 'hidden lg:block'}`}>
         {/* Rank Selection Tabs */}
         <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 p-2 bg-system-panel/60 border border-system-accent/20 rounded-lg max-w-3xl mx-auto backdrop-blur-md">
           {RANK_TIERS.map((tier) => {
@@ -253,7 +266,7 @@ export function Chapter7() {
           <AnimeTiltCard
             maxTilt={10}
             glowColor={selectedRank.glowColor}
-            className="lg:col-span-5 w-full flex justify-center"
+            className={`lg:col-span-5 w-full flex justify-center ${mobileCh7Tab === 'avatar' ? 'block' : 'hidden lg:block'}`}
           >
             <div className="relative w-full h-[360px] sm:h-[520px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
               <Image
@@ -329,7 +342,7 @@ export function Chapter7() {
           <AnimeTiltCard
             maxTilt={6}
             glowColor={selectedRank.glowColor}
-            className="lg:col-span-7 w-full"
+            className={`lg:col-span-7 w-full ${mobileCh7Tab === 'stats' ? 'block' : 'hidden lg:block'}`}
           >
             <div className="system-window corner-brackets p-6 sm:p-8 rounded space-y-6">
               

@@ -333,7 +333,7 @@ export function Chapter2() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
 
               {/* Bottom Interactive HUD Status Bar */}
-              <div className="absolute bottom-3 left-3 right-3 z-20 font-mono text-[10px] sm:text-[11px] flex justify-between items-center text-system-cyan bg-black/85 px-2.5 sm:px-3 py-1.5 border border-system-cyan/40 rounded backdrop-blur-sm">
+              <div className="hidden sm:flex absolute bottom-3 left-3 right-3 z-20 font-mono text-[10px] sm:text-[11px] justify-between items-center text-system-cyan bg-black/85 px-2.5 sm:px-3 py-1.5 border border-system-cyan/40 rounded backdrop-blur-sm">
                 <span className="truncate">
                   {activeVisual === 0 && "[ ENTITY VISAGE: CARTENON GOD GRIN ]"}
                   {activeVisual === 1 && "[ HUNTER CONTRACT: WINDOW OF AWAKENING ]"}

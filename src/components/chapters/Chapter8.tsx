@@ -141,7 +141,7 @@ export function Chapter8() {
   const [coachTab, setCoachTab] = useState<'voice' | 'vision'>('voice');
   const [customQuery, setCustomQuery] = useState("");
   const [activeQuickMeal, setActiveQuickMeal] = useState<(typeof QUICK_MACROS)[0] | null>(null);
-  const [mobileCh8Tab, setMobileCh8Tab] = useState<'advisor' | 'dungeons' | 'telemetry'>('advisor');
+  const [mobileCh8Tab, setMobileCh8Tab] = useState<'advisor' | 'quickmeals' | 'dungeons' | 'telemetry'>('advisor');
 
   const currentGym = CITY_GYMS.find((g) => g.city === selectedCity) || CITY_GYMS[0];
 
@@ -191,7 +191,7 @@ export function Chapter8() {
         </div>
 
         {/* Mobile Segmented Module Switcher */}
-        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-xs w-full max-w-md mx-auto relative z-20">
+        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-[11px] w-full max-w-md mx-auto relative z-20">
           <button
             onClick={() => {
               sfx.playClick();
@@ -204,6 +204,19 @@ export function Chapter8() {
             }`}
           >
             🤖 ADVISOR
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh8Tab('quickmeals');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh8Tab === 'quickmeals'
+                ? 'bg-emerald-600 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            ⚡ MACROS
           </button>
           <button
             onClick={() => {
@@ -234,7 +247,7 @@ export function Chapter8() {
         </div>
 
         {/* Dynamic Simulated AI Chat Window with Scenario Selectors Wrapped in 3D AnimeTiltCard */}
-        <div className={mobileCh8Tab === 'advisor' ? 'block' : 'hidden lg:block'}>
+        <div className={mobileCh8Tab === 'advisor' || mobileCh8Tab === 'quickmeals' ? 'block' : 'hidden lg:block'}>
         <AnimeTiltCard
           maxTilt={6}
           glowColor="rgba(139, 92, 246, 0.35)"
@@ -251,8 +264,8 @@ export function Chapter8() {
             </span>
           </div>
 
-          {/* Scenario Buttons */}
-          <div className="space-y-2">
+          {/* Scenario Buttons (Advisor Tab) */}
+          <div className={`space-y-2 ${mobileCh8Tab === 'advisor' ? 'block' : 'hidden lg:block'}`}>
             <span className="font-mono text-[10px] text-system-muted uppercase tracking-wider flex items-center gap-1.5">
               <MessageSquare className="w-3 h-3 text-system-accent" />
               SELECT AN INDIAN LIFTER QUERY:
@@ -280,8 +293,8 @@ export function Chapter8() {
             </div>
           </div>
 
-          {/* Instant Desi Food Macro Chips */}
-          <div className="space-y-2 pt-1 border-t border-white/5">
+          {/* Instant Desi Food Macro Chips & Custom Form (Quickmeals Tab) */}
+          <div className={`space-y-3 pt-1 border-t border-white/5 ${mobileCh8Tab === 'quickmeals' ? 'block' : 'hidden lg:block'}`}>
             <span className="font-mono text-[10px] text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
               <Sparkles className="w-3 h-3" />
               INSTANT DESI MACRO CALCULATOR:
@@ -302,54 +315,54 @@ export function Chapter8() {
                 </button>
               ))}
             </div>
+
+            {/* Quick Meal Live Analysis Widget if selected */}
+            {activeQuickMeal && (
+              <div className="p-4 bg-emerald-950/30 border border-emerald-500/40 rounded-lg space-y-2 font-mono text-xs animate-fade-in shadow-lg">
+                <div className="flex items-center justify-between text-emerald-400 text-[11px]">
+                  <span className="font-bold">[ MEAL SCAN: {activeQuickMeal.label} ]</span>
+                  <span>LEUCINE: {activeQuickMeal.leucine}</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center p-2 bg-black/60 rounded border border-emerald-500/20">
+                  <div>
+                    <div className="text-[10px] text-system-muted">PROTEIN</div>
+                    <div className="text-sm font-bold text-emerald-400">{activeQuickMeal.p}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-system-muted">CARBS</div>
+                    <div className="text-sm font-bold text-blue-300">{activeQuickMeal.c}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-system-muted">FATS</div>
+                    <div className="text-sm font-bold text-amber-300">{activeQuickMeal.f}</div>
+                  </div>
+                </div>
+                <div className="text-[11px] text-system-text font-inter">
+                  <span className="text-emerald-400 font-mono font-bold">BIOAVAILABILITY RATING: </span>
+                  {activeQuickMeal.verdict}
+                </div>
+              </div>
+            )}
+
+            {/* Interactive Custom Meal Terminal Prompt */}
+            <form onSubmit={handleCustomSubmit} className="flex gap-2 pt-1">
+              <input
+                type="text"
+                value={customQuery}
+                onChange={(e) => setCustomQuery(e.target.value)}
+                placeholder="Ask AI Coach: e.g. '250g curd + 20g almonds pre-bed'..."
+                className="flex-1 bg-black/70 border border-white/15 focus:border-system-cyan/70 rounded px-3 py-2 text-xs font-mono text-system-text placeholder:text-system-muted/40 outline-none transition-colors"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 bg-system-cyan/20 hover:bg-system-cyan hover:text-black border border-system-cyan/50 text-system-cyan rounded text-xs font-mono font-bold tracking-wider transition-all cursor-pointer"
+              >
+                [ QUERY ]
+              </button>
+            </form>
           </div>
 
-          {/* Quick Meal Live Analysis Widget if selected */}
-          {activeQuickMeal && (
-            <div className="p-4 bg-emerald-950/30 border border-emerald-500/40 rounded-lg space-y-2 font-mono text-xs animate-fade-in shadow-lg">
-              <div className="flex items-center justify-between text-emerald-400 text-[11px]">
-                <span className="font-bold">[ MEAL SCAN: {activeQuickMeal.label} ]</span>
-                <span>LEUCINE: {activeQuickMeal.leucine}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2 text-center p-2 bg-black/60 rounded border border-emerald-500/20">
-                <div>
-                  <div className="text-[10px] text-system-muted">PROTEIN</div>
-                  <div className="text-sm font-bold text-emerald-400">{activeQuickMeal.p}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-system-muted">CARBS</div>
-                  <div className="text-sm font-bold text-blue-300">{activeQuickMeal.c}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-system-muted">FATS</div>
-                  <div className="text-sm font-bold text-amber-300">{activeQuickMeal.f}</div>
-                </div>
-              </div>
-              <div className="text-[11px] text-system-text font-inter">
-                <span className="text-emerald-400 font-mono font-bold">BIOAVAILABILITY RATING: </span>
-                {activeQuickMeal.verdict}
-              </div>
-            </div>
-          )}
-
-          {/* Interactive Custom Meal Terminal Prompt */}
-          <form onSubmit={handleCustomSubmit} className="flex gap-2 pt-1">
-            <input
-              type="text"
-              value={customQuery}
-              onChange={(e) => setCustomQuery(e.target.value)}
-              placeholder="Ask AI Coach: e.g. '250g curd + 20g almonds pre-bed'..."
-              className="flex-1 bg-black/70 border border-white/15 focus:border-system-cyan/70 rounded px-3 py-2 text-xs font-mono text-system-text placeholder:text-system-muted/40 outline-none transition-colors"
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-system-cyan/20 hover:bg-system-cyan hover:text-black border border-system-cyan/50 text-system-cyan rounded text-xs font-mono font-bold tracking-wider transition-all cursor-pointer"
-            >
-              [ QUERY ]
-            </button>
-          </form>
-
-          <div className="space-y-4 pt-2">
+          <div className={`space-y-4 pt-2 ${mobileCh8Tab === 'advisor' ? 'block' : 'hidden lg:block'}`}>
             {/* User Message */}
             <div className="flex items-start gap-3 justify-end">
               <div className="max-w-md bg-system-panel/90 border border-system-accent/30 p-4 rounded-lg rounded-tr-none text-right space-y-1">

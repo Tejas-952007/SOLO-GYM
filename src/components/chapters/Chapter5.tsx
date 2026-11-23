@@ -70,7 +70,7 @@ export function Chapter5() {
   const [weightKg, setWeightKg] = useState<number>(68);
   const [goal, setGoal] = useState<"bulk" | "cut">("bulk");
   const [nutritionTab, setNutritionTab] = useState<'combinator' | 'budget' | 'prep' | 'brew' | 'swapper' | 'metabolic'>('combinator');
-  const [mobileCh5Tab, setMobileCh5Tab] = useState<'plates' | 'calibrator' | 'combinator'>('plates');
+  const [mobileCh5Tab, setMobileCh5Tab] = useState<'plates' | 'staples' | 'calibrator' | 'combinator'>('plates');
 
   // Interactive Plate Builder Tray
   const [plateItems, setPlateItems] = useState<{ name: string; protein: number; cal: number }[]>([
@@ -123,7 +123,7 @@ export function Chapter5() {
         </div>
 
         {/* Mobile Segmented Nutrition Module Switcher */}
-        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-xs w-full max-w-md mx-auto relative z-20">
+        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-[11px] w-full max-w-md mx-auto relative z-20">
           <button
             onClick={() => {
               sfx.playClick();
@@ -135,7 +135,20 @@ export function Chapter5() {
                 : 'text-system-muted hover:text-white'
             }`}
           >
-            🍱 4 PLATES
+            🍱 PLATES
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh5Tab('staples');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh5Tab === 'staples'
+                ? 'bg-yellow-500 text-black shadow-[0_0_12px_rgba(245,197,66,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🥗 STAPLES
           </button>
           <button
             onClick={() => {
@@ -268,11 +281,10 @@ export function Chapter5() {
                     setGoal("bulk");
                     spawnCombatNumber("BULK PROTOCOL: 2.0g/kg", undefined, undefined, "mana");
                   }}
-                  className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
-                    goal === "bulk"
-                      ? "bg-system-accent text-white"
-                      : "bg-system-panel border border-white/10 text-system-muted"
-                  }`}
+                  className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${goal === "bulk"
+                    ? "bg-system-accent text-white"
+                    : "bg-system-panel border border-white/10 text-system-muted"
+                    }`}
                 >
                   BULK (2.0g/kg)
                 </button>
@@ -282,11 +294,10 @@ export function Chapter5() {
                     setGoal("cut");
                     spawnCombatNumber("CUT PROTOCOL: 1.6g/kg", undefined, undefined, "stat");
                   }}
-                  className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
-                    goal === "cut"
-                      ? "bg-system-gold text-black"
-                      : "bg-system-panel border border-white/10 text-system-muted"
-                  }`}
+                  className={`px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${goal === "cut"
+                    ? "bg-system-gold text-black"
+                    : "bg-system-panel border border-white/10 text-system-muted"
+                    }`}
                 >
                   CUT (1.6g/kg)
                 </button>
@@ -353,7 +364,7 @@ export function Chapter5() {
           {/* Active Dish Laser Scanning HUD Box */}
           <div className="system-window corner-brackets p-4 sm:p-5 rounded-lg border border-system-cyan/40 bg-black/85 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-pulse" />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
               <div className="md:col-span-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <div className="w-2.5 h-2.5 rounded-full bg-system-cyan animate-ping shrink-0" />
@@ -446,11 +457,10 @@ export function Chapter5() {
                   spawnCombatNumber(`${item.protein}! [LEUCINE SCAN]`, undefined, undefined, "stat");
                 }}
                 onMouseEnter={() => sfx.playHover()}
-                className={`system-window corner-brackets p-4 rounded-lg cursor-pointer border transition-all duration-300 ${
-                  activeFood === item.id
-                    ? "border-system-cyan shadow-[0_0_20px_rgba(56,189,248,0.5)] scale-[1.02]"
-                    : "border-system-accent/20 hover:border-system-accent/50"
-                }`}
+                className={`system-window corner-brackets p-4 rounded-lg cursor-pointer border transition-all duration-300 ${activeFood === item.id
+                  ? "border-system-cyan shadow-[0_0_20px_rgba(56,189,248,0.5)] scale-[1.02]"
+                  : "border-system-accent/20 hover:border-system-accent/50"
+                  }`}
               >
                 <div className="relative h-44 w-full rounded overflow-hidden mb-3 bg-black/80">
                   <Image
@@ -484,8 +494,10 @@ export function Chapter5() {
             ))}
           </div>
         </div>
+        </div>
 
-        {/* Indian Staples Quick Ratio Matrix & Interactive Plate Builder */}
+        {/* Section 2.5: Indian Staples Quick Ratio Matrix & Interactive Plate Builder (Desktop: Normal, Mobile: when staples tab active) */}
+        <div className={`space-y-6 ${mobileCh5Tab === 'staples' ? 'block' : 'hidden lg:block'}`}>
         <div className="system-window corner-brackets p-6 rounded-lg space-y-5">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div className="font-mono text-xs uppercase tracking-wide text-system-accent flex items-center gap-2">
@@ -553,6 +565,7 @@ export function Chapter5() {
             </div>
           </div>
         </div>
+        </div>
 
         {/* Section 3: Unified Desi Nutrition Grimoire Terminal (Desktop: Normal, Mobile: when combinator tab active) */}
         <div className={`w-full mt-10 font-mono ${mobileCh5Tab === 'combinator' ? 'block' : 'hidden lg:block'}`}>
@@ -573,11 +586,10 @@ export function Chapter5() {
                     setNutritionTab('combinator');
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                    nutritionTab === 'combinator'
-                      ? 'bg-emerald-600 text-white border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
-                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30'
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${nutritionTab === 'combinator'
+                    ? 'bg-emerald-600 text-white border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30'
+                    }`}
                 >
                   🍱 MEAL STACK
                 </button>
@@ -588,11 +600,10 @@ export function Chapter5() {
                     setNutritionTab('budget');
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                    nutritionTab === 'budget'
-                      ? 'bg-emerald-600 text-white border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
-                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30'
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${nutritionTab === 'budget'
+                    ? 'bg-emerald-600 text-white border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30'
+                    }`}
                 >
                   💰 RUPEE LEADERBOARD
                 </button>
@@ -603,11 +614,10 @@ export function Chapter5() {
                     setNutritionTab('prep');
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                    nutritionTab === 'prep'
-                      ? 'bg-emerald-600 text-white border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
-                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30'
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${nutritionTab === 'prep'
+                    ? 'bg-emerald-600 text-white border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30'
+                    }`}
                 >
                   🥗 SUNDAY BATCH PREP
                 </button>
@@ -618,11 +628,10 @@ export function Chapter5() {
                     setNutritionTab('brew');
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                    nutritionTab === 'brew'
-                      ? 'bg-amber-600 text-white border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
-                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-amber-500/30'
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${nutritionTab === 'brew'
+                    ? 'bg-amber-600 text-white border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-amber-500/30'
+                    }`}
                 >
                   ☕ PRE-WORKOUT
                 </button>
@@ -633,11 +642,10 @@ export function Chapter5() {
                     setNutritionTab('swapper');
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                    nutritionTab === 'swapper'
-                      ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
-                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${nutritionTab === 'swapper'
+                    ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
+                    }`}
                 >
                   🔄 MACRO SWAPPER
                 </button>
@@ -648,11 +656,10 @@ export function Chapter5() {
                     setNutritionTab('metabolic');
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                    nutritionTab === 'metabolic'
-                      ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                      : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${nutritionTab === 'metabolic'
+                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                    }`}
                 >
                   ⚡ REVERSE DIETING
                 </button>
@@ -670,7 +677,6 @@ export function Chapter5() {
             </div>
           </div>
         </div>
-      </div>
     </section>
   );
 }

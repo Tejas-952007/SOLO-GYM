@@ -54,6 +54,8 @@ export function Chapter4() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [committedCards, setCommittedCards] = useState<Record<number, boolean>>({});
   const [disciplineTab, setDisciplineTab] = useState<'streak' | 'hydration' | 'rpe' | 'synthwave'>('streak');
+  const [mobileCh4Tab, setMobileCh4Tab] = useState<'principles' | 'habits'>('principles');
+  const [activePrinciple, setActivePrinciple] = useState<number>(1);
 
   const toggleCommitment = (id: number, title: string) => {
     setCommittedCards((prev) => {
@@ -125,11 +127,126 @@ export function Chapter4() {
           </p>
         </div>
 
-        {/* Desktop: Horizontal Scrolling Track; Mobile: Vertical Cards */}
-        <div className="relative w-full overflow-visible">
+        {/* Mobile Segmented Module Switcher */}
+        <div className="flex md:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-[11px] w-full max-w-md mx-auto relative z-20">
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh4Tab('principles');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh4Tab === 'principles'
+                ? 'bg-blue-600 text-white shadow-[0_0_12px_rgba(59,130,246,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            📜 3 PRINCIPLES
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh4Tab('habits');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh4Tab === 'habits'
+                ? 'bg-amber-600 text-white shadow-[0_0_12px_rgba(245,158,11,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            ⚡ HABIT PROTOCOL
+          </button>
+        </div>
+
+        {/* Section 1: Mentor Principles (Desktop: Horizontal Scroll Track; Mobile: Single Active Card) */}
+        <div className={`relative w-full ${mobileCh4Tab === 'principles' ? 'block' : 'hidden md:block'}`}>
+          {/* Mobile Principle Selector Pills */}
+          <div className="flex md:hidden items-center justify-between gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-lg mb-4 font-mono text-[11px]">
+            {MENTOR_CARDS.map((card) => (
+              <button
+                key={card.id}
+                onClick={() => {
+                  sfx.playClick();
+                  setActivePrinciple(card.id);
+                }}
+                className={`flex-1 py-1.5 rounded font-bold transition-all text-center truncate ${
+                  activePrinciple === card.id
+                    ? "bg-system-accent text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]"
+                    : "text-system-muted hover:text-white"
+                }`}
+              >
+                0{card.id} {card.id === 1 ? "BASICS" : card.id === 2 ? "INTENSITY" : "COACH"}
+              </button>
+            ))}
+          </div>
+
+          {/* Mobile Single Active Card */}
+          <div className="block md:hidden">
+            {(() => {
+              const card = MENTOR_CARDS.find((c) => c.id === activePrinciple) || MENTOR_CARDS[0];
+              return (
+                <AnimeTiltCard
+                  maxTilt={6}
+                  glowColor="rgba(139, 92, 246, 0.35)"
+                  className="w-full"
+                >
+                  <div className="w-full system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 shadow-system-glow flex flex-col">
+                    <div className="relative w-full h-[220px] overflow-hidden bg-black">
+                      <Image
+                        src={card.image}
+                        alt={card.title}
+                        fill
+                        priority
+                        sizes="100vw"
+                        className={`object-cover filter contrast-115 brightness-105 ${
+                          card.id === 3 ? "object-[center_25%]" : "object-center"
+                        }`}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#120F24] via-transparent to-transparent pointer-events-none" />
+                      <div className="absolute top-3 left-3 bg-black/80 border border-system-accent/40 px-2.5 py-1 rounded text-[10px] font-mono text-system-cyan">
+                        {card.tag}
+                      </div>
+                    </div>
+                    <div className="p-5 space-y-3">
+                      <div className="space-y-1.5">
+                        <h3 className="font-cinzel text-lg font-bold uppercase text-system-text tracking-wide leading-tight">
+                          {card.title}
+                        </h3>
+                        <div className="font-mono text-xs text-system-gold italic">
+                          {card.quote}
+                        </div>
+                        <p className="font-inter text-xs text-system-muted leading-relaxed">
+                          {card.desc}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => toggleCommitment(card.id, card.title)}
+                        className={`w-full py-2 px-3 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                          committedCards[card.id]
+                            ? "bg-emerald-950/60 border border-emerald-500 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.3)]"
+                            : "bg-system-accent/15 hover:bg-system-accent/30 border border-system-accent/40 text-system-text"
+                        }`}
+                      >
+                        {committedCards[card.id] ? (
+                          <>
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>[ PROTOCOL COMMITTED ]</span>
+                          </>
+                        ) : (
+                          <span>[ ACCEPT DISCIPLINE CODE ]</span>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </AnimeTiltCard>
+              );
+            })()}
+          </div>
+
+          {/* Desktop Horizontal Scrolling Track */}
+          <div className="hidden md:block relative w-full overflow-visible">
           <div
             ref={trackRef}
-            className="flex flex-col md:flex-row gap-6 md:gap-8 will-change-transform max-w-6xl mx-auto md:max-w-none md:w-max md:px-8"
+            className="flex flex-row gap-6 md:gap-8 will-change-transform md:w-max md:px-8"
           >
             {MENTOR_CARDS.map((card) => (
               <AnimeTiltCard
@@ -205,9 +322,10 @@ export function Chapter4() {
             ))}
           </div>
         </div>
+        </div>
 
         {/* Hunter Daily Habit & Discipline Terminal */}
-        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10 font-mono">
+        <div className={`w-full max-w-6xl mx-auto mt-10 relative z-10 font-mono ${mobileCh4Tab === 'habits' ? 'block' : 'hidden md:block'}`}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse" />

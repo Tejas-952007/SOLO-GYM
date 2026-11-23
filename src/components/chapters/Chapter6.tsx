@@ -19,6 +19,8 @@ export function Chapter6() {
   const [selectedPhysique, setSelectedPhysique] = useState<"berserk" | "monarch">("berserk");
   const [showAnatomyScan, setShowAnatomyScan] = useState(false);
   const [recoveryTab, setRecoveryTab] = useState<'anatomy' | 'sleep' | 'deload'>('anatomy');
+  const [mobileCh6Tab, setMobileCh6Tab] = useState<'threats' | 'physique' | 'recovery'>('threats');
+  const [activeThreat, setActiveThreat] = useState<number>(0);
 
   const toggleAnatomyScan = () => {
     sfx.playBladeSlash();
@@ -83,6 +85,75 @@ export function Chapter6() {
           </p>
         </div>
 
+        {/* Mobile Segmented Module Switcher */}
+        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-[11px] w-full max-w-md mx-auto relative z-20">
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh6Tab('threats');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh6Tab === 'threats'
+                ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            ⚔️ THREATS
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh6Tab('physique');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh6Tab === 'physique'
+                ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            ⚡ ASCENDED BODY
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh6Tab('recovery');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh6Tab === 'recovery'
+                ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🧬 RECOVERY LAB
+          </button>
+        </div>
+
+        {/* Section 1: 3 Pillars of Dungeon Threats */}
+        <div className={`space-y-4 ${mobileCh6Tab === 'threats' ? 'block' : 'hidden lg:block'}`}>
+          {/* Mobile Threat Selector Pills */}
+          <div className="flex lg:hidden items-center justify-between gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-lg mb-3 font-mono text-[11px]">
+            {[
+              { id: 0, label: "⛓️ CHAINS" },
+              { id: 1, label: "🧪 CHAMBER" },
+              { id: 2, label: "⚡ BERSERK" },
+            ].map((th) => (
+              <button
+                key={th.id}
+                onClick={() => {
+                  sfx.playClick();
+                  setActiveThreat(th.id);
+                }}
+                className={`flex-1 py-1.5 rounded font-bold transition-all text-center truncate ${
+                  activeThreat === th.id
+                    ? "bg-red-600 text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]"
+                    : "text-system-muted hover:text-white"
+                }`}
+              >
+                {th.label}
+              </button>
+            ))}
+          </div>
+
         {/* 3 Pillars of Dungeon Threats Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
           
@@ -90,7 +161,7 @@ export function Chapter6() {
           <AnimeTiltCard
             maxTilt={8}
             glowColor="rgba(239, 68, 68, 0.35)"
-            className="w-full flex flex-col"
+            className={`w-full flex-col ${activeThreat === 0 ? 'flex' : 'hidden lg:flex'}`}
           >
             <div
               ref={chainCardRef}
@@ -160,7 +231,7 @@ export function Chapter6() {
           <AnimeTiltCard
             maxTilt={8}
             glowColor="rgba(139, 92, 246, 0.35)"
-            className="w-full flex flex-col"
+            className={`w-full flex-col ${activeThreat === 1 ? 'flex' : 'hidden lg:flex'}`}
           >
             <div
               onMouseEnter={() => sfx.playHover()}
@@ -229,7 +300,7 @@ export function Chapter6() {
           <AnimeTiltCard
             maxTilt={8}
             glowColor="rgba(245, 158, 11, 0.35)"
-            className="w-full flex flex-col"
+            className={`w-full flex-col ${activeThreat === 2 ? 'flex' : 'hidden lg:flex'}`}
           >
             <div
               onMouseEnter={() => sfx.playHover()}
@@ -295,8 +366,10 @@ export function Chapter6() {
         </AnimeTiltCard>
 
         </div>
+        </div>
 
-        {/* The Body You Are Building - Full Width Physique Reveal Wrapped in 3D AnimeTiltCard */}
+        {/* The Body You Are Building - Full Width Physique Reveal (Desktop: Normal, Mobile: when physique tab active) */}
+        <div className={`w-full ${mobileCh6Tab === 'physique' ? 'block' : 'hidden lg:block'}`}>
         <AnimeTiltCard
           maxTilt={6}
           glowColor={selectedPhysique === "berserk" ? "rgba(239, 68, 68, 0.35)" : "rgba(56, 189, 248, 0.35)"}
@@ -443,9 +516,10 @@ export function Chapter6() {
           </div>
         </div>
         </AnimeTiltCard>
+        </div>
 
-        {/* Bio-Recovery & Muscle Hypertrophy Terminal */}
-        <div className="w-full max-w-6xl mx-auto mt-10 font-mono">
+        {/* Bio-Recovery & Muscle Hypertrophy Terminal (Desktop: Normal, Mobile: when recovery tab active) */}
+        <div className={`w-full max-w-6xl mx-auto mt-10 font-mono ${mobileCh6Tab === 'recovery' ? 'block' : 'hidden lg:block'}`}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse" />

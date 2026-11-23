@@ -215,7 +215,7 @@ export function Chapter1() {
         <div ref={leftColRef} className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           
           {/* System Protocol Tag */}
-          <div className="flex items-center gap-2.5 px-3 py-1 bg-black/70 border border-system-cyan/40 rounded text-[11px] sm:text-xs font-mono text-system-cyan uppercase tracking-widest shadow-[0_0_15px_rgba(56,189,248,0.25)]">
+          <div className="hidden sm:flex items-center gap-2.5 px-3 py-1 bg-black/70 border border-system-cyan/40 rounded text-[11px] sm:text-xs font-mono text-system-cyan uppercase tracking-widest shadow-[0_0_15px_rgba(56,189,248,0.25)]">
             <Flame className="w-3.5 h-3.5 text-system-cyan animate-pulse" />
             <span>[ SYSTEM NOTICE // AWAKENING PROTOCOL 00 ]</span>
           </div>

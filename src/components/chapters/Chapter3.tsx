@@ -69,7 +69,7 @@ export function Chapter3() {
     "[SYSTEM EVENT] Dungeon Boss: Titan of Inertia has appeared on Floor 04!",
   ]);
   const [shakeCrit, setShakeCrit] = useState(false);
-  const [mobileCh3Tab, setMobileCh3Tab] = useState<'gauntlet' | 'boss'>('gauntlet');
+  const [mobileCh3Tab, setMobileCh3Tab] = useState<'gauntlet' | 'boss' | 'armory'>('gauntlet');
 
   const strikeBoss = (type: "heavy" | "protein" | "shadow") => {
     if (bossHp <= 0) return;
@@ -245,8 +245,8 @@ export function Chapter3() {
           </div>
         </div>
 
-        {/* Mobile Segmented Gauntlet vs Boss Switcher */}
-        <div className="flex md:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-xs w-full max-w-md mx-auto relative z-20">
+        {/* Mobile Segmented Gauntlet vs Boss vs Armory Switcher */}
+        <div className="flex md:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-[11px] w-full max-w-md mx-auto relative z-20">
           <button
             onClick={() => {
               sfx.playClick();
@@ -258,7 +258,7 @@ export function Chapter3() {
                 : 'text-system-muted hover:text-white'
             }`}
           >
-            🏰 GAUNTLET FLOORS
+            🏰 FLOORS
           </button>
           <button
             onClick={() => {
@@ -272,6 +272,20 @@ export function Chapter3() {
             }`}
           >
             ⚔️ BOSS RAID
+          </button>
+          <button
+            onClick={() => {
+              sfx.playBladeSlash();
+              setMobileCh3Tab('armory');
+              setTacticalTab('armory');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+              mobileCh3Tab === 'armory'
+                ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🗡️ 3D WEAPONS
           </button>
         </div>
 
@@ -501,7 +515,7 @@ export function Chapter3() {
         </div>
 
         {/* Tactical Dungeon Terminal & 3D Shadow Armory Switcher */}
-        <div className="relative z-20 w-full max-w-6xl mx-auto my-6 font-mono">
+        <div className={`relative z-20 w-full max-w-6xl mx-auto my-6 font-mono ${mobileCh3Tab === 'armory' ? 'block' : 'hidden md:block'}`}>
           <div className="flex items-center justify-between border-b border-system-accent/25 pb-3 mb-6 flex-wrap gap-3">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-system-cyan animate-pulse" />
