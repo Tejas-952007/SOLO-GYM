@@ -350,6 +350,7 @@ export function Chapter5() {
                     src={item.image}
                     alt={item.name}
                     fill
+                    loading="eager"
                     sizes="(max-width: 768px) 100vw, 25vw"
                     className="object-cover object-center filter brightness-95 contrast-105"
                   />
