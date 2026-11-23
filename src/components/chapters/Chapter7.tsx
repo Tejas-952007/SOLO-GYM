@@ -212,6 +212,7 @@ export function Chapter7() {
                 src={selectedRank.image}
                 alt={`Hunter Rank ${selectedRank.rank}`}
                 fill
+                priority
                 className={`object-cover transition-all duration-700 filter contrast-125 brightness-110 ${
                   selectedRank.rank === "E" || selectedRank.rank === "D"
                     ? "object-[center_32%]"

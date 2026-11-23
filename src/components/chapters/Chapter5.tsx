@@ -130,16 +130,17 @@ export function Chapter5() {
           <div className="relative system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 p-6 sm:p-10 shadow-system-glow">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               {/* Visual with Unified Dark Overlay */}
-              <div className="lg:col-span-7 relative h-[260px] sm:h-[340px] rounded-lg overflow-hidden border border-system-accent/20">
+              <div className="lg:col-span-7 relative h-[280px] sm:h-[360px] rounded-xl overflow-hidden border border-system-accent/20 bg-black/60 shadow-2xl">
                 <Image
                   src="/assets/05-nutrition/needs-carbs.webp"
                   alt="Fueling with Complex Carbohydrates"
                   fill
+                  priority
                   sizes="(max-width: 1024px) 100vw, 650px"
                   className="object-cover object-center filter contrast-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#120F24] via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-4 left-4 bg-black/85 border border-system-cyan/40 px-3 py-1 rounded text-xs font-mono text-system-cyan backdrop-blur-sm">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
+                <div className="absolute top-4 left-4 bg-black/85 border border-system-cyan/40 px-3 py-1 rounded text-xs font-mono text-system-cyan backdrop-blur-sm shadow-md">
                   [ RULE: CARBS ARE NOT THE ENEMY ]
                 </div>
               </div>

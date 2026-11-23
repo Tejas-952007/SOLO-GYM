@@ -15,7 +15,7 @@ const GLYPHS = "█▓▒░#$*<>{}[]/\\_ΔΨΩЖ⚔⚡";
 export function DecodeText({
   text,
   className = "",
-  speed = 30,
+  speed = 15,
   triggerOnView = true,
   repeatOnHover = true,
 }: DecodeTextProps) {
@@ -44,7 +44,7 @@ export function DecodeText({
           .join("")
       );
 
-      iteration += 1 / 2;
+      iteration += 1.5;
 
       if (iteration >= maxIterations) {
         clearInterval(interval);

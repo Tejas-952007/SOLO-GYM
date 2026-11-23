@@ -195,7 +195,7 @@ export function Chapter8() {
           glowColor="rgba(139, 92, 246, 0.35)"
           className="max-w-3xl mx-auto w-full"
         >
-          <div className="w-full system-window corner-brackets p-6 sm:p-8 rounded relative space-y-6">
+          <div className="w-full system-window corner-brackets p-4 sm:p-6 md:p-8 rounded relative space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-system-accent/20 pb-3">
             <div className="flex items-center gap-2 font-mono text-xs text-system-text">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
