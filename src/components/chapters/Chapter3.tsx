@@ -222,8 +222,8 @@ export function Chapter3() {
             </BladeSliceHeading>
           </div>
 
-          {/* Interactive Floor Fast-Travel Bar */}
-          <div className="flex flex-wrap items-center gap-2">
+          {/* Interactive Floor Fast-Travel Bar (Desktop/Tablet) */}
+          <div className="hidden md:flex flex-wrap items-center gap-2">
             {STAGES.map((stg, i) => (
               <button
                 key={stg.id}
@@ -350,10 +350,31 @@ export function Chapter3() {
             </div>
           </div>
 
-          {/* Mobile Active Floor Stage (< 768px: Single interactive card) */}
-          <div className="block md:hidden w-full">
-            <div className="system-window corner-brackets rounded-lg overflow-hidden border border-system-accent/30 shadow-system-glow">
-              <div className="relative w-full h-56 overflow-hidden">
+          {/* Mobile Active Floor Stage (< 768px: Single interactive card with floor selector) */}
+          <div className="block md:hidden w-full space-y-3">
+            {/* Mobile Floor Tabs */}
+            <div className="flex items-center justify-between gap-1 p-1 bg-black/70 border border-system-accent/30 rounded-xl font-mono text-[11px]">
+              {STAGES.map((stg, i) => (
+                <button
+                  key={stg.id}
+                  onClick={() => {
+                    if (i === 3) sfx.playRankUp();
+                    else sfx.playClick();
+                    setActiveStage(i);
+                  }}
+                  className={`flex-1 py-1.5 rounded-lg font-bold transition-all text-center ${
+                    activeStage === i
+                      ? "bg-system-accent text-white shadow-[0_0_12px_rgba(139,92,246,0.6)]"
+                      : "text-system-muted hover:text-white"
+                  }`}
+                >
+                  F0{i + 1}
+                </button>
+              ))}
+            </div>
+
+            <div className="system-window corner-brackets rounded-xl overflow-hidden border border-system-accent/40 shadow-system-glow bg-black/80">
+              <div className="relative w-full h-64 overflow-hidden">
                 <Image
                   src={STAGES[activeStage].image}
                   alt={STAGES[activeStage].floor}
@@ -367,12 +388,12 @@ export function Chapter3() {
                   }`}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/85 border border-purple-500/40 text-purple-300 font-mono text-[10px] font-bold">
+                <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded bg-black/85 border border-purple-500/40 text-purple-300 font-mono text-[10px] font-bold shadow-md">
                   {STAGES[activeStage].counter}
                 </div>
               </div>
               <div className="p-4 space-y-1">
-                <div className="font-orbitron text-sm font-bold text-system-text uppercase">
+                <div className="font-orbitron text-base font-bold text-system-text uppercase">
                   {STAGES[activeStage].floor}
                 </div>
                 <div className="font-inter text-xs text-system-muted">

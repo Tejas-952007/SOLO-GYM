@@ -230,7 +230,7 @@ export function Chapter7() {
         {/* Section 1: Rank Ascension Showcase (Desktop: Normal, Mobile: when avatar or stats tab active) */}
         <div className={`space-y-8 ${mobileCh7Tab === 'avatar' || mobileCh7Tab === 'stats' ? 'block' : 'hidden lg:block'}`}>
         {/* Rank Selection Tabs */}
-        <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 p-2 bg-system-panel/60 border border-system-accent/20 rounded-lg max-w-3xl mx-auto backdrop-blur-md">
+        <div className="grid grid-cols-6 gap-1 p-1 bg-black/60 border border-system-accent/30 rounded-xl sm:flex sm:flex-wrap sm:justify-center sm:items-center sm:gap-4 sm:p-2 sm:bg-system-panel/60 sm:border-system-accent/20 sm:rounded-lg max-w-3xl mx-auto backdrop-blur-md">
           {RANK_TIERS.map((tier) => {
             const isSelected = selectedRank.rank === tier.rank;
             const isGold = tier.rank === "S";
@@ -240,7 +240,7 @@ export function Chapter7() {
                 key={tier.rank}
                 onClick={() => handleRankSelect(tier)}
                 onMouseEnter={() => sfx.playHover()}
-                className={`relative px-4 sm:px-6 py-2.5 rounded transition-all duration-300 font-cinzel text-sm sm:text-base font-bold flex items-center gap-2 ${
+                className={`relative py-2 sm:px-6 sm:py-2.5 rounded-lg transition-all duration-300 font-cinzel text-xs sm:text-base font-bold flex items-center justify-center gap-1.5 ${
                   isSelected
                     ? isGold
                       ? "bg-system-gold text-black shadow-[0_0_20px_rgba(245,197,66,0.6)]"
@@ -248,9 +248,10 @@ export function Chapter7() {
                     : "text-system-muted hover:text-system-text hover:bg-system-accent/10"
                 }`}
               >
-                <span>RANK {tier.rank}</span>
+                <span className="hidden sm:inline">RANK </span>
+                <span>{tier.rank}</span>
                 {isGold && (
-                  <span className="text-[10px] px-1 py-0.2 rounded font-mono bg-black text-system-gold uppercase">
+                  <span className="hidden sm:inline text-[10px] px-1 py-0.2 rounded font-mono bg-black text-system-gold uppercase">
                     MAX
                   </span>
                 )}
@@ -268,7 +269,7 @@ export function Chapter7() {
             glowColor={selectedRank.glowColor}
             className={`lg:col-span-5 w-full flex justify-center ${mobileCh7Tab === 'avatar' ? 'block' : 'hidden lg:block'}`}
           >
-            <div className="relative w-full h-[360px] sm:h-[520px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
+            <div className="relative w-full h-[460px] sm:h-[520px] lg:h-[660px] rounded-lg overflow-hidden border border-system-accent/40 bg-black/90 flex items-center justify-center group shadow-2xl">
               <Image
                 src={selectedRank.image}
                 alt={`Hunter Rank ${selectedRank.rank}`}

@@ -19,8 +19,7 @@ export function Chapter6() {
   const [selectedPhysique, setSelectedPhysique] = useState<"berserk" | "monarch">("berserk");
   const [showAnatomyScan, setShowAnatomyScan] = useState(false);
   const [recoveryTab, setRecoveryTab] = useState<'anatomy' | 'sleep' | 'deload'>('anatomy');
-  const [mobileCh6Tab, setMobileCh6Tab] = useState<'threats' | 'physique' | 'recovery'>('threats');
-  const [activeThreat, setActiveThreat] = useState<number>(0);
+  const [mobileCh6Tab, setMobileCh6Tab] = useState<'chains' | 'chamber' | 'berserk' | 'physique' | 'recovery'>('chains');
 
   const toggleAnatomyScan = () => {
     sfx.playBladeSlash();
@@ -85,75 +84,77 @@ export function Chapter6() {
           </p>
         </div>
 
-        {/* Mobile Segmented Module Switcher */}
-        <div className="flex lg:hidden items-center justify-center gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-xl my-4 font-mono text-[11px] w-full max-w-md mx-auto relative z-20">
+        {/* Mobile Single-Tier Module Switcher (Absolute Zero Clutter) */}
+        <div className="flex lg:hidden items-center justify-between gap-1 p-1 bg-black/70 border border-system-accent/30 rounded-xl my-4 font-mono text-[11px] w-full max-w-lg mx-auto relative z-20">
           <button
             onClick={() => {
               sfx.playClick();
-              setMobileCh6Tab('threats');
+              setMobileCh6Tab('chains');
             }}
-            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
-              mobileCh6Tab === 'threats'
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center truncate ${
+              mobileCh6Tab === 'chains'
                 ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.5)]'
                 : 'text-system-muted hover:text-white'
             }`}
           >
-            ⚔️ THREATS
+            ⛓️ CHAINS
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh6Tab('chamber');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center truncate ${
+              mobileCh6Tab === 'chamber'
+                ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            🧪 CHAMBER
+          </button>
+          <button
+            onClick={() => {
+              sfx.playClick();
+              setMobileCh6Tab('berserk');
+            }}
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center truncate ${
+              mobileCh6Tab === 'berserk'
+                ? 'bg-amber-600 text-white shadow-[0_0_12px_rgba(245,158,11,0.5)]'
+                : 'text-system-muted hover:text-white'
+            }`}
+          >
+            ⚡ BERSERK
           </button>
           <button
             onClick={() => {
               sfx.playClick();
               setMobileCh6Tab('physique');
             }}
-            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center truncate ${
               mobileCh6Tab === 'physique'
                 ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
                 : 'text-system-muted hover:text-white'
             }`}
           >
-            ⚡ ASCENDED BODY
+            ⚡ BODY
           </button>
           <button
             onClick={() => {
               sfx.playClick();
               setMobileCh6Tab('recovery');
             }}
-            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center ${
+            className={`flex-1 py-2 rounded-lg font-bold transition-all text-center truncate ${
               mobileCh6Tab === 'recovery'
-                ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(139,92,246,0.5)]'
+                ? 'bg-emerald-600 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]'
                 : 'text-system-muted hover:text-white'
             }`}
           >
-            🧬 RECOVERY LAB
+            🧬 RECOVERY
           </button>
         </div>
 
         {/* Section 1: 3 Pillars of Dungeon Threats */}
-        <div className={`space-y-4 ${mobileCh6Tab === 'threats' ? 'block' : 'hidden lg:block'}`}>
-          {/* Mobile Threat Selector Pills */}
-          <div className="flex lg:hidden items-center justify-between gap-1.5 p-1 bg-black/60 border border-system-accent/20 rounded-lg mb-3 font-mono text-[11px]">
-            {[
-              { id: 0, label: "⛓️ CHAINS" },
-              { id: 1, label: "🧪 CHAMBER" },
-              { id: 2, label: "⚡ BERSERK" },
-            ].map((th) => (
-              <button
-                key={th.id}
-                onClick={() => {
-                  sfx.playClick();
-                  setActiveThreat(th.id);
-                }}
-                className={`flex-1 py-1.5 rounded font-bold transition-all text-center truncate ${
-                  activeThreat === th.id
-                    ? "bg-red-600 text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]"
-                    : "text-system-muted hover:text-white"
-                }`}
-              >
-                {th.label}
-              </button>
-            ))}
-          </div>
-
+        <div className={`space-y-4 ${mobileCh6Tab === 'chains' || mobileCh6Tab === 'chamber' || mobileCh6Tab === 'berserk' ? 'block' : 'hidden lg:block'}`}>
         {/* 3 Pillars of Dungeon Threats Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
           
@@ -161,7 +162,7 @@ export function Chapter6() {
           <AnimeTiltCard
             maxTilt={8}
             glowColor="rgba(239, 68, 68, 0.35)"
-            className={`w-full flex-col ${activeThreat === 0 ? 'flex' : 'hidden lg:flex'}`}
+            className={`w-full flex-col ${mobileCh6Tab === 'chains' ? 'flex' : 'hidden lg:flex'}`}
           >
             <div
               ref={chainCardRef}
@@ -231,7 +232,7 @@ export function Chapter6() {
           <AnimeTiltCard
             maxTilt={8}
             glowColor="rgba(139, 92, 246, 0.35)"
-            className={`w-full flex-col ${activeThreat === 1 ? 'flex' : 'hidden lg:flex'}`}
+            className={`w-full flex-col ${mobileCh6Tab === 'chamber' ? 'flex' : 'hidden lg:flex'}`}
           >
             <div
               onMouseEnter={() => sfx.playHover()}
@@ -300,7 +301,7 @@ export function Chapter6() {
           <AnimeTiltCard
             maxTilt={8}
             glowColor="rgba(245, 158, 11, 0.35)"
-            className={`w-full flex-col ${activeThreat === 2 ? 'flex' : 'hidden lg:flex'}`}
+            className={`w-full flex-col ${mobileCh6Tab === 'berserk' ? 'flex' : 'hidden lg:flex'}`}
           >
             <div
               onMouseEnter={() => sfx.playHover()}

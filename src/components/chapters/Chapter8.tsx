@@ -259,7 +259,7 @@ export function Chapter8() {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>SYSTEM TERMINAL v2.4 // AI ADVISOR</span>
             </div>
-            <span className="font-mono text-[10px] text-system-muted px-2 py-0.5 bg-system-panel border border-system-accent/20 rounded">
+            <span className="hidden sm:inline-block font-mono text-[10px] text-system-muted px-2 py-0.5 bg-system-panel border border-system-accent/20 rounded">
               ILLUSTRATIVE UI PREVIEW
             </span>
           </div>
