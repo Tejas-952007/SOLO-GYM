@@ -13,6 +13,7 @@ import {
   Box,
   Flame,
   Crown,
+  ChevronRight,
 } from 'lucide-react';
 import { spawnCombatNumber } from '@/components/effects/FloatingDamageNumbers';
 
@@ -260,8 +261,8 @@ export function ThreeCharacterShowcase() {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (viewMode !== 'cinema' || !cinemaStageRef.current) return;
     const rect = cinemaStageRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 12;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -12;
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -10;
     setTilt({ x, y });
   };
 
@@ -295,9 +296,9 @@ export function ThreeCharacterShowcase() {
     sfx.playClick();
     if (containerRef.current) {
       if (!document.fullscreenElement) {
-        containerRef.current.requestFullscreen().catch(() => { });
+        containerRef.current.requestFullscreen().catch(() => {});
       } else {
-        document.exitFullscreen().catch(() => { });
+        document.exitFullscreen().catch(() => {});
       }
     }
   };
@@ -307,52 +308,224 @@ export function ThreeCharacterShowcase() {
       ref={containerRef}
       className="relative w-full rounded-3xl bg-[#05050A] border border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden font-mono transition-all duration-300"
     >
-      {/* 1. CINEMATIC HERO STAGE VIEWPORT */}
-      <div
-        ref={cinemaStageRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="relative w-full h-[480px] sm:h-[560px] md:h-[640px] bg-gradient-to-b from-[#090814] via-[#05050A] to-[#040408] flex items-center justify-center overflow-hidden"
-        style={{ perspective: '1200px' }}
-      >
-        {/* Ambient Volumetric Backlight */}
-        <div
-          className="absolute inset-0 opacity-40 blur-3xl pointer-events-none transition-all duration-700"
-          style={{
-            background: `radial-gradient(circle at center, ${activeChar.auraColor} 0%, transparent 65%)`,
-          }}
-        />
-
-        {/* Ambient Top & Bottom Gradients */}
-        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none z-10" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#07060F] via-[#07060F]/80 to-transparent pointer-events-none z-10" />
-
-        {/* Top Floating Glass HUD */}
-        <div className="absolute top-4 inset-x-4 sm:top-6 sm:inset-x-6 flex flex-col sm:flex-row items-start justify-between gap-3 z-30 pointer-events-none">
-          {/* Character Identity Monolith */}
-          <div className="space-y-1">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
+        
+        {/* LEFT COLUMN: Clean Minimalist Monolith Controller */}
+        <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-6 border-b lg:border-b-0 lg:border-r border-white/[0.08] bg-[#07060F]/90 z-20">
+          
+          {/* Identity & Lore */}
+          <div className="space-y-3">
             <div className="flex items-center gap-2 flex-wrap">
               <span
-                className="w-2 h-2 rounded-full animate-ping"
+                className="w-2.5 h-2.5 rounded-full animate-ping"
                 style={{ backgroundColor: activeChar.auraColor }}
               />
-              <span className="text-[10px] text-gray-400 font-mono tracking-widest uppercase">
+              <span className="text-[11px] text-gray-400 font-mono tracking-widest uppercase">
                 {activeChar.koreanName}
               </span>
-              <span className="text-[9px] px-2 py-0.5 rounded-full bg-white/10 border border-white/15 text-yellow-300 font-bold tracking-wider">
+              <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-yellow-300 font-bold tracking-wider">
                 ⭐ {activeChar.rank}
               </span>
             </div>
-            <h3 className="text-xl sm:text-3xl md:text-5xl font-cinzel font-black text-white tracking-wider uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.4)]">
+
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-cinzel font-black text-white tracking-wider uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.4)]">
               {activeChar.name}
             </h3>
-            <p className="text-[10px] sm:text-[11px] text-purple-300 font-mono tracking-wider truncate max-w-[260px] sm:max-w-none">
-              {activeChar.weaponName}
+
+            <p className="text-xs text-purple-300 font-mono tracking-wider flex items-center gap-1.5">
+              <Swords className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+              <span>{activeChar.weaponName}</span>
+            </p>
+
+            <p className="text-xs text-gray-300 font-sans italic border-l-2 border-purple-500/60 pl-3 py-1 bg-purple-950/20 rounded-r leading-relaxed">
+              {activeChar.quote}
             </p>
           </div>
 
-          {/* Engine Controls Toggle */}
-          <div className="flex items-center gap-2 pointer-events-auto self-end sm:self-start">
+          {/* Character Roster Dock (Horizontal chips with glowing avatars) */}
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Crown className="w-3.5 h-3.5 text-yellow-400" />
+                <span>ROSTER SELECT:</span>
+              </span>
+              <span className="text-[10px] text-purple-400 font-mono">5 MONARCHS</span>
+            </div>
+
+            <div className="grid grid-cols-5 gap-2">
+              {CHARACTERS.map((c) => {
+                const isSelected = c.id === activeChar.id;
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => selectCharacter(c)}
+                    onMouseEnter={() => sfx.playHover()}
+                    title={`${c.name} (${c.rank})`}
+                    className={`relative rounded-xl overflow-hidden aspect-square border transition-all duration-300 group cursor-pointer ${
+                      isSelected
+                        ? 'border-purple-400 ring-2 ring-purple-500/50 shadow-[0_0_20px_rgba(168,85,247,0.6)] scale-105'
+                        : 'border-white/10 opacity-60 hover:opacity-100 hover:border-white/30'
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={c.thumbnail}
+                      alt={c.name}
+                      className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    <div className="absolute bottom-1 inset-x-0 text-center text-[8px] font-bold text-white truncate px-0.5">
+                      {c.name.split(' ')[0]}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Tactical Tabs: Skills vs Stats */}
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center gap-2 border-b border-white/[0.08] pb-2">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setInfoTab('skills');
+                }}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  infoTab === 'skills'
+                    ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.4)]'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                <span>SKILLS</span>
+              </button>
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setInfoTab('stats');
+                }}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  infoTab === 'stats'
+                    ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                <span>STATS</span>
+              </button>
+            </div>
+
+            {infoTab === 'skills' ? (
+              <div className="space-y-2">
+                {activeChar.skills.map((skill, idx) => {
+                  const isFiring = activeSkillIndex === idx;
+                  return (
+                    <button
+                      key={skill.name}
+                      onClick={() => executeSkill(skill, idx)}
+                      onMouseEnter={() => sfx.playHover()}
+                      className={`w-full p-2.5 rounded-xl border text-left transition-all duration-200 flex items-center justify-between group cursor-pointer ${
+                        isFiring
+                          ? 'bg-purple-600 border-white text-white shadow-[0_0_20px_rgba(168,85,247,0.8)] scale-[1.02]'
+                          : 'bg-black/50 border-white/[0.08] hover:border-purple-500/40 hover:bg-black/80'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-gray-400">
+                          0{idx + 1}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="font-bold text-xs text-white group-hover:text-cyan-300 truncate">
+                            {skill.name}
+                          </div>
+                          <div className="text-[9px] text-gray-400 truncate">
+                            {skill.effect}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded bg-purple-950/60 text-purple-300 border border-purple-500/30 shrink-0 ml-2">
+                        {skill.damage}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="p-2.5 rounded-xl bg-black/40 border border-white/5 space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400">STRENGTH [STR]</span>
+                    <span className="text-cyan-400 font-bold">{activeChar.statStr} / 100</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-cyan-600 to-blue-400 rounded-full"
+                      style={{ width: `${activeChar.statStr}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-black/40 border border-white/5 space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400">VITALITY [VIT]</span>
+                    <span className="text-purple-400 font-bold">{activeChar.statVit} / 100</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-purple-600 to-fuchsia-400 rounded-full"
+                      style={{ width: `${activeChar.statVit}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-black/40 border border-white/5 space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400">AGILITY [AGI]</span>
+                    <span className="text-yellow-400 font-bold">{activeChar.statAgi} / 100</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-amber-600 to-yellow-400 rounded-full"
+                      style={{ width: `${activeChar.statAgi}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Buff Pill */}
+            <div className="p-2.5 rounded-xl bg-purple-950/30 border border-purple-500/20 text-[10px] text-purple-200 flex items-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+              <span className="truncate">
+                <strong className="text-white">PASSIVE BUFF:</strong> {activeChar.buff}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: Pure, Unobstructed 4K Hero Visual Stage */}
+        <div
+          ref={cinemaStageRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          className="lg:col-span-7 relative min-h-[480px] sm:min-h-[580px] md:min-h-[660px] bg-gradient-to-b from-[#090814] via-[#05050A] to-[#040408] flex items-center justify-center overflow-hidden"
+          style={{ perspective: '1200px' }}
+        >
+          {/* Ambient Volumetric Backlight */}
+          <div
+            className="absolute inset-0 opacity-40 blur-3xl pointer-events-none transition-all duration-700"
+            style={{
+              background: `radial-gradient(circle at center, ${activeChar.auraColor} 0%, transparent 65%)`,
+            }}
+          />
+
+          {/* Subtle Top & Bottom Shadow Gradients */}
+          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/80 via-black/30 to-transparent pointer-events-none z-10" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#05050A] via-[#05050A]/80 to-transparent pointer-events-none z-10" />
+
+          {/* Engine Controls Switcher (Top-Right Floating) */}
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 z-30 pointer-events-auto">
             <div className="flex items-center rounded-xl bg-black/80 border border-white/15 p-1 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.6)]">
               <button
                 onClick={() => {
@@ -393,250 +566,63 @@ export function ThreeCharacterShowcase() {
               <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
-        </div>
 
-        {/* Center Stage Presentation */}
-        {viewMode === '3d' ? (
-          /* Mode A: Interactive 360° 3D Mesh */
-          <div className="relative w-full h-full">
-            <iframe
-              key={activeChar.sketchfabUid}
-              title={activeChar.name}
-              src={`https://sketchfab.com/models/${activeChar.sketchfabUid}/embed?autostart=1&internal=1&tracking=0&ui_infos=0&ui_watermark=0&ui_hint=0&ui_controls=1&ui_stop=0&transparent=1`}
-              onLoad={() => setModelLoaded(true)}
-              allow="autoplay; fullscreen; xr-spatial-tracking"
-              className="w-full h-full border-0 bg-transparent relative z-10"
-            />
-            {!modelLoaded && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#05050A] z-20 pointer-events-none">
-                <span className="w-9 h-9 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs text-purple-300 font-bold tracking-widest uppercase">
-                  INITIALIZING 3D {activeChar.name} MESH & SHADERS...
-                </span>
-              </div>
-            )}
-          </div>
-        ) : (
-          /* Mode B: 4K Anime Cinema Stage with Parallax Tilt */
-          <div
-            className="relative w-full h-full flex items-center justify-center transition-transform duration-150 ease-out"
-            style={{
-              transform: `rotateY(${tilt.x}deg) rotateX(${tilt.y}deg)`,
-              transformStyle: 'preserve-3d',
-            }}
-          >
-            {/* 4K Anime Character Silhouette */}
-            <div className="relative h-[90%] max-w-[90%] flex items-center justify-center filter drop-shadow-[0_0_40px_rgba(139,92,246,0.35)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={activeChar.cinemaImage}
-                alt={activeChar.name}
-                className="max-h-full max-w-full object-contain pointer-events-none select-none transition-transform duration-500 rounded-2xl"
+          {/* Center Stage Presentation: Completely Unobstructed */}
+          {viewMode === '3d' ? (
+            <div className="relative w-full h-full min-h-[480px]">
+              <iframe
+                key={activeChar.sketchfabUid}
+                title={activeChar.name}
+                src={`https://sketchfab.com/models/${activeChar.sketchfabUid}/embed?autostart=1&internal=1&tracking=0&ui_infos=0&ui_watermark=0&ui_hint=0&ui_controls=1&ui_stop=0&transparent=1`}
+                onLoad={() => setModelLoaded(true)}
+                allow="autoplay; fullscreen; xr-spatial-tracking"
+                className="w-full h-full border-0 bg-transparent relative z-10"
               />
-            </div>
-
-            {/* Glowing Ground Grid Pedestal */}
-            <div className="absolute bottom-0 w-full h-20 bg-gradient-to-t from-[#07060F] via-purple-950/20 to-transparent pointer-events-none flex items-center justify-center">
-              <div className="w-80 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_25px_rgba(6,182,212,1)]" />
-            </div>
-          </div>
-        )}
-
-        {/* Bottom Floating Hint */}
-        <div className="absolute bottom-4 left-6 z-20 pointer-events-none hidden sm:flex items-center gap-2 text-[10px] text-gray-400 bg-black/60 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
-          <Eye className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-          <span>
-            {viewMode === '3d'
-              ? 'DRAG WITH CURSOR OR TOUCH TO ROTATE 3D CHARACTER 360°'
-              : 'MOVE MOUSE TO ACTIVATE 3D MANA PARALLAX TILT'}
-          </span>
-        </div>
-      </div>
-
-      {/* 2. BOTTOM UNIFIED TACTICAL CONTROLLER */}
-      <div className="p-4 sm:p-6 bg-[#07060F] border-t border-white/[0.08] space-y-5">
-        {/* Character Selection Glass Dock */}
-        <div>
-          <div className="flex items-center justify-between mb-3 text-xs">
-            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <Crown className="w-3.5 h-3.5 text-yellow-400" />
-              <span>SELECT MONARCH // SOVEREIGN ROSTER:</span>
-            </span>
-            <span className="text-[10px] text-purple-400 font-mono">5 ACTIVE HUNTERS</span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
-            {CHARACTERS.map((c) => {
-              const isSelected = c.id === activeChar.id;
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => selectCharacter(c)}
-                  onMouseEnter={() => sfx.playHover()}
-                  className={`p-2 sm:p-2.5 rounded-2xl border text-left transition-all duration-200 flex items-center gap-2.5 group cursor-pointer ${
-                    isSelected
-                      ? 'bg-purple-950/70 border-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.4)] scale-[1.02]'
-                      : 'bg-black/50 border-white/[0.08] hover:border-purple-500/40 hover:bg-black/80'
-                  }`}
-                >
-                  <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-black">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={c.thumbnail}
-                      alt={c.name}
-                      className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <div
-                      className={`text-xs font-bold truncate ${isSelected ? 'text-white' : 'text-gray-300 group-hover:text-white'
-                        }`}
-                    >
-                      {c.name}
-                    </div>
-                    <div className="text-[9px] text-gray-500 truncate mt-0.5">{c.rank}</div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Tactical Matrix: Skills vs Stats Tabs */}
-        <div className="rounded-2xl bg-black/60 border border-white/[0.08] p-4 sm:p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  sfx.playClick();
-                  setInfoTab('skills');
-                }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${infoTab === 'skills'
-                  ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.4)]'
-                  : 'text-gray-400 hover:text-white'
-                  }`}
-              >
-                <Flame className="w-3.5 h-3.5 text-amber-400" />
-                <span>SIGNATURE SKILLS</span>
-              </button>
-              <button
-                onClick={() => {
-                  sfx.playClick();
-                  setInfoTab('stats');
-                }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${infoTab === 'stats'
-                  ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.4)]'
-                  : 'text-gray-400 hover:text-white'
-                  }`}
-              >
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                <span>RPG ATTRIBUTES</span>
-              </button>
-            </div>
-
-            <span className="text-[10px] text-gray-400 italic hidden sm:inline">
-              {activeChar.quote}
-            </span>
-          </div>
-
-          {infoTab === 'skills' ? (
-            /* Skills Tab */
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-              {activeChar.skills.map((skill, idx) => {
-                const isFiring = activeSkillIndex === idx;
-                return (
-                  <button
-                    key={skill.name}
-                    onClick={() => executeSkill(skill, idx)}
-                    onMouseEnter={() => sfx.playHover()}
-                    className={`p-3 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between group cursor-pointer ${
-                      isFiring
-                        ? 'bg-purple-600 border-white text-white shadow-[0_0_25px_rgba(168,85,247,0.8)] scale-[1.03]'
-                        : 'bg-black/50 border-white/[0.08] hover:border-purple-500/50 hover:bg-black/80'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-gray-300">
-                        SKILL 0{idx + 1}
-                      </span>
-                      <span className="text-[10px] font-bold font-mono text-purple-300">
-                        {skill.damage}
-                      </span>
-                    </div>
-                    <div className="font-bold text-xs text-white group-hover:text-cyan-300 transition-colors">
-                      {skill.name}
-                    </div>
-                    <div className="text-[10px] text-gray-400 mt-1 line-clamp-2">
-                      {skill.effect}
-                    </div>
-                  </button>
-                );
-              })}
+              {!modelLoaded && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#05050A] z-20 pointer-events-none">
+                  <span className="w-9 h-9 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                  <span className="text-xs text-purple-300 font-bold tracking-widest uppercase">
+                    INITIALIZING 3D {activeChar.name} MESH & SHADERS...
+                  </span>
+                </div>
+              )}
             </div>
           ) : (
-            /* RPG Stats Tab */
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="p-3 rounded-xl bg-black/40 border border-white/5 space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-400 flex items-center gap-1.5">
-                    <Swords className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>STRENGTH [STR]</span>
-                  </span>
-                  <span className="text-cyan-400 font-bold">{activeChar.statStr} / 100</span>
-                </div>
-                <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-cyan-600 to-blue-400 rounded-full"
-                    style={{ width: `${activeChar.statStr}%` }}
-                  />
-                </div>
+            <div
+              className="relative w-full h-full flex items-center justify-center transition-transform duration-150 ease-out"
+              style={{
+                transform: `rotateY(${tilt.x}deg) rotateX(${tilt.y}deg)`,
+                transformStyle: 'preserve-3d',
+              }}
+            >
+              {/* Unobstructed 4K Artwork */}
+              <div className="relative h-[92%] max-w-[92%] flex items-center justify-center filter drop-shadow-[0_0_40px_rgba(139,92,246,0.35)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={activeChar.cinemaImage}
+                  alt={activeChar.name}
+                  className="max-h-full max-w-full object-contain pointer-events-none select-none transition-transform duration-500 rounded-2xl"
+                />
               </div>
 
-              <div className="p-3 rounded-xl bg-black/40 border border-white/5 space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-400 flex items-center gap-1.5">
-                    <Shield className="w-3.5 h-3.5 text-purple-400" />
-                    <span>VITALITY [VIT]</span>
-                  </span>
-                  <span className="text-purple-400 font-bold">{activeChar.statVit} / 100</span>
-                </div>
-                <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-purple-600 to-fuchsia-400 rounded-full"
-                    style={{ width: `${activeChar.statVit}%` }}
-                  />
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-black/40 border border-white/5 space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-400 flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-yellow-400" />
-                    <span>AGILITY [AGI]</span>
-                  </span>
-                  <span className="text-yellow-400 font-bold">{activeChar.statAgi} / 100</span>
-                </div>
-                <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-amber-600 to-yellow-400 rounded-full"
-                    style={{ width: `${activeChar.statAgi}%` }}
-                  />
-                </div>
+              {/* Glowing Floor Pedestal */}
+              <div className="absolute bottom-0 w-full h-20 bg-gradient-to-t from-[#05050A] via-purple-950/20 to-transparent pointer-events-none flex items-center justify-center">
+                <div className="w-80 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_25px_rgba(6,182,212,1)]" />
               </div>
             </div>
           )}
 
-          {/* Active Sovereign Buff Pill */}
-          <div className="p-2.5 rounded-xl bg-purple-950/30 border border-purple-500/25 flex items-center justify-between text-[10px] text-purple-200">
-            <span className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-              <span>
-                <strong className="text-white">ACTIVE BUFF:</strong> {activeChar.buff}
-              </span>
+          {/* Navigation Hint */}
+          <div className="absolute bottom-4 left-6 z-20 pointer-events-none hidden sm:flex items-center gap-2 text-[10px] text-gray-400 bg-black/60 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
+            <Eye className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+            <span>
+              {viewMode === '3d'
+                ? 'DRAG WITH CURSOR OR TOUCH TO ROTATE 360°'
+                : 'HOVER & MOVE CURSOR TO ACTIVATE 3D MANA PARALLAX TILT'}
             </span>
-            <span className="text-yellow-300 font-mono font-bold shrink-0">100% UPTIME</span>
           </div>
         </div>
+
       </div>
     </div>
   );
