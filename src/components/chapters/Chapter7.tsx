@@ -101,6 +101,7 @@ const RANK_TIERS: RankTier[] = [
 export function Chapter7() {
   const [selectedRank, setSelectedRank] = useState<RankTier>(RANK_TIERS[0]);
   const [bonusXP, setBonusXP] = useState<number>(0);
+  const [ascensionTab, setAscensionTab] = useState<'radar' | 'leaderboard' | 'plateau'>('radar');
 
   const handleRankSelect = (tier: RankTier) => {
     if (tier.rank === "S" || tier.rank === "A") {
@@ -437,19 +438,70 @@ export function Chapter7() {
 
         </div>
 
-        {/* Real-time 1RM Compound Wilks / DOTS Radar Telemetry Matrix */}
-        <div className="w-full max-w-6xl mx-auto mt-8">
-          <PowerliftingRadarMatrix />
-        </div>
+        {/* National Indian Hunter Ascension & Powerlifting Terminal */}
+        <div className="w-full max-w-6xl mx-auto mt-10 font-mono">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-system-gold animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider text-yellow-300">
+                [ SBD POWERLIFTING & GUILD RANK TERMINAL ]
+              </span>
+            </div>
 
-        {/* National Indian Hunter Guild Leaderboard & Hall of Fame */}
-        <div className="w-full max-w-6xl mx-auto mt-8">
-          <HunterLeaderboard />
-        </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setAscensionTab('radar');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  ascensionTab === 'radar'
+                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                }`}
+              >
+                ⚡ 1RM SBD RADAR MATRIX
+              </button>
 
-        {/* Biomechanical Plateau Breaker & Deload Diagnostic Flowchart */}
-        <div className="w-full max-w-6xl mx-auto mt-8">
-          <PlateauBreakerFlowchart />
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setAscensionTab('leaderboard');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  ascensionTab === 'leaderboard'
+                    ? 'bg-yellow-600 text-white border-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-yellow-500/30'
+                }`}
+              >
+                🏆 GUILD LEADERBOARD
+              </button>
+
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setAscensionTab('plateau');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  ascensionTab === 'plateau'
+                    ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
+                }`}
+              >
+                🌿 PLATEAU BREAKER
+              </button>
+            </div>
+          </div>
+
+          {/* Active Ascension Module */}
+          <div className="w-full">
+            {ascensionTab === 'radar' && <PowerliftingRadarMatrix />}
+            {ascensionTab === 'leaderboard' && <HunterLeaderboard />}
+            {ascensionTab === 'plateau' && <PlateauBreakerFlowchart />}
+          </div>
         </div>
       </div>
     </section>

@@ -53,6 +53,7 @@ export function Chapter4() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [committedCards, setCommittedCards] = useState<Record<number, boolean>>({});
+  const [disciplineTab, setDisciplineTab] = useState<'streak' | 'hydration' | 'rpe' | 'synthwave'>('streak');
 
   const toggleCommitment = (id: number, title: string) => {
     setCommittedCards((prev) => {
@@ -207,24 +208,86 @@ export function Chapter4() {
           </div>
         </div>
 
-        {/* 7-Day Discipline Streak Flame & Penalty Zone Tracker */}
-        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10">
-          <DailyDisciplineFlame />
-        </div>
+        {/* Hunter Daily Habit & Discipline Terminal */}
+        <div className="w-full max-w-6xl mx-auto mt-10 relative z-10 font-mono">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-300">
+                [ HUNTER HABIT PROTOCOL // NON-NEGOTIABLES ]
+              </span>
+            </div>
 
-        {/* Daily Hydration Volume & 5g Creapure Saturation Reservoir */}
-        <div className="w-full max-w-6xl mx-auto mt-6 relative z-10">
-          <WaterCreatineWidget />
-        </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setDisciplineTab('streak');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  disciplineTab === 'streak'
+                    ? 'bg-amber-600 text-white border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-amber-500/30'
+                }`}
+              >
+                🔥 7-DAY STREAK FLAME
+              </button>
 
-        {/* Procedural Web Audio Synthwave Rhythm Engine */}
-        <div className="w-full max-w-6xl mx-auto mt-6 relative z-10">
-          <AnimeGymSynthEngine />
-        </div>
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setDisciplineTab('hydration');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  disciplineTab === 'hydration'
+                    ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
+                }`}
+              >
+                💧 HYDRATION & CREAPURE
+              </button>
 
-        {/* RPE & Reps in Reserve Autoregulation Matrix */}
-        <div className="w-full max-w-6xl mx-auto mt-6 relative z-10">
-          <RpeCalculator />
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setDisciplineTab('rpe');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  disciplineTab === 'rpe'
+                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                }`}
+              >
+                🎯 RPE & RIR DIAL
+              </button>
+
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setDisciplineTab('synthwave');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  disciplineTab === 'synthwave'
+                    ? 'bg-indigo-600 text-white border-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-indigo-500/30'
+                }`}
+              >
+                🎧 SYNTHWAVE STUDIO
+              </button>
+            </div>
+          </div>
+
+          {/* Active Discipline Module */}
+          <div className="w-full">
+            {disciplineTab === 'streak' && <DailyDisciplineFlame />}
+            {disciplineTab === 'hydration' && <WaterCreatineWidget />}
+            {disciplineTab === 'rpe' && <RpeCalculator />}
+            {disciplineTab === 'synthwave' && <AnimeGymSynthEngine />}
+          </div>
         </div>
       </div>
     </section>

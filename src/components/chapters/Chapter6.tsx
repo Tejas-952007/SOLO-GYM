@@ -18,6 +18,7 @@ export function Chapter6() {
   const chainCardRef = useRef<HTMLDivElement>(null);
   const [selectedPhysique, setSelectedPhysique] = useState<"berserk" | "monarch">("berserk");
   const [showAnatomyScan, setShowAnatomyScan] = useState(false);
+  const [recoveryTab, setRecoveryTab] = useState<'anatomy' | 'sleep' | 'deload'>('anatomy');
 
   const toggleAnatomyScan = () => {
     sfx.playBladeSlash();
@@ -443,19 +444,70 @@ export function Chapter6() {
         </div>
         </AnimeTiltCard>
 
-        {/* Hyperbolic Cellular Sleep Recovery & Bio-Tank Telemetry */}
-        <div className="w-full max-w-6xl mx-auto mt-10">
-          <RecoverySleepChamber />
-        </div>
+        {/* Bio-Recovery & Muscle Hypertrophy Terminal */}
+        <div className="w-full max-w-6xl mx-auto mt-10 font-mono">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-system-accent/25 pb-3 mb-6 gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider text-red-300">
+                [ BIO-RECOVERY & CNS RESTORATION TERMINAL ]
+              </span>
+            </div>
 
-        {/* Central Nervous System Reboot & Deload Architect */}
-        <div className="w-full max-w-6xl mx-auto mt-6">
-          <DeloadPlanner />
-        </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setRecoveryTab('anatomy');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  recoveryTab === 'anatomy'
+                    ? 'bg-blue-600 text-white border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-blue-500/30'
+                }`}
+              >
+                🧬 3D ANATOMY HEATMAP
+              </button>
 
-        {/* 3D Anatomical Muscle Hypertrophy Heatmap & Recovery Matrix */}
-        <div className="w-full max-w-6xl mx-auto mt-6">
-          <MuscleHypertrophyHeatmap />
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setRecoveryTab('sleep');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  recoveryTab === 'sleep'
+                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                }`}
+              >
+                🛌 SLEEP RECOVERY TANK
+              </button>
+
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setRecoveryTab('deload');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  recoveryTab === 'deload'
+                    ? 'bg-red-600 text-white border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-red-500/30'
+                }`}
+              >
+                🧠 CNS DELOAD ARCHITECT
+              </button>
+            </div>
+          </div>
+
+          {/* Active Recovery Module */}
+          <div className="w-full">
+            {recoveryTab === 'anatomy' && <MuscleHypertrophyHeatmap />}
+            {recoveryTab === 'sleep' && <RecoverySleepChamber />}
+            {recoveryTab === 'deload' && <DeloadPlanner />}
+          </div>
         </div>
       </div>
     </section>
