@@ -57,8 +57,7 @@ export function Chapter9() {
 
           <BladeSliceHeading
             as="h2"
-            accentText="ARISE."
-            className="font-cinzel text-6xl sm:text-8xl md:text-9xl font-black uppercase tracking-wider text-system-gold drop-shadow-[0_0_35px_rgba(245,197,66,0.6)]"
+            className="font-cinzel text-5xl sm:text-7xl md:text-9xl font-black uppercase tracking-widest text-system-gold drop-shadow-[0_0_35px_rgba(245,197,66,0.6)]"
           >
             ARISE.
           </BladeSliceHeading>

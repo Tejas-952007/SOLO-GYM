@@ -329,44 +329,44 @@ export function ThreeCharacterShowcase() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(5,5,10,0.85)_100%)] pointer-events-none z-10" />
 
         {/* Top Floating Glass HUD */}
-        <div className="absolute top-4 inset-x-4 sm:top-6 sm:inset-x-6 flex items-start justify-between z-30 pointer-events-none">
+        <div className="absolute top-3 inset-x-3 sm:top-6 sm:inset-x-6 flex flex-col sm:flex-row items-start justify-between gap-2.5 sm:gap-3 z-30 pointer-events-none">
           {/* Character Identity Monolith */}
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
+          <div className="space-y-0.5 sm:space-y-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
               <span
                 className="w-2 h-2 rounded-full animate-ping"
                 style={{ backgroundColor: activeChar.auraColor }}
               />
-              <span className="text-[10px] text-gray-400 font-mono tracking-widest uppercase">
+              <span className="text-[9px] sm:text-[10px] text-gray-400 font-mono tracking-widest uppercase">
                 {activeChar.koreanName}
               </span>
               <span className="text-[9px] px-2 py-0.5 rounded-full bg-white/10 border border-white/15 text-yellow-300 font-bold tracking-wider">
                 ⭐ {activeChar.rank}
               </span>
             </div>
-            <h3 className="text-2xl sm:text-4xl md:text-5xl font-cinzel font-black text-white tracking-wider uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.4)]">
+            <h3 className="text-xl sm:text-3xl md:text-5xl font-cinzel font-black text-white tracking-wider uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.4)]">
               {activeChar.name}
             </h3>
-            <p className="text-[11px] text-purple-300 font-mono tracking-wider">
+            <p className="text-[10px] sm:text-[11px] text-purple-300 font-mono tracking-wider truncate max-w-[260px] sm:max-w-none">
               {activeChar.weaponName}
             </p>
           </div>
 
           {/* Engine Controls Toggle */}
-          <div className="flex items-center gap-2 pointer-events-auto">
-            <div className="flex items-center rounded-xl bg-black/70 border border-white/15 p-1 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.6)]">
+          <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto self-end sm:self-start">
+            <div className="flex items-center rounded-xl bg-black/80 border border-white/15 p-0.5 sm:p-1 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.6)]">
               <button
                 onClick={() => {
                   sfx.playClick();
                   setViewMode('cinema');
                 }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 sm:gap-1.5 ${
                   viewMode === 'cinema'
                     ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.6)]'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                <Film className="w-3.5 h-3.5" />
+                <Film className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span>4K CINEMA</span>
               </button>
               <button
@@ -374,13 +374,13 @@ export function ThreeCharacterShowcase() {
                   sfx.playClick();
                   setViewMode('3d');
                 }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 sm:gap-1.5 ${
                   viewMode === '3d'
                     ? 'bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                <Box className="w-3.5 h-3.5" />
+                <Box className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span>3D MESH</span>
               </button>
             </div>
@@ -389,9 +389,9 @@ export function ThreeCharacterShowcase() {
               onClick={toggleFullscreen}
               onMouseEnter={() => sfx.playHover()}
               title="Fullscreen Mode"
-              className="p-2.5 rounded-xl bg-black/70 border border-white/15 hover:border-white/40 text-gray-300 hover:text-white transition-all backdrop-blur-md"
+              className="p-1.5 sm:p-2.5 rounded-xl bg-black/80 border border-white/15 hover:border-white/40 text-gray-300 hover:text-white transition-all backdrop-blur-md"
             >
-              <Maximize2 className="w-4 h-4" />
+              <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         </div>

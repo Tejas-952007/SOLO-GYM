@@ -17,22 +17,13 @@ import puppeteer from "puppeteer-core";
     const yesBtn = btns.find(b => b.textContent && (b.textContent.includes('ACCEPT') || b.textContent.includes('YES')));
     if (yesBtn) yesBtn.click();
     
-    const heading = Array.from(document.querySelectorAll('h2')).find(h => h.textContent && h.textContent.includes('SUNG JIN-WOO'));
-    if (heading) {
-      heading.scrollIntoView({ behavior: 'instant', block: 'center' });
+    const ch9 = document.getElementById('chapter-9');
+    if (ch9) {
+      ch9.scrollIntoView({ behavior: 'instant', block: 'start' });
     }
   });
   
-  await new Promise(r => setTimeout(r, 2500));
-  await page.screenshot({ path: "/home/tejas/.gemini/antigravity/brain/94e7849a-2d30-4808-af39-96e000b7ae63/desktop-ch9-3d-console-full.png" });
-  console.log("Saved desktop-ch9-3d-console-full.png");
-
-  // Toggle to 4K Cinema
-  await page.evaluate(() => {
-    const cinemaBtn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('4K CINEMA'));
-    if (cinemaBtn) cinemaBtn.click();
-  });
-  await new Promise(r => setTimeout(r, 1500));
+  await new Promise(r => setTimeout(r, 2000));
   await page.screenshot({ path: "/home/tejas/.gemini/antigravity/brain/94e7849a-2d30-4808-af39-96e000b7ae63/desktop-ch9-4k-cinema.png" });
   console.log("Saved desktop-ch9-4k-cinema.png");
 
@@ -46,21 +37,12 @@ import puppeteer from "puppeteer-core";
     const yesBtn = btns.find(b => b.textContent && (b.textContent.includes('ACCEPT') || b.textContent.includes('YES')));
     if (yesBtn) yesBtn.click();
     
-    const heading = Array.from(document.querySelectorAll('h2')).find(h => h.textContent && h.textContent.includes('SUNG JIN-WOO'));
-    if (heading) {
-      heading.scrollIntoView({ behavior: 'instant', block: 'start' });
+    const ch9 = document.getElementById('chapter-9');
+    if (ch9) {
+      ch9.scrollIntoView({ behavior: 'instant', block: 'start' });
     }
   });
   await new Promise(r => setTimeout(r, 2000));
-  await mPage.screenshot({ path: "/home/tejas/.gemini/antigravity/brain/94e7849a-2d30-4808-af39-96e000b7ae63/mobile-ch9-3d-console-full.png" });
-  console.log("Saved mobile-ch9-3d-console-full.png");
-
-  // Mobile 4K Cinema
-  await mPage.evaluate(() => {
-    const cinemaBtn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('4K CINEMA'));
-    if (cinemaBtn) cinemaBtn.click();
-  });
-  await new Promise(r => setTimeout(r, 1500));
   await mPage.screenshot({ path: "/home/tejas/.gemini/antigravity/brain/94e7849a-2d30-4808-af39-96e000b7ae63/mobile-ch9-4k-cinema.png" });
   console.log("Saved mobile-ch9-4k-cinema.png");
 
