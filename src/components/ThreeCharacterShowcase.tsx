@@ -3,7 +3,6 @@
 import React, { useState, useRef } from 'react';
 import { sfx } from '@/lib/audio-sfx';
 import {
-  RotateCw,
   Zap,
   Eye,
   Swords,
@@ -13,8 +12,7 @@ import {
   Film,
   Box,
   Flame,
-  ChevronRight,
-  Info,
+  Crown,
 } from 'lucide-react';
 import { spawnCombatNumber } from '@/components/effects/FloatingDamageNumbers';
 
@@ -52,8 +50,8 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE SHADOW MONARCH',
     koreanName: '성진우 // 그림자 군주',
     rank: 'SOVEREIGN',
-    thumbnail: '/assets/09-arise/jinwoo-stage.png',
-    cinemaImage: '/assets/09-arise/jinwoo-stage.png',
+    thumbnail: '/assets/07-ranks/rank-a-aura.webp',
+    cinemaImage: '/assets/07-ranks/rank-a-aura.webp',
     sketchfabUid: 'cbd13bfe2d464cf18ec444cb7adf70e2',
     weaponName: "KAMISH'S WRATH & KNIGHT KILLER",
     quote: '"I am the hunter who conquered death itself. Arise."',
@@ -92,8 +90,8 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'SOVEREIGN EXTRACTION',
     koreanName: '성진우 // 일어나라',
     rank: 'MONARCH',
-    thumbnail: '/assets/09-arise/jinwoo-srank-stage.png',
-    cinemaImage: '/assets/09-arise/jinwoo-srank-stage.png',
+    thumbnail: '/assets/07-ranks/rank-s-max.webp',
+    cinemaImage: '/assets/07-ranks/rank-s-max.webp',
     sketchfabUid: '6e3c5101d50e4fbd84d2981e193092fa',
     weaponName: 'MONARCH SOUL AUTHORITY',
     quote: '"From the depths of death, answer my call: Arise."',
@@ -132,8 +130,8 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE BLOOD-RED KNIGHT',
     koreanName: '핏빛의 기사단장 이그리트',
     rank: 'COMMANDER',
-    thumbnail: '/assets/09-arise/igris-stage.png',
-    cinemaImage: '/assets/09-arise/igris-stage.png',
+    thumbnail: '/assets/09-arise/igris22.jpeg',
+    cinemaImage: '/assets/09-arise/igris22.jpeg',
     sketchfabUid: 'dbe57ff1971349e597fe900ab3588d4b',
     weaponName: 'DEMONIC BLOOD GREATSWORD',
     quote: '"My blade exists solely to cleave your enemies, my Liege."',
@@ -172,8 +170,8 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE PREDATOR KING',
     koreanName: '포식자 군단장 베르',
     rank: 'MARSHAL',
-    thumbnail: '/assets/09-arise/beru-stage.png',
-    cinemaImage: '/assets/09-arise/beru-stage.png',
+    thumbnail: '/assets/09-arise/beru0.jpg',
+    cinemaImage: '/assets/09-arise/beru0.jpg',
     sketchfabUid: 'd819c8d0c2e147e98996260b97c56065',
     weaponName: 'PREDATORY CHITIN SCYTHES',
     quote: '"My King, permit me to feast upon and devour your enemies."',
@@ -212,8 +210,8 @@ const CHARACTERS: HunterCharacter[] = [
     title: 'THE SHIELD VANGUARD',
     koreanName: '철벽의 기사단 아이언',
     rank: 'ELITE',
-    thumbnail: '/assets/09-arise/iron-stage.png',
-    cinemaImage: '/assets/09-arise/iron-stage.png',
+    thumbnail: '/assets/09-arise/iron_3.jpeg',
+    cinemaImage: '/assets/09-arise/iron_3.jpeg',
     sketchfabUid: 'dbe57ff1971349e597fe900ab3588d4b',
     weaponName: 'TITANIC TOWER SHIELD & HAMMER',
     quote: '"[BEAST TAUNT ROAR] NONE SHALL PASS THROUGH THIS VANGUARD."',
@@ -262,8 +260,8 @@ export function ThreeCharacterShowcase() {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (viewMode !== 'cinema' || !cinemaStageRef.current) return;
     const rect = cinemaStageRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 14;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -14;
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 12;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -12;
     setTilt({ x, y });
   };
 
@@ -297,9 +295,9 @@ export function ThreeCharacterShowcase() {
     sfx.playClick();
     if (containerRef.current) {
       if (!document.fullscreenElement) {
-        containerRef.current.requestFullscreen().catch(() => {});
+        containerRef.current.requestFullscreen().catch(() => { });
       } else {
-        document.exitFullscreen().catch(() => {});
+        document.exitFullscreen().catch(() => { });
       }
     }
   };
@@ -307,14 +305,14 @@ export function ThreeCharacterShowcase() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full rounded-3xl bg-[#05050A] border border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.9)] overflow-hidden font-mono transition-all duration-300"
+      className="relative w-full rounded-3xl bg-[#05050A] border border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden font-mono transition-all duration-300"
     >
       {/* 1. CINEMATIC HERO STAGE VIEWPORT */}
       <div
         ref={cinemaStageRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative w-full h-[460px] sm:h-[540px] md:h-[620px] bg-gradient-to-b from-[#090814] via-[#05050A] to-[#040408] flex items-center justify-center overflow-hidden"
+        className="relative w-full h-[480px] sm:h-[560px] md:h-[640px] bg-gradient-to-b from-[#090814] via-[#05050A] to-[#040408] flex items-center justify-center overflow-hidden"
         style={{ perspective: '1200px' }}
       >
         {/* Ambient Volumetric Backlight */}
@@ -325,19 +323,20 @@ export function ThreeCharacterShowcase() {
           }}
         />
 
-        {/* Ambient Cinematic Vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(5,5,10,0.85)_100%)] pointer-events-none z-10" />
+        {/* Ambient Top & Bottom Gradients */}
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none z-10" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#07060F] via-[#07060F]/80 to-transparent pointer-events-none z-10" />
 
         {/* Top Floating Glass HUD */}
-        <div className="absolute top-3 inset-x-3 sm:top-6 sm:inset-x-6 flex flex-col sm:flex-row items-start justify-between gap-2.5 sm:gap-3 z-30 pointer-events-none">
+        <div className="absolute top-4 inset-x-4 sm:top-6 sm:inset-x-6 flex flex-col sm:flex-row items-start justify-between gap-3 z-30 pointer-events-none">
           {/* Character Identity Monolith */}
-          <div className="space-y-0.5 sm:space-y-1">
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
               <span
                 className="w-2 h-2 rounded-full animate-ping"
                 style={{ backgroundColor: activeChar.auraColor }}
               />
-              <span className="text-[9px] sm:text-[10px] text-gray-400 font-mono tracking-widest uppercase">
+              <span className="text-[10px] text-gray-400 font-mono tracking-widest uppercase">
                 {activeChar.koreanName}
               </span>
               <span className="text-[9px] px-2 py-0.5 rounded-full bg-white/10 border border-white/15 text-yellow-300 font-bold tracking-wider">
@@ -353,20 +352,20 @@ export function ThreeCharacterShowcase() {
           </div>
 
           {/* Engine Controls Toggle */}
-          <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto self-end sm:self-start">
-            <div className="flex items-center rounded-xl bg-black/80 border border-white/15 p-0.5 sm:p-1 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.6)]">
+          <div className="flex items-center gap-2 pointer-events-auto self-end sm:self-start">
+            <div className="flex items-center rounded-xl bg-black/80 border border-white/15 p-1 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.6)]">
               <button
                 onClick={() => {
                   sfx.playClick();
                   setViewMode('cinema');
                 }}
-                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 sm:gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1.5 ${
                   viewMode === 'cinema'
                     ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.6)]'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                <Film className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                <Film className="w-3.5 h-3.5" />
                 <span>4K CINEMA</span>
               </button>
               <button
@@ -374,13 +373,13 @@ export function ThreeCharacterShowcase() {
                   sfx.playClick();
                   setViewMode('3d');
                 }}
-                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 sm:gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1.5 ${
                   viewMode === '3d'
                     ? 'bg-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                <Box className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                <Box className="w-3.5 h-3.5" />
                 <span>3D MESH</span>
               </button>
             </div>
@@ -389,7 +388,7 @@ export function ThreeCharacterShowcase() {
               onClick={toggleFullscreen}
               onMouseEnter={() => sfx.playHover()}
               title="Fullscreen Mode"
-              className="p-1.5 sm:p-2.5 rounded-xl bg-black/80 border border-white/15 hover:border-white/40 text-gray-300 hover:text-white transition-all backdrop-blur-md"
+              className="p-2 sm:p-2.5 rounded-xl bg-black/80 border border-white/15 hover:border-white/40 text-gray-300 hover:text-white transition-all backdrop-blur-md"
             >
               <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
@@ -427,17 +426,17 @@ export function ThreeCharacterShowcase() {
             }}
           >
             {/* 4K Anime Character Silhouette */}
-            <div className="relative h-[85%] max-w-[85%] flex items-center justify-center filter drop-shadow-[0_0_40px_rgba(139,92,246,0.4)]">
+            <div className="relative h-[90%] max-w-[90%] flex items-center justify-center filter drop-shadow-[0_0_40px_rgba(139,92,246,0.35)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={activeChar.cinemaImage}
                 alt={activeChar.name}
-                className="max-h-full max-w-full object-contain pointer-events-none select-none transition-transform duration-500"
+                className="max-h-full max-w-full object-contain pointer-events-none select-none transition-transform duration-500 rounded-2xl"
               />
             </div>
 
             {/* Glowing Ground Grid Pedestal */}
-            <div className="absolute bottom-0 w-full h-20 bg-gradient-to-t from-black via-purple-950/20 to-transparent pointer-events-none flex items-center justify-center">
+            <div className="absolute bottom-0 w-full h-20 bg-gradient-to-t from-[#07060F] via-purple-950/20 to-transparent pointer-events-none flex items-center justify-center">
               <div className="w-80 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_25px_rgba(6,182,212,1)]" />
             </div>
           </div>
@@ -455,7 +454,7 @@ export function ThreeCharacterShowcase() {
       </div>
 
       {/* 2. BOTTOM UNIFIED TACTICAL CONTROLLER */}
-      <div className="p-4 sm:p-6 bg-[#07060F] border-t border-white/10 space-y-5">
+      <div className="p-4 sm:p-6 bg-[#07060F] border-t border-white/[0.08] space-y-5">
         {/* Character Selection Glass Dock */}
         <div>
           <div className="flex items-center justify-between mb-3 text-xs">
@@ -477,7 +476,7 @@ export function ThreeCharacterShowcase() {
                   className={`p-2 sm:p-2.5 rounded-2xl border text-left transition-all duration-200 flex items-center gap-2.5 group cursor-pointer ${
                     isSelected
                       ? 'bg-purple-950/70 border-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.4)] scale-[1.02]'
-                      : 'bg-black/50 border-white/10 hover:border-purple-500/40 hover:bg-black/80'
+                      : 'bg-black/50 border-white/[0.08] hover:border-purple-500/40 hover:bg-black/80'
                   }`}
                 >
                   <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-black">
@@ -490,9 +489,8 @@ export function ThreeCharacterShowcase() {
                   </div>
                   <div className="min-w-0">
                     <div
-                      className={`text-xs font-bold truncate ${
-                        isSelected ? 'text-white' : 'text-gray-300 group-hover:text-white'
-                      }`}
+                      className={`text-xs font-bold truncate ${isSelected ? 'text-white' : 'text-gray-300 group-hover:text-white'
+                        }`}
                     >
                       {c.name}
                     </div>
@@ -505,19 +503,18 @@ export function ThreeCharacterShowcase() {
         </div>
 
         {/* Tactical Matrix: Skills vs Stats Tabs */}
-        <div className="rounded-2xl bg-black/60 border border-white/10 p-4 sm:p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+        <div className="rounded-2xl bg-black/60 border border-white/[0.08] p-4 sm:p-5 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => {
                   sfx.playClick();
                   setInfoTab('skills');
                 }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  infoTab === 'skills'
-                    ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.4)]'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${infoTab === 'skills'
+                  ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.4)]'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <Flame className="w-3.5 h-3.5 text-amber-400" />
                 <span>SIGNATURE SKILLS</span>
@@ -527,11 +524,10 @@ export function ThreeCharacterShowcase() {
                   sfx.playClick();
                   setInfoTab('stats');
                 }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  infoTab === 'stats'
-                    ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.4)]'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${infoTab === 'stats'
+                  ? 'bg-cyan-600 text-white shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 <span>RPG ATTRIBUTES</span>
@@ -556,7 +552,7 @@ export function ThreeCharacterShowcase() {
                     className={`p-3 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between group cursor-pointer ${
                       isFiring
                         ? 'bg-purple-600 border-white text-white shadow-[0_0_25px_rgba(168,85,247,0.8)] scale-[1.03]'
-                        : 'bg-black/50 border-white/10 hover:border-purple-500/50 hover:bg-black/80'
+                        : 'bg-black/50 border-white/[0.08] hover:border-purple-500/50 hover:bg-black/80'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1.5">
@@ -643,22 +639,5 @@ export function ThreeCharacterShowcase() {
         </div>
       </div>
     </div>
-  );
-}
-
-function Crown(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.735H5.81a1 1 0 0 1-.957-.735L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
-      <path d="M5 21h14" />
-    </svg>
   );
 }
