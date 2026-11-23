@@ -9,6 +9,7 @@ import { AnimeTiltCard } from "@/components/ui/AnimeTiltCard";
 import { DungeonWarmupCircuit } from "@/components/ui/DungeonWarmupCircuit";
 import { RestTimerMetronome } from "@/components/ui/RestTimerMetronome";
 import { DungeonBossGauntlet } from "@/components/ui/DungeonBossGauntlet";
+import { ThreeDaggerArmory } from "@/components/ThreeDaggerArmory";
 import { spawnCombatNumber } from "@/components/effects/FloatingDamageNumbers";
 import { sfx } from "@/lib/audio-sfx";
 
@@ -63,6 +64,7 @@ export function Chapter3() {
   const [bossHp, setBossHp] = useState(3000);
   const [staggerHp, setStaggerHp] = useState(1000);
   const [comboCount, setComboCount] = useState(0);
+  const [tacticalTab, setTacticalTab] = useState<'armory' | 'timer' | 'warmup' | 'gauntlet'>('armory');
   const [combatLog, setCombatLog] = useState<string[]>([
     "[SYSTEM EVENT] Dungeon Boss: Titan of Inertia has appeared on Floor 04!",
   ]);
@@ -469,19 +471,87 @@ export function Chapter3() {
           </div>
         </AnimeTiltCard>
 
-        {/* Intra-Set Rest Chronometer & Box Breathing Metronome */}
-        <div className="relative z-20 w-full max-w-6xl mx-auto my-6">
-          <RestTimerMetronome />
-        </div>
+        {/* Tactical Dungeon Terminal & 3D Shadow Armory Switcher */}
+        <div className="relative z-20 w-full max-w-6xl mx-auto my-6 font-mono">
+          <div className="flex items-center justify-between border-b border-system-accent/25 pb-3 mb-6 flex-wrap gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-system-cyan animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider text-system-text">
+                [ TACTICAL DUNGEON MODULE // SYSTEM LEVEL 03 ]
+              </span>
+            </div>
 
-        {/* Pre-Lift Dynamic Mobility & Joint Lubrication Circuit */}
-        <div className="relative z-20 w-full max-w-6xl mx-auto my-6">
-          <DungeonWarmupCircuit />
-        </div>
+            {/* Mobile-Friendly Tactical Navigation Pills */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setTacticalTab('armory');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  tacticalTab === 'armory'
+                    ? 'bg-purple-600 text-white border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-purple-500/30'
+                }`}
+              >
+                🗡️ 3D WEAPONS ARMORY
+              </button>
 
-        {/* 4 Dungeon Boss Raid Gauntlet Registry */}
-        <div className="relative z-20 w-full max-w-6xl mx-auto my-6">
-          <DungeonBossGauntlet />
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setTacticalTab('timer');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  tacticalTab === 'timer'
+                    ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
+                }`}
+              >
+                ⏱️ REST & BREATHING
+              </button>
+
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setTacticalTab('warmup');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  tacticalTab === 'warmup'
+                    ? 'bg-blue-600 text-white border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-blue-500/30'
+                }`}
+              >
+                🤸 MOBILITY CIRCUIT
+              </button>
+
+              <button
+                onClick={() => {
+                  sfx.playClick();
+                  setTacticalTab('gauntlet');
+                }}
+                onMouseEnter={() => sfx.playHover()}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  tacticalTab === 'gauntlet'
+                    ? 'bg-red-600 text-white border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+                    : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-red-500/30'
+                }`}
+              >
+                👹 4-BOSS GAUNTLET
+              </button>
+            </div>
+          </div>
+
+          {/* Active Module View */}
+          <div className="w-full">
+            {tacticalTab === 'armory' && <ThreeDaggerArmory />}
+            {tacticalTab === 'timer' && <RestTimerMetronome />}
+            {tacticalTab === 'warmup' && <DungeonWarmupCircuit />}
+            {tacticalTab === 'gauntlet' && <DungeonBossGauntlet />}
+          </div>
         </div>
 
         {/* Bottom Dungeon Sub-HUD */}
