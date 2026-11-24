@@ -8,12 +8,17 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Only initialize smooth scroll on non-reduced-motion environments
+    // Only initialize smooth scroll on non-reduced-motion environments AND non-touch desktop screens
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    if (prefersReducedMotion) return;
+    const isTouchOrMobile =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.innerWidth < 1024;
+
+    if (prefersReducedMotion || isTouchOrMobile) return;
 
     const lenis = new Lenis({
       duration: 1.1,
@@ -22,7 +27,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 0.9,
-      touchMultiplier: 1.5,
+      touchMultiplier: 1.0,
     });
 
     lenisRef.current = lenis;

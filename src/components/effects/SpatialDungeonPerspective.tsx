@@ -21,11 +21,27 @@ export function SpatialDungeonPerspective() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [runes, setRunes] = useState<FloatingRune[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(true);
   const tilt = useDeviceTilt();
 
-  // Combine desktop mouse parallax with mobile physical gyroscope
-  const effectiveX = tilt.isSupported ? tilt.tiltY : mousePos.x;
-  const effectiveY = tilt.isSupported ? tilt.tiltX : mousePos.y;
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(
+        typeof window !== "undefined" &&
+          (window.innerWidth < 1024 ||
+            "ontouchstart" in window ||
+            navigator.maxTouchPoints > 0)
+      );
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // On mobile/touch devices: zero out tilt to prevent "slope unslope" wobbling
+  // On desktop: combine mouse parallax with slight atmospheric sway
+  const effectiveX = isMobile ? 0 : mousePos.x;
+  const effectiveY = isMobile ? 0 : mousePos.y;
 
   useEffect(() => {
     // Generate 18 floating 3D dungeon runes across the viewport

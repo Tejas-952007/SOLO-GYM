@@ -25,6 +25,7 @@ export function BladeSliceHeading({
     if (!el) return;
 
     const ctx = gsap.context(() => {
+      const isMobile = window.innerWidth < 768;
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: el,
@@ -34,7 +35,11 @@ export function BladeSliceHeading({
 
       tl.fromTo(
         el,
-        { clipPath: "polygon(0 0, 0 0, 0 100%, 0% 100%)", opacity: 0, x: -30 },
+        {
+          clipPath: "polygon(0 0, 0 0, 0 100%, 0% 100%)",
+          opacity: 0,
+          x: isMobile ? 0 : -30,
+        },
         {
           clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
           opacity: 1,
@@ -44,11 +49,11 @@ export function BladeSliceHeading({
         }
       );
 
-      if (glint) {
+      if (glint && !isMobile) {
         tl.fromTo(
           glint,
           { left: "-30%", opacity: 0 },
-          { left: "130%", opacity: 1, duration: 0.8, ease: "power2.inOut" },
+          { left: "100%", opacity: 1, duration: 0.8, ease: "power2.inOut" },
           "-=0.6"
         );
       }
@@ -58,7 +63,7 @@ export function BladeSliceHeading({
   }, []);
 
   return (
-    <div ref={containerRef} className="relative inline-block overflow-hidden will-change-transform">
+    <div ref={containerRef} className="relative block max-w-full overflow-hidden will-change-transform">
       <Component className={className}>
         {children}
         {accentText && (

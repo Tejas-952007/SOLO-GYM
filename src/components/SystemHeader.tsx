@@ -165,7 +165,7 @@ export function SystemHeader() {
 
         <a
           href="#chapter-3"
-          className="px-3 py-1.5 bg-system-accent hover:bg-white text-black font-orbitron text-xs font-bold tracking-wider rounded transition-all duration-200 shadow-system-glow active:scale-95"
+          className="hidden sm:inline-block px-3 py-1.5 bg-system-accent hover:bg-white text-black font-orbitron text-xs font-bold tracking-wider rounded transition-all duration-200 shadow-system-glow active:scale-95"
         >
           DUNGEON
         </a>

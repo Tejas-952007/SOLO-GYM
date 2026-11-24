@@ -16,10 +16,20 @@ export function AnimeTiltCard({
   glowColor = "rgba(139, 92, 246, 0.25)",
 }: AnimeTiltCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [transform, setTransform] = useState("perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)");
+  const [transform, setTransform] = useState("none");
   const [sheenPos, setSheenPos] = useState({ x: 50, y: 50, opacity: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only tilt on desktop pointer screens, NEVER on mobile/touch screens
+    if (
+      typeof window !== "undefined" &&
+      (window.innerWidth < 1024 ||
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0)
+    ) {
+      return;
+    }
+
     const el = cardRef.current;
     if (!el) return;
 
@@ -45,7 +55,7 @@ export function AnimeTiltCard({
   };
 
   const handleMouseLeave = () => {
-    setTransform("perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)");
+    setTransform("none");
     setSheenPos((prev) => ({ ...prev, opacity: 0 }));
   };
 
