@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Utensils, Sparkles, Check, Flame, Calculator, ChevronRight } from "lucide-react";
+import { Utensils, Sparkles, Check, Flame, Calculator, ChevronRight, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { DecodeText } from "@/components/ui/DecodeText";
 import { BladeSliceHeading } from "@/components/ui/BladeSliceHeading";
@@ -327,19 +327,21 @@ export function Chapter5() {
                 </div>
 
                 {/* Live Target Card */}
-                <div className="md:col-span-6 bg-black/60 border border-system-accent/30 p-4 rounded-lg flex items-center justify-between">
-                  <div>
+                <div className="md:col-span-6 bg-black/60 border border-system-accent/30 p-4 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="space-y-1">
                     <span className="font-mono text-[10px] text-system-muted uppercase">
-                      RECOMMENDED DAILY PROTOCOL
+                      RECOMMENDED DAILY PROTOCOL ({weightKg}KG • {goal.toUpperCase()})
                     </span>
                     <div className="font-cinzel text-2xl sm:text-3xl font-black text-system-gold">
                       {targetProtein}g PROTEIN
                     </div>
-                    <div className="font-inter text-xs text-system-muted">
-                      Approx. 150g Paneer + 100g Soya + 1 scoop Whey
+                    <div className="grid grid-cols-3 gap-2 font-mono text-[11px] pt-1">
+                      <span className="text-cyan-300">CARBS: {Math.round(weightKg * (goal === 'bulk' ? 3.5 : 2.0))}g</span>
+                      <span className="text-amber-300">FATS: {Math.round(weightKg * 0.8)}g</span>
+                      <span className="text-emerald-400">💧 {(weightKg * 0.045).toFixed(1)}L H2O</span>
                     </div>
                   </div>
-                  <div className="w-12 h-12 rounded-full bg-system-gold/10 border border-system-gold/30 flex items-center justify-center font-cinzel font-bold text-system-gold">
+                  <div className="w-12 h-12 rounded-full bg-system-gold/10 border border-system-gold/30 flex items-center justify-center font-cinzel font-bold text-system-gold shrink-0">
                     S-TIER
                   </div>
                 </div>
@@ -514,12 +516,16 @@ export function Chapter5() {
               )}
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 text-center">
               {[
                 { name: "Low-Fat Paneer", protein: "18g / 100g", badge: "VEG S-TIER", pVal: 18, cal: 140 },
                 { name: "Soya Chunks", protein: "52g / 100g", badge: "MAX DENSITY", pVal: 52, cal: 345 },
                 { name: "Sattu Drink", protein: "20g / scoop", badge: "DESI POWER", pVal: 20, cal: 180 },
                 { name: "Double Egg Omelette", protein: "14g / 2 eggs", badge: "DAILY BASIC", pVal: 14, cal: 160 },
+                { name: "Chicken Tikka", protein: "31g / 100g", badge: "PURE ANABOLIC", pVal: 31, cal: 165 },
+                { name: "Boiled Chana Chaat", protein: "15g / cup", badge: "FIBER SHIELD", pVal: 15, cal: 210 },
+                { name: "Moong Dal Cheela", protein: "16g / 2 cheelas", badge: "CLEAN BULK", pVal: 16, cal: 190 },
+                { name: "Greek Curd Bowl", protein: "12g / 150g", badge: "GUT HEALING", pVal: 12, cal: 110 },
               ].map((staple, i) => (
                 <button
                   key={i}
@@ -546,6 +552,12 @@ export function Chapter5() {
                 <div className="text-white font-bold text-sm">
                   TOTAL: <span className="text-system-gold">{totalPlateProtein}g PROTEIN</span> • <span className="text-system-cyan">{totalPlateCalories} KCAL</span>
                 </div>
+                {totalPlateProtein >= targetProtein && (
+                  <div className="text-[11px] text-yellow-400 font-bold flex items-center gap-1.5 animate-pulse pt-0.5">
+                    <Trophy className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
+                    <span>DAILY PROTEIN QUEST TARGET ACQUIRED (+1,000 XP)</span>
+                  </div>
+                )}
                 <div className="text-[10px] text-system-muted truncate max-w-md">
                   ITEMS: {plateItems.length === 0 ? "Empty Plate (Tap staples above to add)" : plateItems.map((p) => p.name).join(", ")}
                 </div>
