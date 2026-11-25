@@ -71,7 +71,7 @@ export function Chapter3() {
   const [shakeCrit, setShakeCrit] = useState(false);
   const [mobileCh3Tab, setMobileCh3Tab] = useState<'gauntlet' | 'boss' | 'armory'>('gauntlet');
 
-  const strikeBoss = (type: "heavy" | "protein" | "shadow") => {
+  const strikeBoss = (type: "heavy" | "protein" | "shadow" | "overload") => {
     if (bossHp <= 0) return;
 
     const nextCombo = comboCount + 1;
@@ -115,6 +115,22 @@ export function Chapter3() {
       spawnCombatNumber(`-${dmg} FATAL SHADOW CRIT!`, undefined, undefined, "damage");
       setCombatLog((prev) => [
         `[SHADOW DOMAIN] Sovereign Violet Mana exploded! -${dmg} FATAL DAMAGE! (ARMOR SHATTERED)`,
+        ...prev.slice(0, 3),
+      ]);
+      if (nextHp === 0) {
+        sfx.playRankUp();
+        spawnCombatNumber("BOSS SLAIN! +5,000 XP & MYTHIC DROPS", undefined, undefined, "xp");
+      }
+    } else if (type === "overload") {
+      sfx.playDemonRoar();
+      const dmg = 2200;
+      const nextHp = Math.max(0, bossHp - dmg);
+      setBossHp(nextHp);
+      setShakeCrit(true);
+      setTimeout(() => setShakeCrit(false), 400);
+      spawnCombatNumber(`-${dmg} ⚡ TITANIC OVERLOAD!`, undefined, undefined, "damage");
+      setCombatLog((prev) => [
+        `[⚡ 200KG DEADLIFT OVERLOAD] Armor pulverized! -${dmg} DESTRUCTIVE CRIT!`,
         ...prev.slice(0, 3),
       ]);
       if (nextHp === 0) {
@@ -486,8 +502,8 @@ export function Chapter3() {
 
             {/* Player Attack Moves & Combat Telemetry */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-              {/* 3 Combat Moves */}
-              <div className="md:col-span-7 grid grid-cols-3 gap-2">
+              {/* 4 Combat Moves */}
+              <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
                 <button
                   onClick={() => strikeBoss("heavy")}
                   disabled={bossHp <= 0}
@@ -517,10 +533,24 @@ export function Chapter3() {
                   <div>[ SHADOW CRIT ]</div>
                   <div className="text-[9px] text-system-muted font-normal mt-0.5">1,500 FATAL</div>
                 </button>
+
+                <button
+                  onClick={() => strikeBoss("overload")}
+                  disabled={bossHp <= 0}
+                  onMouseEnter={() => sfx.playHover()}
+                  className={`p-2 sm:p-2.5 rounded font-mono text-[10px] sm:text-xs font-bold uppercase transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-center ${
+                    staggerHp <= 0 && bossHp > 0
+                      ? "bg-yellow-500 text-black border border-yellow-300 shadow-[0_0_20px_rgba(245,197,66,0.8)] animate-pulse"
+                      : "bg-amber-950/40 border border-amber-500/40 text-amber-300 hover:border-amber-400 hover:bg-amber-900/60"
+                  }`}
+                >
+                  <div>[ ⚡ OVERLOAD ]</div>
+                  <div className="text-[9px] text-system-muted font-normal mt-0.5">200kg Pull</div>
+                </button>
               </div>
 
               {/* Combat Log Box */}
-              <div className="md:col-span-5 p-2 bg-black/60 border border-white/10 rounded font-mono text-[10px] space-y-1 h-16 overflow-hidden">
+              <div className="md:col-span-4 p-2 bg-black/60 border border-white/10 rounded font-mono text-[10px] space-y-1 h-16 overflow-hidden">
                 {combatLog.map((log, idx) => (
                   <div
                     key={idx}
