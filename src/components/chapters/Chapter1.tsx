@@ -84,7 +84,11 @@ export function Chapter1() {
       sfx.playClick();
       return;
     }
-    sfx.playStatPointAlloc();
+    if (stat === "str") sfx.playBladeSheathe();
+    else if (stat === "agi") sfx.playBladeSlash();
+    else if (stat === "vit") sfx.playStatPointAlloc();
+    else sfx.playSubBassBoom();
+
     setAvailableAP((prev) => prev - 1);
     setStats((prev) => ({ ...prev, [stat]: prev[stat] + 1 }));
     spawnCombatNumber(`+1 ${stat.toUpperCase()} ALLOCATED!`, undefined, undefined, "stat");
@@ -110,11 +114,19 @@ export function Chapter1() {
 
   const toggleQuest = (id: number, xpValue: number) => {
     setCompletedQuests((prev) => {
-      const next = { ...prev, [id]: !prev[id] };
-      if (!prev[id]) {
-        sfx.playChirp();
-        setBonusXP((xp) => xp + xpValue);
-        spawnCombatNumber(`+${xpValue} QUEST XP!`, undefined, undefined, "xp");
+      const isFinishing = !prev[id];
+      const next = { ...prev, [id]: isFinishing };
+      const completedCount = Object.values(next).filter(Boolean).length;
+
+      if (isFinishing) {
+        if (completedCount >= 3) {
+          sfx.playRankUp();
+          spawnCombatNumber("🏆 ALL 3 DAILY QUESTS CLEARED! +500 XP GRANTED", undefined, undefined, "xp");
+        } else {
+          sfx.playChirp();
+          spawnCombatNumber(`+${xpValue} QUEST XP!`, undefined, undefined, "xp");
+        }
+        setBonusXP((xp) => Math.min(500, xp + xpValue));
       } else {
         sfx.playClick();
         setBonusXP((xp) => Math.max(0, xp - xpValue));
@@ -210,10 +222,10 @@ export function Chapter1() {
 
       {/* 4. Cinematic Two-Column Anime Stage (Desktop) / Layered Responsive Stage (Mobile) */}
       <div className="relative z-10 w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center my-auto">
-        
+
         {/* Left Column: Gothic Solo Leveling Title & Story Narrative */}
         <div ref={leftColRef} className="lg:col-span-7 flex flex-col items-start text-left space-y-3 sm:space-y-6">
-          
+
           {/* System Protocol Tag */}
           <div className="hidden sm:flex items-center gap-2.5 px-3 py-1 bg-black/70 border border-system-cyan/40 rounded text-[11px] sm:text-xs font-mono text-system-cyan uppercase tracking-widest shadow-[0_0_15px_rgba(56,189,248,0.25)]">
             <Flame className="w-3.5 h-3.5 text-system-cyan animate-pulse" />
@@ -256,11 +268,10 @@ export function Chapter1() {
                     setActiveHeroTab("quests");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-2 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all ${
-                    activeHeroTab === "quests"
-                      ? "bg-system-cyan/20 border border-system-cyan text-white shadow-[0_0_12px_rgba(56,189,248,0.5)] font-bold"
-                      : "text-system-muted hover:text-white"
-                  }`}
+                  className={`px-2 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all ${activeHeroTab === "quests"
+                    ? "bg-system-cyan/20 border border-system-cyan text-white shadow-[0_0_12px_rgba(56,189,248,0.5)] font-bold"
+                    : "text-system-muted hover:text-white"
+                    }`}
                 >
                   [ QUESTS ]
                 </button>
@@ -270,11 +281,10 @@ export function Chapter1() {
                     setActiveHeroTab("stats");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`px-2 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
-                    activeHeroTab === "stats"
-                      ? "bg-yellow-500/20 border border-yellow-500 text-yellow-300 shadow-[0_0_12px_rgba(234,179,8,0.5)] font-bold"
-                      : "text-system-muted hover:text-white"
-                  }`}
+                  className={`px-2 sm:px-3 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${activeHeroTab === "stats"
+                    ? "bg-yellow-500/20 border border-yellow-500 text-yellow-300 shadow-[0_0_12px_rgba(234,179,8,0.5)] font-bold"
+                    : "text-system-muted hover:text-white"
+                    }`}
                 >
                   <Award className="w-3.5 h-3.5" />
                   <span>STATS [{availableAP}]</span>
@@ -286,11 +296,10 @@ export function Chapter1() {
                     setActiveHeroTab("training");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`lg:hidden px-2 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
-                    activeHeroTab === "training"
-                      ? "bg-cyan-600/30 border border-cyan-400 text-cyan-200 shadow-[0_0_12px_rgba(6,182,212,0.5)] font-bold"
-                      : "text-system-muted hover:text-white"
-                  }`}
+                  className={`lg:hidden px-2 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${activeHeroTab === "training"
+                    ? "bg-cyan-600/30 border border-cyan-400 text-cyan-200 shadow-[0_0_12px_rgba(6,182,212,0.5)] font-bold"
+                    : "text-system-muted hover:text-white"
+                    }`}
                 >
                   <span>LADDER</span>
                 </button>
@@ -301,11 +310,10 @@ export function Chapter1() {
                     setActiveHeroTab("visage");
                   }}
                   onMouseEnter={() => sfx.playHover()}
-                  className={`lg:hidden px-2 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${
-                    activeHeroTab === "visage"
-                      ? "bg-purple-600/30 border border-purple-400 text-purple-200 shadow-[0_0_12px_rgba(168,85,247,0.5)] font-bold"
-                      : "text-system-muted hover:text-white"
-                  }`}
+                  className={`lg:hidden px-2 py-1 rounded text-xs font-mono tracking-wider transition-all flex items-center gap-1 ${activeHeroTab === "visage"
+                    ? "bg-purple-600/30 border border-purple-400 text-purple-200 shadow-[0_0_12px_rgba(168,85,247,0.5)] font-bold"
+                    : "text-system-muted hover:text-white"
+                    }`}
                 >
                   <span>HUNTER</span>
                 </button>
@@ -326,18 +334,16 @@ export function Chapter1() {
                   <button
                     key={quest.id}
                     onClick={() => toggleQuest(quest.id, quest.xp)}
-                    className={`w-full flex items-center justify-between p-2.5 sm:p-3 rounded-lg text-left text-xs font-mono transition-all duration-200 border ${
-                      completedQuests[quest.id]
-                        ? "bg-system-cyan/20 border-system-cyan/70 text-white shadow-[0_0_15px_rgba(56,189,248,0.35)]"
-                        : "bg-black/50 border-white/10 text-system-muted hover:border-system-cyan/40 hover:text-white"
-                    }`}
+                    className={`w-full flex items-center justify-between p-2.5 sm:p-3 rounded-lg text-left text-xs font-mono transition-all duration-200 border ${completedQuests[quest.id]
+                      ? "bg-system-cyan/20 border-system-cyan/70 text-white shadow-[0_0_15px_rgba(56,189,248,0.35)]"
+                      : "bg-black/50 border-white/10 text-system-muted hover:border-system-cyan/40 hover:text-white"
+                      }`}
                   >
                     <span className="flex items-center gap-3">
-                      <span className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${
-                        completedQuests[quest.id]
-                          ? "bg-system-cyan border-system-cyan text-black shadow-[0_0_10px_rgba(56,189,248,0.8)]"
-                          : "border-white/30 bg-black/40 text-transparent"
-                      }`}>
+                      <span className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${completedQuests[quest.id]
+                        ? "bg-system-cyan border-system-cyan text-black shadow-[0_0_10px_rgba(56,189,248,0.8)]"
+                        : "border-white/30 bg-black/40 text-transparent"
+                        }`}>
                         <svg className="w-3.5 h-3.5 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
@@ -352,7 +358,7 @@ export function Chapter1() {
                     <span className="text-yellow-400 font-bold text-[11px] shrink-0 font-mono">+{quest.xp} XP</span>
                   </button>
                 ))}
-                
+
                 {/* Daily Quest Progress Line */}
                 <div className="pt-2">
                   <div className="flex justify-between items-center text-[10px] font-mono text-system-muted mb-1">
@@ -373,6 +379,12 @@ export function Chapter1() {
                     {bonusXP >= 500 ? "[ ALL QUESTS CLEARED ]" : "STATUS: PROGRESSING"}
                   </span>
                 </div>
+
+                {bonusXP >= 500 && (
+                  <div className="p-2 rounded bg-gradient-to-r from-yellow-500/20 via-system-accent/20 to-yellow-500/20 border border-yellow-500/50 text-center text-[10px] font-mono font-bold text-yellow-300 shadow-[0_0_15px_rgba(245,197,66,0.3)] animate-pulse">
+                    🏆 [ SYSTEM QUEST LOG: ALL OBJECTIVES MET // 500/500 XP SECURED ]
+                  </div>
+                )}
               </div>
             ) : (
               /* View 2: Interactive Hunter Stat Allocator with +/- Controls */
@@ -393,7 +405,7 @@ export function Chapter1() {
                         <span className="text-yellow-400 font-bold text-sm">{s.val}</span>
                       </div>
                       <div className="text-[9px] text-system-muted mb-2 leading-tight">{s.desc}</div>
-                      
+
                       {/* Dual Tactile Controls (- / +) */}
                       <div className="flex items-center gap-1.5">
                         <button
@@ -407,11 +419,10 @@ export function Chapter1() {
                         <button
                           onClick={() => allocateStat(s.key as "str" | "agi" | "vit" | "discipline")}
                           disabled={availableAP <= 0}
-                          className={`flex-1 py-1 rounded text-xs font-bold transition-all ${
-                            availableAP > 0
-                              ? "bg-yellow-500/20 hover:bg-yellow-500 text-yellow-300 hover:text-black border border-yellow-500/50 shadow-[0_0_8px_rgba(234,179,8,0.3)] cursor-pointer"
-                              : "bg-white/5 text-system-muted/30 border border-white/5 cursor-not-allowed"
-                          }`}
+                          className={`flex-1 py-1 rounded text-xs font-bold transition-all ${availableAP > 0
+                            ? "bg-yellow-500/20 hover:bg-yellow-500 text-yellow-300 hover:text-black border border-yellow-500/50 shadow-[0_0_8px_rgba(234,179,8,0.3)] cursor-pointer"
+                            : "bg-white/5 text-system-muted/30 border border-white/5 cursor-not-allowed"
+                            }`}
                           title="Allocate 1 AP"
                         >
                           +
@@ -473,11 +484,10 @@ export function Chapter1() {
                     <button
                       key={aura}
                       onClick={() => switchAura(aura)}
-                      className={`px-3 py-1 rounded text-[10px] font-mono border transition-all ${
-                        hunterAura === aura
-                          ? auraConfigs[aura].btnActive
-                          : "bg-black/50 border-white/10 text-gray-400"
-                      }`}
+                      className={`px-3 py-1 rounded text-[10px] font-mono border transition-all ${hunterAura === aura
+                        ? auraConfigs[aura].btnActive
+                        : "bg-black/50 border-white/10 text-gray-400"
+                        }`}
                     >
                       {aura.toUpperCase()}
                     </button>
@@ -631,11 +641,10 @@ export function Chapter1() {
                 key={mode}
                 onClick={() => switchAura(mode)}
                 onMouseEnter={() => sfx.playHover()}
-                className={`px-3 py-1.5 rounded font-semibold uppercase transition-all duration-200 cursor-pointer ${
-                  hunterAura === mode
-                    ? auraConfigs[mode].btnActive
-                    : "text-system-muted/70 hover:text-white hover:bg-white/5 border border-transparent"
-                }`}
+                className={`px-3 py-1.5 rounded font-semibold uppercase transition-all duration-200 cursor-pointer ${hunterAura === mode
+                  ? auraConfigs[mode].btnActive
+                  : "text-system-muted/70 hover:text-white hover:bg-white/5 border border-transparent"
+                  }`}
               >
                 {mode === "cyan" && "CYAN"}
                 {mode === "crimson" && "BERSERK"}
@@ -664,11 +673,10 @@ export function Chapter1() {
                 setTrainingTab('pullup');
               }}
               onMouseEnter={() => sfx.playHover()}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                trainingTab === 'pullup'
-                  ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
-                  : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${trainingTab === 'pullup'
+                ? 'bg-cyan-600 text-white border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30'
+                }`}
             >
               🪜 0-TO-10 PULLUP LADDER
             </button>
@@ -679,11 +687,10 @@ export function Chapter1() {
                 setTrainingTab('velocity');
               }}
               onMouseEnter={() => sfx.playHover()}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                trainingTab === 'velocity'
-                  ? 'bg-blue-600 text-white border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.4)]'
-                  : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-blue-500/30'
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${trainingTab === 'velocity'
+                ? 'bg-blue-600 text-white border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.4)]'
+                : 'bg-black/50 border-white/10 text-gray-400 hover:text-white hover:border-blue-500/30'
+                }`}
             >
               ⏱️ REP VELOCITY & CADENCE
             </button>
