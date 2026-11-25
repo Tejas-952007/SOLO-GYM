@@ -21,6 +21,12 @@ export function Chapter6() {
   const [recoveryTab, setRecoveryTab] = useState<'anatomy' | 'sleep' | 'deload'>('anatomy');
   const [mobileCh6Tab, setMobileCh6Tab] = useState<'chains' | 'chamber' | 'berserk' | 'physique' | 'recovery'>('chains');
 
+  // Interactive Hunter Telemetry Controls
+  const [sleepPreset, setSleepPreset] = useState<'6h' | '7.5h' | '8.5h'>('7.5h');
+  const [waterLitres, setWaterLitres] = useState<number>(3.5);
+  const [procrastinationSlayed, setProcrastinationSlayed] = useState<boolean>(false);
+  const [berserkActive, setBerserkActive] = useState<boolean>(false);
+
   const toggleAnatomyScan = () => {
     sfx.playBladeSlash();
     setShowAnatomyScan((prev) => !prev);
@@ -195,8 +201,12 @@ export function Chapter6() {
                     <span className="px-2 py-0.5 bg-red-950/80 border border-red-500/40 text-red-300 rounded inline-block w-fit">
                       [ JUNK FOOD // -40 XP ]
                     </span>
-                    <span className="px-2 py-0.5 bg-red-950/80 border border-red-500/40 text-red-300 rounded inline-block w-fit">
-                      [ SKIPPED WORKOUT // -1 STREAK ]
+                    <span className={`px-2 py-0.5 rounded inline-block w-fit border transition-colors ${
+                      procrastinationSlayed
+                        ? "bg-emerald-950/90 border-emerald-500/60 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.5)] font-bold"
+                        : "bg-red-950/80 border-red-500/40 text-red-300"
+                    }`}>
+                      {procrastinationSlayed ? "[ CHAIN SHATTERED // 14-DAY STREAK PROTECTED ]" : "[ SKIPPED WORKOUT // -1 STREAK ]"}
                     </span>
                   </div>
                 </div>
@@ -212,17 +222,27 @@ export function Chapter6() {
               <div className="pt-4 border-t border-system-accent/15 mt-4 space-y-2">
                 <div className="flex items-center justify-between text-xs font-mono text-red-400">
                   <span>PENALTY: RANK DECAY</span>
-                  <span>SLAY: COMPLETE QUEST</span>
+                  <span>{procrastinationSlayed ? "STATUS: SHATTERED" : "SLAY: COMPLETE QUEST"}</span>
                 </div>
                 <button
                   onClick={() => {
                     sfx.playBladeSlash();
-                    spawnCombatNumber("-2,450 CRITICAL SLASH!", undefined, undefined, "damage");
+                    setProcrastinationSlayed(true);
+                    spawnCombatNumber(
+                      procrastinationSlayed ? "-1,200 COMBO SLASH!" : "-3,500 CRITICAL SLASH! STREAK SAVED",
+                      undefined,
+                      undefined,
+                      "damage"
+                    );
                   }}
-                  className="w-full py-1.5 bg-red-950/60 hover:bg-red-600/30 border border-red-500/50 hover:border-red-400 rounded text-[11px] font-mono text-red-300 font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-[0_0_12px_rgba(239,68,68,0.3)]"
+                  className={`w-full py-1.5 rounded text-[11px] font-mono font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    procrastinationSlayed
+                      ? "bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                      : "bg-red-950/60 hover:bg-red-600/30 border border-red-500/50 hover:border-red-400 text-red-300 shadow-[0_0_12px_rgba(239,68,68,0.3)]"
+                  }`}
                 >
-                  <Swords className="w-3.5 h-3.5 text-red-400" />
-                  <span>[ SLAY PROCRASTINATION ]</span>
+                  <Swords className={`w-3.5 h-3.5 ${procrastinationSlayed ? "text-emerald-400" : "text-red-400"}`} />
+                  <span>{procrastinationSlayed ? "[ ⚔️ PROCRASTINATION SLAIN // +500 XP ]" : "[ SLAY PROCRASTINATION ]"}</span>
                 </button>
               </div>
             </div>
@@ -259,14 +279,77 @@ export function Chapter6() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#07060D] via-transparent to-transparent pointer-events-none" />
 
-                  {/* Healing Status */}
+                  {/* Dynamic Healing Status Badges */}
                   <div className="absolute bottom-3 left-3 right-3 flex flex-col gap-1.5 font-mono text-[10px]">
-                    <span className="px-2 py-0.5 bg-system-panel/90 border border-system-accent/40 text-system-glow rounded inline-block w-fit">
-                      [ SLEEP: 8.2 HRS // +120 HP ]
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="px-2 py-0.5 bg-system-panel/90 border border-system-accent/40 text-system-glow rounded inline-block w-fit">
+                        [ SLEEP: {sleepPreset === '6h' ? '6.0 HRS // +65 HP' : sleepPreset === '7.5h' ? '7.5 HRS // +120 HP' : '8.5 HRS // +180 HP'} ]
+                      </span>
+                      <span className="px-2 py-0.5 bg-system-panel/90 border border-system-cyan/40 text-system-cyan rounded inline-block w-fit">
+                        [ 💧 {waterLitres.toFixed(1)}L WATER ]
+                      </span>
+                    </div>
+                    <span className="px-2 py-0.5 bg-system-panel/90 border border-emerald-500/40 text-emerald-300 rounded inline-block w-fit">
+                      [ MUSCLE REPAIR: {sleepPreset === '6h' ? 'PARTIAL (72%)' : sleepPreset === '7.5h' ? 'OPTIMAL (94%)' : 'TRANSCENDENT (100%)'} ]
                     </span>
-                    <span className="px-2 py-0.5 bg-system-panel/90 border border-system-accent/40 text-system-glow rounded inline-block w-fit">
-                      [ MUSCLE REPAIR: OPTIMAL ]
-                    </span>
+                  </div>
+                </div>
+
+                {/* Interactive Sleep Protocol Switcher */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-system-muted">
+                    <span>SELECT SLEEP PROTOCOL:</span>
+                    <button
+                      onClick={() => {
+                        sfx.playStatPointAlloc();
+                        setWaterLitres((w) => (w >= 4.5 ? 2.5 : w + 0.5));
+                        spawnCombatNumber("+0.5L HYDRATION LOGGED", undefined, undefined, "xp");
+                      }}
+                      className="text-system-cyan hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      + ADD 500ML WATER
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1.5 p-1 bg-black/60 border border-system-accent/30 rounded-lg font-mono text-[10px]">
+                    <button
+                      onClick={() => {
+                        sfx.playClick();
+                        setSleepPreset('6h');
+                      }}
+                      className={`py-1 rounded text-center transition-all ${
+                        sleepPreset === '6h'
+                          ? 'bg-amber-600/40 text-amber-300 border border-amber-500/50 font-bold'
+                          : 'text-system-muted hover:text-white'
+                      }`}
+                    >
+                      6.0H BASE
+                    </button>
+                    <button
+                      onClick={() => {
+                        sfx.playClick();
+                        setSleepPreset('7.5h');
+                      }}
+                      className={`py-1 rounded text-center transition-all ${
+                        sleepPreset === '7.5h'
+                          ? 'bg-system-accent/40 text-system-glow border border-system-accent/60 font-bold'
+                          : 'text-system-muted hover:text-white'
+                      }`}
+                    >
+                      7.5H ANABOLIC
+                    </button>
+                    <button
+                      onClick={() => {
+                        sfx.playRankUp();
+                        setSleepPreset('8.5h');
+                      }}
+                      className={`py-1 rounded text-center transition-all ${
+                        sleepPreset === '8.5h'
+                          ? 'bg-emerald-600/40 text-emerald-300 border border-emerald-500/60 font-bold'
+                          : 'text-system-muted hover:text-white'
+                      }`}
+                    >
+                      8.5H MAX
+                    </button>
                   </div>
                 </div>
 
@@ -280,13 +363,18 @@ export function Chapter6() {
 
               <div className="pt-4 border-t border-system-accent/15 mt-4 space-y-2">
                 <div className="flex items-center justify-between text-xs font-mono text-system-accent">
-                  <span>BUFF: +30% STAMINA</span>
-                  <span>PROTOCOL: 8H SLEEP</span>
+                  <span>BUFF: {sleepPreset === '6h' ? '+15% STAMINA' : sleepPreset === '7.5h' ? '+30% STAMINA' : '+45% SOVEREIGN VIGOR'}</span>
+                  <span>PROTOCOL: {sleepPreset.toUpperCase()}</span>
                 </div>
                 <button
                   onClick={() => {
                     sfx.playStatPointAlloc();
-                    spawnCombatNumber("+350 VITALITY HEAL!", undefined, undefined, "stat");
+                    spawnCombatNumber(
+                      sleepPreset === '8.5h' ? "+500 TRANSCENDENT HEAL!" : "+350 VITALITY HEAL!",
+                      undefined,
+                      undefined,
+                      "stat"
+                    );
                   }}
                   className="w-full py-1.5 bg-purple-950/60 hover:bg-purple-600/30 border border-purple-500/50 hover:border-purple-400 rounded text-[11px] font-mono text-purple-300 font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.3)]"
                 >
@@ -318,7 +406,9 @@ export function Chapter6() {
               </div>
 
               {/* Hunter Berserk Face with Blazing Red Eyes Clearly Visible */}
-              <div className="relative w-full h-52 sm:h-72 rounded overflow-hidden border border-amber-500/30 bg-black/80">
+              <div className={`relative w-full h-52 sm:h-72 rounded overflow-hidden border bg-black/80 transition-all duration-300 ${
+                berserkActive ? 'border-amber-400 ring-2 ring-amber-500/50' : 'border-amber-500/30'
+              }`}>
                 <Image
                   src="/assets/06-enemies/rage-mindset.webp"
                   alt="Berserk Mindset with Burning Eyes"
@@ -333,8 +423,12 @@ export function Chapter6() {
                   <span className="px-2 py-0.5 bg-amber-950/80 border border-amber-500/40 text-amber-300 rounded inline-block w-fit">
                     [ STREAK 30 // BERSERK STATE ]
                   </span>
-                  <span className="px-2 py-0.5 bg-amber-950/80 border border-amber-500/40 text-amber-300 rounded inline-block w-fit">
-                    [ 2X XP BONUS ACTIVE ]
+                  <span className={`px-2 py-0.5 rounded inline-block w-fit border transition-colors ${
+                    berserkActive
+                      ? 'bg-amber-500 text-black border-amber-400 font-bold shadow-[0_0_15px_rgba(245,158,11,0.6)]'
+                      : 'bg-amber-950/80 border-amber-500/40 text-amber-300'
+                  }`}>
+                    {berserkActive ? '[ 🔥 3.0X OVERDRIVE ACTIVATED ]' : '[ 2X XP BONUS READY ]'}
                   </span>
                 </div>
               </div>
@@ -349,18 +443,28 @@ export function Chapter6() {
 
             <div className="pt-4 border-t border-system-accent/15 mt-4 space-y-2">
               <div className="flex items-center justify-between text-xs font-mono text-amber-400">
-                <span>STATE: ASCENDED</span>
-                <span>MULTIPLIER: 2.0X</span>
+                <span>STATE: {berserkActive ? '🔥 OVERDRIVE' : 'ASCENDED'}</span>
+                <span>MULTIPLIER: {berserkActive ? '3.0X' : '2.0X'}</span>
               </div>
               <button
                 onClick={() => {
-                  sfx.playSubBassBoom();
-                  spawnCombatNumber("+750 BERSERK RAGE!", undefined, undefined, "mana");
+                  sfx.playDemonRoar();
+                  setBerserkActive((b) => !b);
+                  spawnCombatNumber(
+                    berserkActive ? "BERSERK NORMALIZED" : "🔥 +1,000 XP & 3.0X OVERDRIVE IGNITED!",
+                    undefined,
+                    undefined,
+                    "mana"
+                  );
                 }}
-                className="w-full py-1.5 bg-amber-950/60 hover:bg-amber-600/30 border border-amber-500/50 hover:border-amber-400 rounded text-[11px] font-mono text-amber-300 font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-[0_0_12px_rgba(245,158,11,0.3)]"
+                className={`w-full py-1.5 rounded text-[11px] font-mono font-bold tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  berserkActive
+                    ? 'bg-amber-500 text-black border border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.6)]'
+                    : 'bg-amber-950/60 hover:bg-amber-600/30 border border-amber-500/50 hover:border-amber-400 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]'
+                }`}
               >
-                <Flame className="w-3.5 h-3.5 text-amber-400" />
-                <span>[ UNLEASH BERSERK OVERDRIVE ]</span>
+                <Flame className={`w-3.5 h-3.5 ${berserkActive ? 'text-black fill-black' : 'text-amber-400'}`} />
+                <span>{berserkActive ? '[ 🔥 BERSERK OVERDRIVE ACTIVE ]' : '[ UNLEASH BERSERK OVERDRIVE ]'}</span>
               </button>
             </div>
           </div>
